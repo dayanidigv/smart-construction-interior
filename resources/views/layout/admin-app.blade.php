@@ -95,14 +95,6 @@
                         </ul>
                     </li>
 
-                    <!-- <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{route('admin.invoice')}}" aria-expanded="false">
-                            <span>
-                                <i class="ti ti-file-text"></i>
-                            </span>
-                            <span class="hide-menu">Invoice</span>
-                        </a>
-                    </li> -->
 
                     <li class="sidebar-item">
                         <a class="sidebar-link has-arrow" href="#" aria-expanded="false">
