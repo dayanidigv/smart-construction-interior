@@ -1,7 +1,7 @@
 @extends('layout.admin-app')
 @section('adminContent')
 @use('Carbon\Carbon')
-
+@use('App\Http\Helpers\Helper')
 @push('style')
 <style>
     @media print {
@@ -139,14 +139,14 @@
                                                         <p class="fs-3 pb-0 mb-0 ">{{rtrim(rtrim(number_format($item->quantity, 2), '0'), '.') }}({{$item->design->unit->name}})</p>
                                                     </td>
                                                     <td class="text-end">
-                                                        <p class="fs-3 pb-0 mb-0 ">₹ {{format_inr(rtrim(rtrim(number_format($item->rate_per, 2), '0'),'.'),1) }}</p>
+                                                        <p class="fs-3 pb-0 mb-0 ">₹ {{Helper::format_inr(rtrim(rtrim(number_format($item->rate_per, 2), '0'),'.'),1) }}</p>
                                                         </td>
                                                     <td class="text-end">
-                                                            <p class="fs-3 pb-0 mb-0">₹ {{format_inr(rtrim(rtrim(number_format($item->discount_amount, 2),'0'), '.'),1) }}</p>
+                                                            <p class="fs-3 pb-0 mb-0">₹ {{Helper::format_inr(rtrim(rtrim(number_format($item->discount_amount, 2),'0'), '.'),1) }}</p>
                                                             <p class="fs-1 pb-0 mb-0">({{rtrim(rtrim(number_format($item->discount_percentage, 2),'0'), '.') }})</p>
                                                     </td>
                                                     <td class="text-end">
-                                                        <p class="fs-3 pb-0 mb-0">₹ {{format_inr(rtrim(rtrim(number_format($item->total, 2), '0'),'.'),1) }}</p>
+                                                        <p class="fs-3 pb-0 mb-0">₹ {{Helper::format_inr(rtrim(rtrim(number_format($item->total, 2), '0'),'.'),1) }}</p>
                                                     </td>
                                                 </tr>
 
@@ -161,12 +161,12 @@
                                                     <td class="text-end"></td>
                                                     <td class="text-end ">
                                                         <p class="d-block fs-3 my-2">₹ {{
-                                                            format_inr(number_format($order->invoice()->first()->discount_amount))
+                                                            Helper::format_inr(number_format($order->invoice()->first()->discount_amount))
                                                             }}</p>
                                                     </td>
                                                     <td class="text-end fs-3  my-2">
                                                         <p class="d-block my-2">₹
-                                                            {{format_inr(number_format($order->invoice()->first()->total_amount))
+                                                            {{ Helper::format_inr(number_format($order->invoice()->first()->total_amount))
                                                             }}</p>
                                                     </td>
                                                 </tr>
@@ -184,11 +184,11 @@
                                     <div class="col-6">
                                         <div class="pull-right text-end">
                                             <p>TAXABLE AMOUNT: ₹
-                                                {{format_inr(number_format($order->invoice()->first()->total_amount)) }}
+                                                {{Helper::format_inr(number_format($order->invoice()->first()->total_amount)) }}
                                             </p>
                                             <hr />
                                             <p><b>TOTAL AMOUNT:</b> ₹
-                                                {{format_inr(number_format($order->invoice()->first()->total_amount)) }}
+                                                {{Helper::format_inr(number_format($order->invoice()->first()->total_amount)) }}
                                             </p>
                                         </div>
                                         <hr />
@@ -199,7 +199,7 @@
                                 @php
                                 $totalAmount = $order->invoice()->first()->total_amount;
                                 $formattedAmount = str_replace(",", "", number_format($totalAmount));
-                                $amountInWords = inrConvertNumberToWords((int)$formattedAmount);
+                                $amountInWords = Helper::inrConvertNumberToWords((int)$formattedAmount);
                                 @endphp
                                 <div class="col-12 d-flex justify-content-end">
                                     <div class="text-end">

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+ 
 class AuthController extends Controller
 {
     public function login (){
@@ -43,9 +43,9 @@ class AuthController extends Controller
             // Redirect based on user role
             $role = Auth::user()->role;
             if ($role  == 'admin') {
-                return redirect()->intended('/admin');
+                return redirect()->intended(route('admin.index'));
             } else if ($role == 'admin') {
-                return redirect()->intended('/manager');
+                return redirect()->intended(route('manager.index'));
             }else if ($role == 'developer') {
                 return redirect()->intended(route('dev.logs'));
             }

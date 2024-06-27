@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class DeveloperOnly
+class RoleManagerMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class DeveloperOnly
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role == 'developer') {
+        if (Auth::check() && Auth::user()->role == 'manager') {
             return $next($request);
         }
         

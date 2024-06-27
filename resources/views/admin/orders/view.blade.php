@@ -1,6 +1,7 @@
 @extends('layout.admin-app')
 @section('adminContent')
 @use('Carbon\Carbon')
+@use('App\Http\Helpers\Helper')
 @push('style')
 
 <style>
@@ -259,7 +260,7 @@
                                 <tbody>
                                     <tr>
                                         <td>Subtotal</td>
-                                        <td>₹ {{format_inr(number_format($sub_total))}}</td>
+                                        <td>₹ {{Helper::format_inr(number_format($sub_total))}}</td>
                                     </tr>
                                     <tr>
                                         <td>Discount Percentage</td>
@@ -279,7 +280,7 @@
                                             <?php $discountAmount = 0; ?>
                                             @if ($pageData->order->invoice()->first() != null)
                                             <?php $discountAmount = $sub_total * ($discountPercentage / 100); ?>
-                                            ₹ {{format_inr(number_format($discountAmount, 2))}}
+                                            ₹ {{Helper::format_inr(number_format($discountAmount, 2))}}
                                             @else
                                             ₹ {{$discountAmount}}
                                             @endif
@@ -288,23 +289,23 @@
                                     <tr>
                                         <td>Total Amount</td>
                                         <?php $totalAfterDiscount = $sub_total - $discountAmount; ?>
-                                        <td>₹ {{ format_inr(number_format($totalAfterDiscount))}}</td>
+                                        <td>₹ {{ Helper::format_inr(number_format($totalAfterDiscount))}}</td>
                                     </tr>
                                     <tr>
                                         <td>Advance Payment</td>
                                         <?php  $advancePayAmount = $pageData->order->invoice()->first() != null ?  ($pageData->order->invoice()->first()->advance_pay_amount != null ? $pageData->order->invoice()->first()->advance_pay_amount : 0 ) : 0; ?>
-                                        <td>₹ {{ format_inr(number_format($advancePayAmount)) }}</td>
+                                        <td>₹ {{ Helper::format_inr(number_format($advancePayAmount)) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Total Paid Amount</td>
-                                        <td>₹ {{ format_inr(format_inr($pageData->order->paymentHistory()->sum('amount'))) }}
+                                        <td>₹ {{ Helper::format_inr(Helper::format_inr($pageData->order->paymentHistory()->sum('amount'))) }}
                                         </td>
                                     </tr>
 
                                     <tr>
                                         <td>Balance Amount</td>
                                         <?php $balanceAmount = $totalAfterDiscount -  $advancePayAmount?>
-                                        <td>₹ {{format_inr(number_format($balanceAmount))}}</td>
+                                        <td>₹ {{Helper::format_inr(number_format($balanceAmount))}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -328,7 +329,7 @@
                                         <div id="payment_history">
                                             @foreach ($pageData->order->paymentHistory as $index => $paymentHistory)
                                             <p class="mb-2">
-                                                Paid ₹{{ format_inr(number_format($paymentHistory->amount)) }} via {{
+                                                Paid ₹{{ Helper::format_inr(number_format($paymentHistory->amount)) }} via {{
                                                 ucwords(str_replace('_', ' ', $paymentHistory->payment_method)) }} on {{
                                                 Carbon::parse($paymentHistory->payment_date)->format('F j, Y')
                                                 }}.
@@ -391,7 +392,7 @@
 
                     <div class="card-footer invoice-footer">
                     <h5 class="d-flex align-items-center justify-content-end text-dark text-uppercase mb-0">
-                            Balance: <span class="h2 mb-0 ms-2">₹ {{format_inr(number_format($balanceAmount))}}
+                            Balance: <span class="h2 mb-0 ms-2">₹ {{Helper::format_inr(number_format($balanceAmount))}}
                             </span></h5>
                     </div>
                 </div>
