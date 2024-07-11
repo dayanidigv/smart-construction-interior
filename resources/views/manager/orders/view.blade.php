@@ -128,7 +128,7 @@
                         <div class="col-6 col-md-6 col-12 d-flex justify-content-end">
                             <p class="text-muted mb-0">
                                 <b class="d-flex justify-content-end">End Date</b>
-                                {{ Carbon::parse($pageData->order->end_date)->format('jS F Y') }}
+                                {{ $pageData->order->end_date != null ? Carbon::parse($pageData->order->end_date)->format('jS F Y') : 'N/A'  }}
                             </p>
                         </div>
                     </div>

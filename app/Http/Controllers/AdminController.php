@@ -62,6 +62,7 @@ class AdminController extends Controller
     private function getUserData(string $sectionName, string $title, object $pageData = new stdClass()): array
     {
         $user = User::find(Auth::id());
+        $role = $user->role;
         $userName = $user ? $user->name : 'Guest';
         $userId = $user ? $user->id : 'Guest';
         $reminder = $user->reminders()
@@ -70,12 +71,14 @@ class AdminController extends Controller
             ->orderBy('reminder_time', 'asc')
             ->get();
 
-        if($sectionName == "Dashboard"){
+        if($title == "Dashboard"){
             $pageData->Schedules = $user->schedule()->get();
         }else if ($title == "List Reminder"){
             $pageData->Reminders = $user->reminders()->orderBy('created_at', 'desc')->get();
+        }else if ($title == "List User"){
+            $pageData->users = User::query()->where('role',"!=","developer")->withTrashed()->orderByDesc('id')->get();
         }else if ($title == "Quantity Units"){
-            $pageData->QuantityUnits = QuantityUnits::all();
+            $pageData->QuantityUnits = QuantityUnits::withTrashed()->orderByDesc('id')->get();
         }else if ($title == "New Product"){
             $pageData->QuantityUnits = QuantityUnits::all();
         }else if ($title == "New Order"){
@@ -89,8 +92,10 @@ class AdminController extends Controller
             $pageData = Orders::orderByDesc('created_at')->with('orderItems')->get();
         }else if ($title == "New Design"){
             $pageData->QuantityUnits = QuantityUnits::all();
-        }else if ($title == "Gallery" || $title == "List Designs"){
+        }else if ($title == "Gallery"){
             $pageData = Designs::all();
+        }else if ($title == "List Designs"){
+            $pageData = Designs::withTrashed()->orderByDesc('id')->get();
         }else if ($title == "Report" ){
             $pageData->orders = Orders::all();
             $pageData->users = User::where('role','!=',"developer")->get();
@@ -104,6 +109,7 @@ class AdminController extends Controller
             'userName' => $userName,
             'userId' => $userId,
             "user" => $user,
+            "role" => $role,
             'pageData' => $pageData,
             'displayReminder' => $reminder
         ];
@@ -111,7 +117,7 @@ class AdminController extends Controller
 
      public function index()
     {
-        $data = $this->getUserData('Dashboard', 'Index');
+        $data = $this->getUserData('Home', 'Dashboard');
         return view('admin.index', $data);
     }
 
@@ -219,7 +225,7 @@ class AdminController extends Controller
     public function newOrder()
     {
         $data = $this->getUserData('Orders', 'New Order');
-        return view('admin.orders.store', $data);
+        return view('common.order.create', $data);
     }
 
     public function listOrder()
@@ -277,7 +283,7 @@ class AdminController extends Controller
             $pageData->order = Orders::findOrFail($decodedId);
             $pageData->managers = User::where('role','manager')->get();
             $data = $this->getUserData('Orders', 'Edit Order', $pageData);
-            return view('admin.orders.update', $data);
+            return view('common.order.update', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Order not found'); 
         }
@@ -313,6 +319,31 @@ class AdminController extends Controller
         return view('admin.add-user', $data);
     }
 
+    public function list_user()
+    {
+        $data = $this->getUserData('Users', 'List User');
+        return view('admin.user.list', $data);
+    }
+
+    public function userDestroy(string $encodedId)
+    {
+        $decodedId = base64_decode($encodedId); 
+        $record = User::find($decodedId);
+        $record->delete();
+        return redirect()->back()->with('message', 'User soft deleted successfully');
+    
+    }
+
+    public function userRestore(string $encodedId)
+    {
+        $decodedId = base64_decode($encodedId); 
+        $record = User::withTrashed()->find($decodedId);
+        $record->restore();
+        return redirect()->back()->with('message', 'User Restore successfully');
+    
+    }
+    
+    
     public function user_store(Request $request)
     {
         // Validate the incoming request data
@@ -321,34 +352,31 @@ class AdminController extends Controller
             'email' => 'required|string|email|unique:users,email',
             'role' => ['required', 'regex:/^(admin|manager)$/i']
         ]);
-
+    
         // If validation fails, redirect back with errors and input data
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-
-
+    
         // Generate a random password for the new user
         $password = $this->generatePassword();
-
-        
+    
         DB::beginTransaction();
-
-         // Send an email with login details to the new user
+    
         try {
-
-            User::create([
+            // Create the new user record
+            $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'role' => $request->role,
                 'password' => Hash::make($password),
             ]);
-
-       
+    
+            // Send an email with login details to the new user
             Mail::to($request->email)->send(new SendLoginDetails($request->name, $request->email, $password));
             DB::commit();
-
-            return back()->with('message', 'Mail sent successfully.');
+    
+            return redirect()->back()->with('message', 'User Create successfully.')->with('username',$request->email)->with('password',$password);
         } catch (Exception $e) {
             DB::rollBack();
             Log::create([
@@ -358,11 +386,12 @@ class AdminController extends Controller
                 'ip_address' => $request->ip(),
                 'context' => 'web',
                 'source' => 'create_user',
-                'extra_info' => json_encode(['user_agent' => $request->header('User-Agent'),"error"=>$e])
+                'extra_info' => json_encode(['user_agent' => $request->header('User-Agent'), "error" => $e->getMessage()])
             ]);
-            return back()->with('error', 'Failed to send mail. Please try again later.');
+            return redirect()->back()->with('error', 'Failed to send mail. Please try again later.')->withInput();
         }
     }
+    
 
     public function reminder()
     {

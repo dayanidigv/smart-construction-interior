@@ -3,11 +3,13 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ApisController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DesignsController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LabourController;
+use App\Http\Controllers\ListPageExportController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ProductsController;
@@ -39,7 +41,10 @@ Route::middleware('auth')->group(function () {
 
             // Users
             Route::get('/add-user', "add_user")->name('admin.add-user');
+            Route::get('/list-user', "list_user")->name('admin.user.list');
             Route::post('/add-user', "user_store")->name('admin.add-user.store');
+            Route::delete('/user/{encodedId}/destroy', "userDestroy")->name('admin.user.destroy');
+            Route::post('/user/{encodedId}/restore', "userRestore")->name('admin.user.restore');
 
             // Quantity Units
             Route::get('/quantity-units', "QuantityUnits")->name('admin.quantity-units');
@@ -144,12 +149,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/customer/{encodedId}/update', "update")->name('customer.update');
         Route::post('/add-customer', "store")->name('customer.store');
         Route::delete('/customer/{encodedId}/destroy', "destroy")->name('customer.destroy');
+        Route::post('/customer/{encodedId}/restore', "restore")->name('customer.restore');
     });
 
     Route::controller(QuantityUnitsController::class)->group(function () {
         Route::post('/quantity-units/store', "store")->name('quantity-units.store');
         Route::post('/quantity-units/{encodedId}/update', "update")->name('quantity-units.update');
         Route::delete('/quantity-units/{encodedId}/destroy', "destroy")->name('quantity-units.destroy');
+        Route::delete('/quantity-units/{encodedId}/restore', "restore")->name('quantity-units.restore');
     });
 
     Route::controller(ProductsController::class)->group(function () {
@@ -174,6 +181,28 @@ Route::middleware('auth')->group(function () {
         Route::post('/design/store', "store")->name('design.store');
         Route::post('/design/{encodedId}/update', "update")->name('design.update');
         Route::delete('/design/{encodedId}/destroy', "destroy")->name('design.destroy');
+        Route::post('/design/{encodedId}/restore', "restore")->name('design.restore');
+    });
+
+    Route::controller(ListPageExportController::class)->group(function () {
+        Route::prefix('ExportList')->group(function () {
+            Route::post('/OrdersList','ExportOrder')->name('export.order');
+            Route::post('/UserList','ExportUser')->name('export.user');
+            Route::post('/CustomerList','ExportCustomer')->name('export.customer');
+            Route::post('/DesignList','ExportDesign')->name('export.desgin');
+            Route::post('/ReinderList','ExportReminder')->name('export.rteminder');
+        });
+    });
+
+
+    Route::controller(CategoryController::class)->group(function(){
+        Route::get('{role}/category', "view")->name('category.view');
+        Route::get('/category/{encodedId}/get-by-id', "getByID")->name('category.getbyid');
+        Route::post('/category/store', "createCategory")->name('category.store');
+        Route::post('/sub-category/store', "createSubCategory")->name('sub-category.store');
+        Route::post('/category/{encodedId}/update', "update")->name('category.update');
+        Route::delete('/category/{encodedId}/destroy', "softDeleteCategory")->name('category.destroy');
+        Route::post('/category/{encodedId}/restore', "restoreCategory")->name('category.restore');
     });
 
     Route::controller(OrdersController::class)->group(function () {
@@ -212,8 +241,13 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+Route::get('/testing', function (){
+    return view('test');
+});
+
 // Routes for guest users
 Route::middleware('guest')->group(function () {
+    
     Route::controller(AuthController::class)->group(function () {
         Route::get('/login', 'login')->name('login');
         Route::post('/login',  'loginPost')->name('login.post');

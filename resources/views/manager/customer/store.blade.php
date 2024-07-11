@@ -42,7 +42,7 @@
 
             <div class="col-md-12 mb-3">
                 <div class="form-floating">
-                    <input type="text" name="phone" id="phone" value="{{old('phone')}}" class="form-control @error('phone') is-invalid @enderror" placeholder="name@example.com" required/>
+                    <input type="number" name="phone" id="phone" value="{{old('phone')}}" class="form-control @error('phone') is-invalid @enderror" placeholder="name@example.com" required/>
                     <label for="phone"> Phone no.</label>
                     @error('phone')
                     <div class="invalid-feedback">

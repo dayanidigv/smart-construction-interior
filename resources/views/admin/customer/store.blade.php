@@ -41,8 +41,8 @@
 
             <div class="col-md-12 mb-3">
                 <div class="form-floating">
-                    <input type="text" name="phone" id="phone" value="{{old('phone')}}" class="form-control @error('phone') is-invalid @enderror"  placeholder="Enter customer Phone no."/>
-                    <label for="phone"> Phone no.</label>
+                    <input type="number" name="phone" id="phone" value="{{old('phone')}}" class="form-control @error('phone') is-invalid @enderror"  placeholder="Enter customer Phone no." required/>
+                    <label for="phone"> Phone no. *</label>
                     @error('phone')
                     <div class="invalid-feedback">
                         <p class="error">{{ $message }}</p>
@@ -53,8 +53,8 @@
 
             <div class="col-md-12 mb-3">
                 <div class="form-floating">
-                    <textarea type="text" name="address" id="address" value="{{old('address')}}" class="form-control @error('address') is-invalid @enderror"placeholder="Enter customer Address" >{{old('address')}}</textarea>
-                    <label for="address"> Address</label>
+                    <textarea type="text" name="address" id="address" value="{{old('address')}}" class="form-control @error('address') is-invalid @enderror"placeholder="Enter customer Address" required>{{old('address')}}</textarea>
+                    <label for="address"> Address *</label>
                     @error('address')
                     <div class="invalid-feedback">
                         <p class="error">{{ $message }}</p>

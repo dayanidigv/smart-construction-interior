@@ -20,6 +20,9 @@
                 <thead class="text-dark fs-4">
                     <tr>
                         <th>
+                            <h6 class="fs-4 fw-semibold mb-0">#</h6>
+                        </th>
+                        <th>
                             <h6 class="fs-4 fw-semibold mb-0">Title</h6>
                         </th>
                         <th>
@@ -44,13 +47,16 @@
                     @for ($i = 0; $i < count($pageData->Reminders); $i++)
                         <tr>
                             <td>
+                                <p class="mb-0 fw-normal fs-4">{{ $i + 1 }}</p>
+                            </td>
+                            <td>
                                 <p class="mb-0 fw-normal fs-4">{{ $pageData->Reminders[$i]->title }}</p>
                             </td>
                             <td>
                                 <p class="mb-0 fw-normal fs-4">{{ \Carbon\Carbon::parse($pageData->Reminders[$i]->reminder_time)->format('h:i A \o\n jS F Y') }}</p>
                             </td>
                             <td>
-                                <p class="mb-0 fw-normal fs-4">{{ $pageData->Reminders[$i]->priority }}</p>
+                                <p class="mb-0 fw-normal fs-4">{{ $pageData->Reminders[$i]->priority ==1 ?  "Red" :  ($pageData->Reminders[$i]->priority ==2 ? "Yellow" : "Green") }}</p>
                             </td>
                             <td>
                                 <p class="mb-0 fw-normal fs-4">{{ \Carbon\Carbon::parse($pageData->Reminders[$i]->created_at)->diffForHumans() }}</p>
@@ -69,7 +75,7 @@
                                     class="text-success"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                         stroke-linecap="round" stroke-linejoin="round"
-                                        class="icon icon-tabler icons-tabler-outline icon-tabler-eye">
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-eye" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                         <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
                                         <path
@@ -79,7 +85,7 @@
                                     class="text-primary mx-2"><svg xmlns="http://www.w3.org/2000/svg" width="24"
                                         height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                        class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-edit" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                         <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
                                         <path
@@ -88,7 +94,7 @@
                                     </svg></a>
                                 <form
                                     action="{{route('reminder.destroy', ['encodedId' => base64_encode($pageData->Reminders[$i]->id)]) }}"
-                                    method="post" class="delete-form" style="display:inline;">
+                                    method="post" class="delete-form" style="display:inline;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="delete-btn" onclick="return confirmDelete()"

@@ -55,9 +55,9 @@
               <div class="form-floating">
                 <select class="form-control @error('priority') is-invalid @enderror" name="priority" id="priority" required>
                   <option value="">-- Select Priority --</option>
-                  <option value="3">Low</option>
-                  <option value="2">Medium</option>
-                  <option value="1">High</option>
+                  <option value="3">Green</option>
+                  <option value="2">Yellow</option>
+                  <option value="1">Red</option>
                 </select>
                 <label for="priority">Priority*</label>
                 @error('priority')

@@ -29,6 +29,7 @@ class ManagerController extends Controller
     private function getUserData($sectionName, $title, $pageData = new stdClass())
     {
         $user = User::find(Auth::id());
+        $role = $user->role;
         $userName = $user ? $user->name : 'Guest';
         $userId = $user ? $user->id : 'Guest';
         $totalPages = 1;
@@ -69,6 +70,7 @@ class ManagerController extends Controller
             'sectionName' => $sectionName,
             'userName' => $userName,
             'userId' => $userId,
+            "role" => $role,
             "user" => $user,
             'pageData' => $pageData,
             'displayReminder' => $reminder
@@ -238,7 +240,7 @@ class ManagerController extends Controller
    public function newOrder()
    {
        $data = $this->getUserData('Orders', 'New Order');
-       return view('manager.orders.store', $data);
+       return view('common.order.create', $data);
    }
 
    public function listOrder()
@@ -302,7 +304,7 @@ class ManagerController extends Controller
            }
            $pageData->QuantityUnits = QuantityUnits::all();
            $data = $this->getUserData('Orders', 'Edit Order', $pageData);
-           return view('manager.orders.update', $data);
+           return view('common.order.update', $data);
        } catch (ModelNotFoundException $e) {
            return abort(404, 'Order not found'); 
        }

@@ -129,7 +129,7 @@
                         <div class="col-6 col-md-6 col-12 d-flex justify-content-end">
                             <p class="text-muted mb-0">
                                 <b class="d-flex justify-content-end">End Date</b>
-                                {{ Carbon::parse($pageData->order->end_date)->format('jS F Y') }}
+                                {{ $pageData->order->end_date != null ? Carbon::parse($pageData->order->end_date)->format('jS F Y') : 'N/A'  }}
                             </p>
                         </div>
                     </div>
@@ -315,7 +315,7 @@
                             <div class="row mb-4">
                                 <div class="col-md-12 col-12">
                                     <p class="lead fw-semibold">Payment Status</p>
-                                    <p class="badge badge-status {{$pageData->order->invoice()->first()->payment_status}}">
+                                    <p class="badge badge-status {{$pageData->order->invoice()->first()->payment_status != "not confirmed" ? $pageData->order->invoice()->first()->payment_status : "partially_paid"}}">
                                         {{ ucFirst($pageData->order->invoice()->first()->payment_status) }}
                                     </p>
                                 </div>

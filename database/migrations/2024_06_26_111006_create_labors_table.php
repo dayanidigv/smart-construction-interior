@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->softDeletes(); 
             $table->timestamps();
         });
 
@@ -28,8 +29,8 @@ return new class extends Migration
             $table->integer('number_of_labors');
             $table->decimal('per_labor_amount', 8, 2);
             $table->decimal('total_amount', 10, 2);
+            $table->softDeletes(); 
             $table->timestamps();
-        
             $table->foreign('order_id')->references('id')->on('orders')->cascadeOnDelete();
             $table->foreign('labor_category_id')->references('id')->on('labor_categories')->cascadeOnDelete();
         });

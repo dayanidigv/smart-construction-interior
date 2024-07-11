@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('key')->unique(); 
             $table->string('general_key')->nullable(); 
+            $table->softDeletes(); 
             $table->timestamps();
         });
 
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->string('image_url');
             $table->enum('type', ['Interior', 'Exterior', 'Both'])->default('Interior');
             $table->unsignedBigInteger('unit_id')->index();
+            $table->softDeletes(); 
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');

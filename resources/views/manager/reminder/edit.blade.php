@@ -76,9 +76,9 @@
                                 <select class="form-control @error('priority') is-invalid @enderror" name="priority"
                                     id="priority" required>
                                     <option value="">-- Select Priority --</option>
-                                    <option value="3" @if($pageData->priority == 3) selected @endif>Low</option>
-                                    <option value="2" @if($pageData->priority == 2) selected @endif>Medium</option>
-                                    <option value="1" @if($pageData->priority == 1) selected @endif>High</option>
+                                    <option value="3" @if($pageData->priority == 3) selected @endif>Green</option>
+                                    <option value="2" @if($pageData->priority == 2) selected @endif>Yellow</option>
+                                    <option value="1" @if($pageData->priority == 1) selected @endif>Red</option>
                                 </select>
                                 <label for="priority">Priority*</label>
                                 @error('priority')

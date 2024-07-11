@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Designs extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
+    
+    protected $dates = ['deleted_at'];
     protected $table = 'designs';
 
     protected $fillable = [
@@ -30,7 +33,7 @@ class Designs extends Model
 
     public function category()
     {
-        return $this->belongsTo(Categories::class, 'category_id');
+        return $this->belongsTo(Categories::class, 'category_id')->withTrashed();
     }
 
     public function product()

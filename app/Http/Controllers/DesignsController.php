@@ -190,9 +190,9 @@ class DesignsController extends Controller
             $design = Designs::findOrFail($decodedId);
 
             // Delete the image from storage
-            if ($design->image_url && Storage::disk('public')->exists(str_replace('/storage/', '', $design->image_url))) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $design->image_url));
-            }
+            // if ($design->image_url && Storage::disk('public')->exists(str_replace('/storage/', '', $design->image_url))) {
+            //     Storage::disk('public')->delete(str_replace('/storage/', '', $design->image_url));
+            // }
 
             // Delete the design record
             $design->delete();
@@ -212,6 +212,37 @@ class DesignsController extends Controller
                 'extra_info' => json_encode(['user_agent' => $request->header('User-Agent'),'error'=>$e])
             ]);
             return back()->with('error', 'Failed to delete design. Please try again later.');
+        }
+    }
+
+    public function restore(string $encodedId, Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $decodedId = base64_decode($encodedId);
+
+            // Find the existing design
+            $design = Designs::withTrashed()->findOrFail($decodedId);
+
+            // Delete the design record
+            $design->restore();
+
+            DB::commit();
+
+            return redirect()->back()->with('message', 'Design restore successfully.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::create([
+                'message' => 'Failed to delete Design.',
+                'level' => 'warning',
+                'type' => 'error',
+                'ip_address' => $request->ip(),
+                'context' => 'web',
+                'source' => 'delete_design',
+                'extra_info' => json_encode(['user_agent' => $request->header('User-Agent'),'error'=>$e])
+            ]);
+            return back()->with('error', 'Failed to restore design. Please try again later.');
         }
     }
 

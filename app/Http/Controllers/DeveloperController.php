@@ -14,7 +14,7 @@ class DeveloperController extends Controller
     }
     public function viewLog($id){
         $log = Log::find($id);
-        dd(json_decode($log->first()),json_decode($log->extra_info));
+        dd(json_decode($log),json_decode($log->extra_info));
         return view('dev.logs', compact('log'));
     }
     public function deleteLog($id){

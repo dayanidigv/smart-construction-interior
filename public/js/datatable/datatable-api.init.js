@@ -1,32 +1,4 @@
-/*************************************************************************************/
-// -->Template Name: Bootstrap Press Admin
-// -->Author: Themedesigner
-// -->Email: niravjoshi87@gmail.com
-// -->File: datatable_api_init
-/*************************************************************************************/
 
-//==================================================//
-//                      Add row                     //
-//==================================================//
-var t = $("#t_add_row").DataTable();
-var counter = 1;
-
-$("#addRow").on("click", function () {
-  t.row
-    .add([
-      counter + ".1",
-      counter + ".2",
-      counter + ".3",
-      counter + ".4",
-      counter + ".5",
-    ])
-    .draw(false);
-
-  counter++;
-});
-
-// Automatically add a first row of data
-$("#addRow").click();
 
 //==================================================//
 // Individual column searching (select inputs)       //
@@ -47,7 +19,6 @@ $(".datatable-select-inputs").DataTable({
 
             column.search(val ? "^" + val + "$" : "", true, false).draw();
           });
-
         column
           .data()
           .unique()
@@ -57,144 +28,40 @@ $(".datatable-select-inputs").DataTable({
           });
       });
   },
+  responsive: true
 });
 
-//==================================================//
-// Individual column searching (text inputs)        //
-//==================================================//
-// Setup - add a text input to each footer cell
-$(".text-inputs-searching tfoot th").each(function () {
-  var title = $(this).text();
-  $(this).html(
-    '<input type="text" class="form-control" placeholder="Search ' +
-      title +
-      '" />'
-  );
+$(document).ready(function() {
+  // Check if the .datatable-select-inputs element exists
+  if ($('.datatable-select-inputs').length) {
+      // Append the button to a specific container or the body
+      $('body').append(`
+          <button class="btn btn-primary p-3 rounded-circle d-flex align-items-center justify-content-center customizer-btn" id='report-expor-btn-for-list'" onclick='reportExportBtnForList()'>
+              <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Export">
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-file-export"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M11.5 21h-4.5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v5m-5 6h7m-3 -3l3 3l-3 3" /></svg>
+              </span>
+          </button>
+      `);
+
+      // Initialize Bootstrap tooltips if necessary
+      $('[data-bs-toggle="tooltip"]').tooltip();
+  }
 });
 
-// DataTable
-var tableSearching = $(".text-inputs-searching").DataTable();
 
-// Apply the search
-tableSearching.columns().every(function () {
-  var that = this;
+function reportExportBtnForList() {
+  // Get the cleaned text and split it into an array
+  var theadText = $('thead').text().replace(/[\t\n]+/g, ' ').trim();
+  var theadArray = theadText.split(/\s+/);
 
-  $("input", this.footer()).on("keyup change", function () {
-    if (that.search() !== this.value) {
-      that.search(this.value).draw();
-    }
-  });
-});
+  var data = {
+    "table_name": $('h5.card-title').text(),
+    "search_value": $('#DataTables_Table_0_filter').find('input').val(),
+    "table_heads": theadArray,
+  }
 
-//==================================================//
-// Child rows (show extra / detailed information)   //
-//==================================================//
-/* Formatting function for row details - modify as you need */
-function format(d) {
-  // `d` is the original data object for the row
-  return (
-    '<table class="table" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-    "<tr>" +
-    "<td>Full name:</td>" +
-    "<td>" +
-    d.name +
-    "</td>" +
-    "</tr>" +
-    "<tr>" +
-    "<td>Extension number:</td>" +
-    "<td>" +
-    d.extn +
-    "</td>" +
-    "</tr>" +
-    "<tr>" +
-    "<td>Extra info:</td>" +
-    "<td>And any further details here (images etc)...</td>" +
-    "</tr>" +
-    "</table>"
-  );
+  console.log(data);
+
+  // Alert message indicating the function is not completed
+  alert('The export functionality is not completed yet.');
 }
-
-//=============================================//
-// -- Child rows
-//=============================================//
-var tableChildRows = $(".show-child-rows").DataTable({
-  ajax: "../../dist/js/pages/datatable/data.json",
-  columns: [
-    {
-      className: "details-control",
-      orderable: false,
-      data: null,
-      defaultContent: "",
-    },
-    { data: "name" },
-    { data: "position" },
-    { data: "office" },
-    { data: "salary" },
-  ],
-  order: [[1, "asc"]],
-});
-
-//=============================================//
-// Add event listener for opening and closing details
-//=============================================//
-$(".show-child-rows tbody").on("click", "td.details-control", function () {
-  var tr = $(this).closest("tr");
-  var row = tableChildRows.row(tr);
-
-  if (row.child.isShown()) {
-    // This row is already open - close it
-    row.child.hide();
-    tr.removeClass("shown");
-  } else {
-    // Open this row
-    row.child(format(row.data())).show();
-    tr.addClass("shown");
-  }
-});
-
-//==================================================//
-//          Row selection (multiple rows)           //
-//==================================================//
-var table1 = $("#row_select").DataTable();
-
-$("#row_select tbody").on("click", "tr", function () {
-  $(this).toggleClass("selected");
-});
-
-$("#button").click(function () {
-  alert(table1.rows(".selected").data().length + " row(s) selected");
-});
-
-//==================================================//
-//              Form Inputs                         //
-//==================================================//
-
-var table2 = $("#form_inputs").DataTable();
-
-$(".inputs-submit").click(function () {
-  var data = table2.$("input, select").serialize();
-  alert(
-    "The following data would have been submitted to the server: \n\n" +
-      data.substr(0, 120) +
-      "..."
-  );
-  return false;
-});
-
-//==================================================//
-//  Row selection and deletion (single row)         //
-//==================================================//
-var table3 = $("#sing_row_del").DataTable();
-
-$("#sing_row_del tbody").on("click", "tr", function () {
-  if ($(this).hasClass("selected")) {
-    $(this).removeClass("selected");
-  } else {
-    table3.$("tr.selected").removeClass("selected");
-    $(this).addClass("selected");
-  }
-});
-
-$("#delete-row").click(function () {
-  table3.row(".selected").remove().draw(false);
-});

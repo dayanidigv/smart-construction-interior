@@ -32,18 +32,20 @@ class CustomerController extends Controller
             $pageData->Customers =  $user->customers()->get();
         }else if ($title == "List all Customers"){
             
-            $customers = Customers::all(); 
+            $customers = Customers::withTrashed()->orderByDesc('id')->get(); 
             $customersWithUserDetails = [];
             
             foreach ($customers as $customer) {
                 $user = User::find($customer->user_id);
             
+    
                 if ($user) {
                     $customersWithUserDetails[] = [
                         "id" => $customer->id, 
                         'customer_name' => $customer->name, 
                         'username' => $user->name,
                         'userrole' => $user->role,
+                        'deleted_at' => $customer->deleted_at,
                     ];
                 }
             }
@@ -68,9 +70,10 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'nullable|string|email|unique:customers,email|max:255',
-            'phone' => 'nullable|min:10|max:15',
-            'address' => 'nullable|string|max:250|max:250',
+            'phone' => 'required|numeric|digits:10|unique:customers,phone',
+            'address' => 'required|string|max:250',
         ]);
+        
 
         if ($validator->fails()) {
             if ($request->input('returnType') === 'json') {
@@ -100,7 +103,7 @@ class CustomerController extends Controller
                 ], 200);
             }
 
-            return back()->with('message', 'Customer created successfully.');
+            return redirect()->back()->with('message', 'Customer created successfully.');
         } catch (Exception $e) {
             if ($request->input('returnType') === 'json') {
                 return response()->json([
@@ -117,38 +120,43 @@ class CustomerController extends Controller
                 'source' => 'create_customer',
                 'extra_info' => json_encode(['user_agent' => $request->header('User-Agent'),'error'=>$e])
             ]);
-            return back()->with('error', 'Failed to create customer. Please try again later.');
+            return redirect()->back()->with('error', 'Failed to create customer. Please try again later.')->withInput();
         }
     }
-
     public function update(Request $request, string $encodedId)
     {
         $decodedId = base64_decode($encodedId); 
+    
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
+            'name' => 'required|string|max:255',
             'email' => [
                 'nullable',
                 'string',
                 'email',
                 Rule::unique('customers')->ignore($decodedId),
             ],
-            'phone' => 'nullable|min:10',
-            'address' => 'nullable|string',
+            'phone' => [
+                'required',
+                'numeric',
+                'digits:10',
+                Rule::unique('customers')->ignore($decodedId),
+            ],
+            'address' => 'required|string|max:250',
         ]);
-
+    
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-
-        
+    
         try {
-            $customer = Customers::find($decodedId);
-            $customer->name = $request->name;
-            $customer->email = $request->email;
-            $customer->phone = $request->phone;
-            $customer->address = $request->address;
+            $customer = Customers::findOrFail($decodedId);
+            $customer->name = $request->input('name');
+            $customer->email = $request->input('email');
+            $customer->phone = $request->input('phone');
+            $customer->address = $request->input('address');
             $customer->save();
-            return back()->with('message', 'Customer updated successfully.');
+    
+            return redirect()->back()->with('message', 'Customer updated successfully.');
         } catch (Exception $e) {
             Log::create([
                 'message' => 'Failed to update customer.',
@@ -157,20 +165,51 @@ class CustomerController extends Controller
                 'ip_address' => $request->ip(),
                 'context' => 'web',
                 'source' => 'update_customer',
-                'extra_info' => json_encode(['user_agent' => $request->header('User-Agent'),'error'=>$e])
+                'extra_info' => json_encode([
+                    'user_agent' => $request->header('User-Agent'),
+                    'error' => $e->getMessage()
+                ])
             ]);
-            return back()->with('error', 'Failed to update customer. Please try again later.');
+    
+            return redirect()->back()->with('error', 'Failed to update customer. Please try again later.')->withInput();
+        }
+    }
+    public function destroy(string $encodedId) 
+    {
+        // Decode the encoded ID
+        $decodedId = base64_decode($encodedId); 
+        
+        try {
+            // Find the customer by the decoded ID
+            $customer = Customers::findOrFail($decodedId);
+            
+            // Soft delete the customer
+            $customer->delete();
+            
+            // Return a success message
+            return back()->with('message', 'Customer deleted successfully.');
+        } catch (ModelNotFoundException $e) {
+            // If the customer is not found, return a 404 error
+            return abort(404, 'Customer not found'); 
         }
     }
 
-    public function destroy(string $encodedId) 
+    public function restore(string $encodedId) 
     {
+        // Decode the encoded ID
         $decodedId = base64_decode($encodedId); 
+        
         try {
-            $customer = Customers::findOrFail($decodedId);
-            $customer->delete();
-            return  back()->with('message', 'Customer deteled successfully.');
+            // Find the customer by the decoded ID, including those that are soft deleted
+            $customer = Customers::withTrashed()->findOrFail($decodedId);
+            
+            // Restore the soft deleted customer
+            $customer->restore();
+            
+            // Return a success message
+            return back()->with('message', 'Customer restored successfully.');
         } catch (ModelNotFoundException $e) {
+            // If the customer is not found, return a 404 error
             return abort(404, 'Customer not found'); 
         }
     }
@@ -241,7 +280,7 @@ class CustomerController extends Controller
     {
         $decodedId = base64_decode($encodedId); 
         try {
-            $customer = User::find(Auth::id())->customers()->findOrFail($decodedId);
+            $customer = Customers::findOrFail($decodedId);
             $data = $this->getUserData('Customer', 'Edit Customer', $customer);
             return view('admin.customer.edit', $data);
         } catch (ModelNotFoundException $e) {
@@ -255,7 +294,6 @@ class CustomerController extends Controller
         $data = $this->getUserData('Customer', 'List all Customers');
         return view('admin.customer.list-all', $data);
     }
-
     
     public function admin_view_all(string $encodedId) 
     {

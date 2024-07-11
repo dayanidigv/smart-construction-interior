@@ -64,4 +64,16 @@ class QuantityUnitsController extends Controller
             return abort(404, 'Quantity unit not found'); 
         }
     }
+    
+    public function restore(string $encodedId) 
+    {
+        $decodedId = base64_decode($encodedId); 
+        try {
+            $quantityUnits = QuantityUnits::withTrashed()->find($decodedId);
+            $quantityUnits->restore();
+            return  redirect()->back()->with('message', 'Quantity unit restored successfully');
+        } catch (ModelNotFoundException $e) {
+            return abort(404, 'Quantity unit not found'); 
+        }
+    }
 }

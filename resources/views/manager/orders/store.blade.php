@@ -312,7 +312,7 @@
 
                                         <div class="col-md-12 mb-3">
                                             <div class="form-floating">
-                                                <input type="text" name="phone" id="phone" value="{{old('phone')}}" class="form-control"  placeholder="Enter customer Phone no." required/>
+                                                <input type="number" name="phone" id="phone" value="{{old('phone')}}" class="form-control"  placeholder="Enter customer Phone no." required/>
                                                 <label for="phone"> Phone no. *</label>
                                             </div>
                                         </div>

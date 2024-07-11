@@ -49,7 +49,7 @@
                                 <p class="mb-0 fw-normal fs-4">{{ \Carbon\Carbon::parse($pageData->reminders[$i]->reminder_time)->format('h:i A \o\n jS F Y') }}</p>
                             </td>
                             <td>
-                                <p class="mb-0 fw-normal fs-4">{{ $pageData->reminders[$i]->priority }}</p>
+                                <p class="mb-0 fw-normal fs-4">{{ $pageData->Reminders[$i]->priority ==1 ?  "Red" :  ($pageData->Reminders[$i]->priority ==2 ? "Yellow" : "green") }}</p>
                             </td>
                             <td>
                                 <p class="mb-0 fw-normal fs-4">{{ \Carbon\Carbon::parse($pageData->reminders[$i]->created_at)->diffForHumans() }}</p>

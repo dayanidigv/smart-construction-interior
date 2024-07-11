@@ -4,11 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Orders extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
+    
+    protected $dates = ['deleted_at'];
+    
     protected $table = 'orders';
 
     protected $fillable = [
@@ -37,21 +41,26 @@ class Orders extends Model
         return $this->hasMany(Schedule::class, 'order_id', 'id');
     }
     
+    public function reminder()
+    {
+        return $this->hasMany(Reminders::class, 'order_id', 'id');
+    }
+    
     public function followupReminders()
     {
         return $this->hasMany(Reminders::class, 'order_id', 'id');
     }
 
     public function user(){
-        return $this->belongsTo(User::class,"user_id");
+        return $this->belongsTo(User::class,"user_id")->withTrashed();
     }
 
     public function creator(){
-        return $this->belongsTo(User::class,"creator_id");
+        return $this->belongsTo(User::class,"creator_id")->withTrashed();
     }
 
     public function Customer(){
-        return $this->belongsTo(Customers::class,"customer_id");
+        return $this->belongsTo(Customers::class,"customer_id")->withTrashed();
     }
 
     public function invoice()

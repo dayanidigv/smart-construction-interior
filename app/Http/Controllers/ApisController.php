@@ -12,6 +12,10 @@ use Illuminate\Http\Request;
 
 class ApisController extends Controller
 {
+
+    protected function getRequestParam($key, $default = null) {
+        return request()->input($key, $default);
+    }
     public function index(string $action, string $encodedUserID, string $name, string $searchTerm)
     {
 
@@ -136,9 +140,13 @@ class ApisController extends Controller
 
             // Search top-level categories by name
             case 'categories':
-                $returnData = Categories::whereNull('parent_id')
-                    ->where('name', 'LIKE', '%' . $searchTerm . '%')
-                    ->get();
+                if($searchTerm == "-"){
+                    $returnData = Categories::whereNull('parent_id')->get();
+                }else{
+                    $returnData = Categories::whereNull('parent_id')
+                        ->where('name', 'LIKE', '%' . $searchTerm . '%')
+                        ->get();
+                }
                 break;
 
             // Search Labor categories by name
@@ -149,26 +157,27 @@ class ApisController extends Controller
 
             // Search subcategories, possibly filtered by parent category
             case 'subcategories':
+                $query = Categories::query();
                 $categoryParam = request()->input('category');
+                $categoryIDParam = request()->input('categoryID');
                 if ($categoryParam) {
-                    $category = Categories::where('name', 'LIKE', '%' . $categoryParam . '%')
+                    $parentCategory = Categories::where('name', 'LIKE', '%' . $categoryParam . '%')
                         ->whereNull('parent_id')
                         ->first();
-
-                    if ($category) {
-                        $returnData = Categories::where('parent_id', $category->id)
-                            ->where('name', 'LIKE', '%' . $searchTerm . '%')
-                            ->get();
+                    if ($parentCategory) {
+                        $query->where('parent_id', $parentCategory->id);
                     } else {
-                        $returnData = Categories::whereNotNull('parent_id')
-                            ->where('name', 'LIKE', '%' . $searchTerm . '%')
-                            ->get();
+                        $query->whereNotNull('parent_id');
                     }
+                } else if ($categoryIDParam) {
+                    $query->where('parent_id', $categoryIDParam);
                 } else {
-                    $returnData = Categories::whereNotNull('parent_id')
-                        ->where('name', 'LIKE', '%' . $searchTerm . '%')
-                        ->get();
+                    $query->whereNotNull('parent_id');
                 }
+                if ($searchTerm != "-") {
+                    $query->where('name', 'LIKE', '%' . $searchTerm . '%');
+                }
+                $returnData = $query->get();
                 break;
 
             // Search category keys by key name
@@ -179,25 +188,41 @@ class ApisController extends Controller
 
             // Search designs with multiple filters
             case 'designs':
-                $categoryParam = request()->input('category');
-                $subcategoryParam = request()->input('subcategory');
-                $searchKeyParam = request()->input('searchKey');
+                $categoryParam = $this->getRequestParam('category', '');
+                $categoryIDParam = $this->getRequestParam('categoryID', 0);
+                $subcategoryParam = $this->getRequestParam('subcategory', '');
+                $subcategoryIDParam = $this->getRequestParam('subcategoryID', 0);
+                $searchKeyParam = $this->getRequestParam('searchKey', '');
 
-                // Initialize the query for designs
+                // Ensure numeric parameters are cast to integers
+                $categoryIDParam = intval($categoryIDParam);
+                $subcategoryIDParam = intval($subcategoryIDParam);
+
                 $designsQuery = Designs::query();
-
-                // Retrieve all category keys
                 $categoryKeys = CategoryKey::all();
 
-                // Filter category keys based on subcategory name
-                $filteredCategoryKeys = $categoryKeys->filter(function ($categoryKey) use ($subcategoryParam) {
-                    return stripos($subcategoryParam, $categoryKey->key) !== false;
-                });
+                // Handle subcategory ID and filter category keys based on subcategory name
+                $filteredCategoryKeys = [];
+                if ($subcategoryIDParam) {
+                    $subcategory = Categories::find($subcategoryIDParam);
+                    if ($subcategory) {
+                        $subcategoryName = $subcategory->name;
+                        $filteredCategoryKeys = $categoryKeys->filter(function ($categoryKey) use ($subcategoryName) {
+                            return stripos($subcategoryName, $categoryKey->key) !== false;
+                        });
+                    }
+                } else {
+                    $filteredCategoryKeys = $categoryKeys->filter(function ($categoryKey) use ($subcategoryParam) {
+                        return stripos($subcategoryParam, $categoryKey->key) !== false;
+                    });
+                }
 
                 // Get the first matching category key ID or null if none found
-                $categoryKey_id = $filteredCategoryKeys->first()->id ?? null;
+                $categoryKeyId = $filteredCategoryKeys->first()->id ?? null;    
 
-                if (!$categoryKey_id) {
+
+                // Filter the designs query based on input parameters
+                if (!$categoryKeyId) {
                     if ($categoryParam) {
                         // Filter by parent category
                         $category = Categories::where('name', 'LIKE', '%' . $categoryParam . '%')
@@ -222,13 +247,13 @@ class ApisController extends Controller
                         }
                     }
 
-                    if ($searchKeyParam !== 'undefined') {
+                    if ($searchKeyParam !== 'undefined' && $searchKeyParam !== '') {
                         // Filter by design name
                         $designsQuery->where('name', 'LIKE', '%' . $searchKeyParam . '%');
                     }
                 } else {
                     // Filter by category key ID
-                    $designsQuery->where('category_key_id', $categoryKey_id);
+                    $designsQuery->where('category_key_id', $categoryKeyId);
                 }
 
                 // Retrieve data based on search term

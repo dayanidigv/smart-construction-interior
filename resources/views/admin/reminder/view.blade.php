@@ -42,9 +42,10 @@
               <div class="form-floating">
                 <select class="form-control " name="priority" id="priority" disabled>
                   <option value="">-- Select Priority --</option>
-                  <option value="low" @if($pageData->priority == 3) selected @endif>Low</option>
-                  <option value="medium" @if($pageData->priority == 2) selected @endif>Medium</option>
-                  <option value="high" @if($pageData->priority == 1) selected @endif>High</option>
+                  <option value="low" @if($pageData->priority == 3) selected @endif>Green</option>
+
+                  <option value="medium" @if($pageData->priority == 2) selected @endif>Yellow</option>
+                  <option value="high" @if($pageData->priority == 1) selected @endif>Red</option>
                 </select>
                 <label for="priority">Priority*</label>
               </div>

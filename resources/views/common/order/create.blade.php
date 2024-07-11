@@ -1,5 +1,5 @@
-@extends('layout.admin-app')
-@section('adminContent')
+@extends($role == 'admin' ? 'layout.admin-app' : 'layout.manager-app')
+@section($role == 'admin' ? 'adminContent' : 'managerContent')
 @use('Carbon\Carbon')
 @push('style')
 <link rel="stylesheet" type="text/css" href="{{ asset('css/select2.min.css') }}">
@@ -108,26 +108,29 @@ hr{
                             name="order_ending_date" id="order_ending_date" value="{{old('order_ending_date')}}" />
                     </div>
 
-                    <!-- Manage Access -->
-                    <div class="col-md-4 col-lg-3 col-12 mb-4">
-                        <label for="manage_access">Order Manage Access *</label>
-                        <select class="form-select mr-sm-2 @error('manage_access') is-invalid @enderror"
-                            id="manage_access" name="manage_access" required>
-                            <option value="only-for-me" @if(old('manage_access')=="only-for-me" ) selected @endif>Only
-                                For me</option>
-                            @if ($pageData->managers->count() != 0)
-                            @foreach ($pageData->managers as $manager)
-                            <option value="{{$manager->id}}" @if(old('manage_access')==$manager->id) selected
-                                @endif>{{$manager->name}}</option>
-                            @endforeach
-                            @endif
-                        </select>
-                        @error('manage_access')
-                        <div class="invalid-feedback">
-                            <p class="error">{{ $message }}</p>
+                    @if ($role == 'admin' )
+                        <!-- Manage Access -->
+                        <div class="col-md-4 col-lg-3 col-12 mb-4">
+                            <label for="manage_access">Order Manage Access *</label>
+                            <select class="form-select mr-sm-2 @error('manage_access') is-invalid @enderror"
+                                id="manage_access" name="manage_access" required>
+                                <option value="only-for-me" @if(old('manage_access')=="only-for-me" ) selected @endif>Only
+                                    For me</option>
+                                @if ($pageData->managers->count() != 0)
+                                @foreach ($pageData->managers as $manager)
+                                <option value="{{$manager->id}}" @if(old('manage_access')==$manager->id) selected
+                                    @endif>{{$manager->name}}</option>
+                                @endforeach
+                                @endif
+                            </select>
+                            @error('manage_access')
+                            <div class="invalid-feedback">
+                                <p class="error">{{ $message }}</p>
+                            </div>
+                            @enderror
                         </div>
-                        @enderror
-                    </div>
+                    @endif
+                    
 
                     <!-- Order Items -->
                     <div class="row my-1">

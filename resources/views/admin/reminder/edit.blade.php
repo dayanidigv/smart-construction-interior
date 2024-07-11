@@ -1,7 +1,7 @@
 @extends('layout.admin-app')
 @section('adminContent')
 
-
+@use('Carbon\Carbon')
 @push('style')
 
 @endpush
@@ -43,7 +43,7 @@
 
             <div class="col-md-6 mb-3">
               <div class="form-floating">
-                <input type="datetime-local" value="{{old('reminder_time',$pageData->reminder_time)}}" name="reminder_time" id="reminder_time" class="form-control @error('reminder_time') is-invalid @enderror" required/>
+                <input type="datetime-local" value="{{old('reminder_time',Carbon::parse($pageData->reminder_time)->format('Y-m-d\TH:i'))}}" name="reminder_time" id="reminder_time" class="form-control @error('reminder_time') is-invalid @enderror" required/>
                 <label for="reminder_time">Reminder Time*</label>
                 @error('reminder_time')
                   <div class="invalid-feedback">
@@ -57,9 +57,9 @@
               <div class="form-floating">
                 <select class="form-control @error('priority') is-invalid @enderror" name="priority" id="priority" required>
                   <option value="">-- Select Priority --</option>
-                  <option value="3" @if($pageData->priority == 3) selected @endif>Low</option>
-                  <option value="2" @if($pageData->priority == 2) selected @endif>Medium</option>
-                  <option value="1" @if($pageData->priority == 1) selected @endif>High</option>
+                  <option value="3" @if($pageData->priority == 3) selected @endif>Green</option>
+                  <option value="2" @if($pageData->priority == 2) selected @endif>Yellow</option>
+                  <option value="1" @if($pageData->priority == 1) selected @endif>Red</option>
                 </select>
                 <label for="priority">Priority*</label>
                 @error('priority')

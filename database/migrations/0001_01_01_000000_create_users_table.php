@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->rememberToken();
+            $table->softDeletes(); 
             $table->timestamps();
         });
 
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
+            $table->softDeletes(); 
         });
 
         Schema::create('managers', function (Blueprint $table) {
@@ -35,6 +37,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone_number')->nullable();
             $table->enum('role', ['manager'])->default('manager');
+            $table->softDeletes(); 
             $table->timestamps();
         });
 
@@ -43,6 +46,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id'); 
             $table->string('state');
             $table->string('city');
+            $table->softDeletes(); 
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
@@ -56,6 +60,7 @@ return new class extends Migration
             $table->string('city');
             $table->string('state');
             $table->string('postal_code');
+            $table->softDeletes(); 
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
@@ -75,6 +80,7 @@ return new class extends Migration
             $table->enum('visibility', ['public', 'private', 'admin', 'manager'])->default('private');
             $table->boolean('is_editable')->default(true);
             $table->unsignedBigInteger('updater_admin_or_manager_id')->nullable(); 
+            $table->softDeletes(); 
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
@@ -92,6 +98,7 @@ return new class extends Migration
             $table->string('link')->nullable();
             $table->string('icon')->nullable();
             $table->string('attachment')->nullable();
+            $table->softDeletes(); 
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
@@ -110,6 +117,7 @@ return new class extends Migration
             $table->string('category')->nullable();
             $table->string('repeat')->nullable();
             $table->text('notes')->nullable();
+            $table->softDeletes(); 
             $table->enum('visibility', ['public', 'private', 'admin', 'manager'])->default('private');
             $table->timestamps();
 
@@ -124,6 +132,7 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
+            $table->softDeletes(); 
         });
 
         Schema::create('roles', function (Blueprint $table) {
@@ -131,6 +140,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('permissions'); 
             $table->timestamps();
+            $table->softDeletes(); 
         });
 
         Schema::create('customers', function (Blueprint $table) {
@@ -140,6 +150,7 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
+            $table->softDeletes(); 
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();

@@ -55,13 +55,31 @@
             <p class="mb-0 fw-normal fs-4">{{$i + 1}}</p>
           </td>
           <td>
-            <p class="mb-0 fw-normal fs-4">#ODR-{{ str_pad($pageData->Orders[$i]->id ,5,'0',STR_PAD_LEFT) }}</p>
+            <p class="mb-0 fw-normal fs-4">#ODR-{{ str_pad($pageData->Orders[$i]->id ,5,'0',STR_PAD_LEFT) }} </p>
+    
+            @php
+                $order = $pageData->Orders[$i];
+                $status = 'Pending';
+                $statusClass = 'bg-light-warning text-warning';
+
+                if ($order->is_set_approved == 1) {
+                  $status = 'Active';
+                  $statusClass = 'bg-light-success text-success';
+                  if ($order->is_approved == 0) {
+                    $status = 'Requested';
+                    $statusClass = 'bg-light-info text-info';
+                  }
+                } 
+            @endphp
+
+            <span class="mb-1 badge font-medium {{ $statusClass }}">{{ $status }}</span>
           </td>
           <td>
             <p class="mb-0 fw-normal fs-4">{{ $pageData->Orders[$i]->name }}</p>
           </td>
           <td>
-            <p class="mb-0 fw-normal fs-4">@if ($pageData->Orders[$i]->creator_id == $userId) You @if ( $pageData->Orders[$i]->creator_id != $pageData->Orders[$i]->user_id ) granted access to {{ $pageData->Orders[$i]->user()->first()->name }}. @endif @else {{ $pageData->Orders[$i]->user()->first()->name }}@endif </p>
+            <!-- <p class="mb-0 fw-normal fs-4">@if ($pageData->Orders[$i]->creator_id == $userId) You @if ( $pageData->Orders[$i]->creator_id != $pageData->Orders[$i]->user_id ) granted access to {{ $pageData->Orders[$i]->user()->first()->name }}. @endif @else {{ $pageData->Orders[$i]->user()->first()->name }}@endif </p> -->
+            <p class="mb-0 fw-normal fs-4">@if ($pageData->Orders[$i]->creator_id == $userId) You @else Admin give access to you. @endif </p>
           </td>
           <td>
             <p class="mb-0 fw-normal fs-4">

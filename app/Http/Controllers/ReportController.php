@@ -27,6 +27,7 @@ class ReportController extends Controller
         $dateFrom = $request->query('date_from');
         $dateTo = $request->query('date_to');
         $type = $request->query('type');
+        $location = $request->query('location');
 
         $query = Orders::query();
 
@@ -55,6 +56,11 @@ class ReportController extends Controller
             if ($dateTo) {
                 $dateToFormatted = Carbon::createFromFormat('Y-m-d', $dateTo)->format('Y-m-d');
                 $query->whereDate('created_at', '<=', $dateToFormatted);
+            }
+            
+            // Apply location filter
+            if ($location) {
+                $query->where('location', 'like', '%' . $location . '%');
             }
 
             // Apply type filter
@@ -105,6 +111,7 @@ class ReportController extends Controller
             $dateFrom = $request->query('date_from');
             $dateTo = $request->query('date_to');
             $type = $request->query('type');
+
     
             $query = Orders::query();
 
@@ -144,6 +151,7 @@ class ReportController extends Controller
                 return [
                     'order_id' => $order->id,
                     'ceartor_name' => $order->user->name,
+                    'location' => $order->location,
                     'customer_name' => $order->customer->name,
                     'status' => $order->status,
                     'type' => $order->type,
@@ -189,6 +197,8 @@ class ReportController extends Controller
             $dateFrom = $request->query('date_from');
             $dateTo = $request->query('date_to');
             $type = $request->query('type');
+            $location = $request->query('location');
+
     
             $query = Orders::query()->where('user_id', Auth::user()->id);
     
@@ -211,6 +221,11 @@ class ReportController extends Controller
                 if ($dateTo) {
                     $dateToFormatted = Carbon::createFromFormat('Y-m-d', $dateTo)->format('Y-m-d');
                     $query->whereDate('created_at', '<=', $dateToFormatted);
+                }
+            
+                // Apply location filter
+                if ($location) {
+                    $query->where('location', 'like', '%' . $location . '%');
                 }
     
                 // Apply type filter
@@ -262,6 +277,8 @@ class ReportController extends Controller
             $dateFrom = $request->query('date_from');
             $dateTo = $request->query('date_to');
             $type = $request->query('type');
+            $location = $request->query('location');
+
     
             $query = Orders::query()->where('user_id',Auth::user()->id);
     
@@ -285,7 +302,12 @@ class ReportController extends Controller
                     $dateToFormatted = Carbon::createFromFormat('Y-m-d', $dateTo)->format('Y-m-d');
                     $query->whereDate('created_at', '<=', $dateToFormatted);
                 }
-    
+                
+                // Apply location filter
+                if ($location) {
+                    $query->where('location', 'like', '%' . $location . '%');
+                }
+
                 // Apply type filter
                 if ($type) {
                     $query->where('type', $type);

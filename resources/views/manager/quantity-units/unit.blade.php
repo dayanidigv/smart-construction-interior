@@ -105,7 +105,10 @@
 @push('script')
 <script>
     function confirmDelete() {
-        return confirm('Are you sure you want to delete this customer?');
+        return confirm('Are you sure you want to delete this Unit?');
+    }
+    function confirmRestore() {
+        return confirm('Are you sure you want to restore this Unit?');
     }
 </script>
 

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->comment('e.g., SQ.FT, EACH');
             $table->text('description')->nullable();
+            $table->softDeletes(); 
             $table->timestamps();
         });
 
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->enum('type', ['Interior', 'Exterior', 'Both'])->default('Interior');
             $table->unsignedBigInteger('unit_id')->index();
             $table->decimal('rate_per', 10, 2);
+            $table->softDeletes(); 
             $table->timestamps();
 
             $table->foreign('unit_id')->references('id')->on('quantity_units')->cascadeOnDelete();
@@ -40,6 +42,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('parent_id')->index()->nullable();
             $table->enum('type', ['Interior', 'Exterior', 'Both'])->default('Interior');
+            $table->softDeletes(); 
             $table->timestamps();
 
             $table->foreign('parent_id')->references('id')->on('categories')->cascadeOnDelete();
@@ -60,6 +63,7 @@ return new class extends Migration
             $table->timestamp('end_date')->nullable();
             $table->boolean('is_set_approved')->default(false);
             $table->boolean('is_approved')->default(false);
+            $table->softDeletes(); 
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('customer_id')->references('id')->on('customers');
@@ -77,6 +81,7 @@ return new class extends Migration
             $table->decimal('total', 10, 2);
             $table->decimal('sub_total', 10, 2);
             $table->string('dimension')->nullable();
+            $table->softDeletes(); 
             $table->timestamps();
 
             $table->foreign('order_id')->references('id')->on('orders')->cascadeOnDelete();
@@ -95,12 +100,13 @@ return new class extends Migration
             $table->decimal('total_amount', 10, 2);
             $table->decimal('advance_pay_amount', 10, 2);
             $table->decimal('balance_amount', 10, 2);
-            $table->enum('payment_status', ['pending', 'paid', 'partially_paid', 'late', 'overdue'])->default('pending');
+            $table->enum('payment_status', ['not confirmed', 'pending', 'paid', 'partially_paid', 'late', 'overdue'])->default('not confirmed');
             $table->enum('payment_method', ['cash', 'credit_card', 'bank_transfer', 'paypal', 'UPI', 'other'])->nullable();
             $table->text('payment_history')->nullable();
             $table->text('terms_and_conditions')->nullable();
             $table->timestamp('created_date')->nullable();
             $table->timestamp('due_date')->nullable();
+            $table->softDeletes(); 
             $table->timestamps();
 
             $table->foreign('order_id')->references('id')->on('orders')->cascadeOnDelete();

@@ -49,7 +49,11 @@
 @endpush
 
 <form action="{{route('manager.download.report')}}">
+<div class="col-12 d-flex justify-content-between">
 <h3>Report</h3>
+
+<button type="submit" class="btn btn-primary border d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Download Report"><span class="th-export fs-4 fw-bold mx-2"></span>Export</button>
+</div>
 <div class="nav nav-pills p-3 mb-3 gap-3 rounded align-items-center card flex-row">
 
 
@@ -88,16 +92,17 @@
     
 
         <label for="date_from">Date From</label>
-        <input type="date" value="{{old('date_from')}}" class="btn btn-light-primary border d-flex align-items-center" id="date_from" name="date_from" onchange="fetchData()">
+        <input type="date" value="{{old('date_from')}}" class="btn btn-light-primary border d-flex align-items-center" id="date_from" name="date_from" placeholder="-- Select" onchange="fetchData()">
     </div>
     
     <div class="nav-item">
         <label for="date_to">Date To</label>
-        <input type="date" value="{{old('date_to')}}"class="btn btn-light-primary border d-flex align-items-center" id="date_to" name="date_to" onchange="fetchData()">
+        <input type="date" value="{{old('date_to')}}"class="btn btn-light-primary border d-flex align-items-center" id="date_to" name="date_to" placeholder="-- Select" onchange="fetchData()">
     </div>
     
-    <div class="nav-item  ms-auto">
-        <button type="submit" class="btn btn-primary border d-flex align-items-center" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Download Report"><span class="th-download fs-4 fw-bold px-1"></span> Report</button>
+    <div class="nav-item">
+        <label for="location">Location</label>
+        <input type="text" value="{{old('location')}}"class="btn btn-light-primary border d-flex align-items-center" id="location" name="location" placeholder="Search">
     </div>
 
 </div>
@@ -151,12 +156,16 @@ var loadingScreen = document.getElementById('report-loading-screen');
                 </thead>
                 `;
                 table += '<tbody>';
+
+                var filterValue = $('#location').val().toLowerCase();
                 
                 $.each(response, function(index, order) {
-                    table += '<tr>';
+                    var displayStyle = (filterValue !== "" && !order.location.toLowerCase().includes(filterValue)) ? 'display:none;' : '';
+                    table += `<tr class="reportTableRow" style="${displayStyle}">`;
                     table += '<td scope="row">' + (index + 1) + '</td>';
                     table += '<td>' + order.order_id + '</td>';
                     table += '<td>' + order.customer_name + '</td>';
+                    table += '<td class="location">' + order.location + '</td>';
                     table += '<td>' + order.type + '</td>';
                     table += '<td>' + order.status + '</td>';
                     table += '<td>' + order.created_at + '</td>';
@@ -178,5 +187,40 @@ var loadingScreen = document.getElementById('report-loading-screen');
 $(document).ready(()=>{
     fetchData();
 })
+
+$('#location').on('input', function() {
+    var filterValue = this.value.toLowerCase();
+    let tableRows = document.querySelectorAll('.reportTableRow');
+    tableRows.forEach(row => {
+        var rowLocation = row.querySelector('.location').textContent.toLowerCase();
+        if (!rowLocation.includes(filterValue)) {
+            row.style.display = 'none';
+        } else {
+            row.style.display = '';
+        }
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // For Order Date picker
+    let orderStartDatePicker = $("#date_from").flatpickr({
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        onChange: function(selectedDates, dateStr, instance) {
+            if (selectedDates.length > 0) {
+                let minDate = selectedDates[0];
+                OrderEndDatePicker.set('minDate',
+                    minDate);
+            }
+        }
+    });
+    let OrderEndDatePicker = $("#date_to").flatpickr({
+        dateFormat: "Y-m-d",
+        allowInput: true
+    });
+
+});
 </script>
 @endpush

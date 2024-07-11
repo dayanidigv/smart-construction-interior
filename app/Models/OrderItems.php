@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderItems extends Model
 {
-    use HasFactory;    
+    use HasFactory, SoftDeletes;    
+
+    
+    protected $dates = ['deleted_at'];
+    
     protected $table = 'order_items';
 
     protected $fillable = [
@@ -31,11 +36,11 @@ class OrderItems extends Model
     }
 
     public function catagories(){
-        return $this->belongsTo(Categories::class, 'category_id');
+        return $this->belongsTo(Categories::class, 'category_id')->withTrashed();
     }
 
     public function design(){
-        return $this->belongsTo(Designs::class, 'design_id');
+        return $this->belongsTo(Designs::class, 'design_id')->withTrashed();
     }
 
 

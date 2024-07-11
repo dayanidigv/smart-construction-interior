@@ -19,7 +19,7 @@ class DesignsTableSeeder extends Seeder
                 'name' => 'Wooden Modern Modular Cupboard, Base Mounted',
                 'category_id' => 10,
                 'category_key_id' => 1,
-                'type' => 'Exterior', 
+                'type' => 'Interior', 
                 'image_url' => '/images/designs/modular-kitchen-cupboard.webp', 
                 'unit_id'=> 1
             ],
@@ -28,7 +28,7 @@ class DesignsTableSeeder extends Seeder
                 'name' => 'Modern Wooden PVC Cupboard',
                 'category_id' => 10,
                 'category_key_id' => 1,
-                'type' => 'Exterior', 
+                'type' => 'Interior', 
                 'image_url' => '/images/designs/pvc-kitchen-cupboard.webp', 
                 'unit_id'=> 1
             ],
@@ -46,7 +46,7 @@ class DesignsTableSeeder extends Seeder
                 'name' => 'Wooden 3 Doors PVC Loft Cover, With Locker',
                 'category_id' => 22,
                 'category_key_id' => 3,
-                'type' => 'Exterior', 
+                'type' => 'Interior', 
                 'image_url' => '/images/designs/bedroom-loft-door.webp', 
                 'unit_id'=> 1
             ],
@@ -64,7 +64,7 @@ class DesignsTableSeeder extends Seeder
                 'name' => 'Wooden 2 Doors Pvc Loft Covering, With Locker',
                 'category_id' => 22,
                 'category_key_id' => 3,
-                'type' => 'Exterior', 
+                'type' => 'Interior', 
                 'image_url' => '/images/designs/pvc-l-shape-loft-covering.webp', 
                 'unit_id'=> 1
             ],
@@ -82,7 +82,7 @@ class DesignsTableSeeder extends Seeder
                 'name' => 'Aluminum Cupboards',
                 'category_id' => 10,
                 'category_key_id' => 1,
-                'type' => 'Exterior', 
+                'type' => 'Interior', 
                 'image_url' => '/images/designs/aluminium-kitchen-cupboards.webp', 
                 'unit_id'=> 1
             ],
