@@ -238,7 +238,7 @@ class CategoryController extends Controller
                     'message' => 'Failed to get category: ' . $e->getMessage(),
                 ], 500);
         }
-    }
+    } 
 
     public function update($encodedId, Request $request)
     {
