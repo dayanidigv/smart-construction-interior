@@ -130,7 +130,7 @@ return new class extends Migration
             $table->enum('payment_status', ['not confirmed', 'pending', 'paid', 'partially_paid', 'late', 'overdue'])->default('not confirmed');
             $table->enum('payment_method', ['cash', 'credit_card', 'bank_transfer', 'paypal', 'UPI', 'other'])->nullable();
             $table->text('payment_history')->nullable();
-            $table->text('terms_and_conditions')->nullable()->default('1. In case of changes in design rate will be changed\n2. Extra works cause extra charges.');
+            $table->text('terms_and_conditions')->nullable();
             $table->timestamp('created_date')->nullable();
             $table->timestamp('due_date')->nullable();
             $table->softDeletes();
