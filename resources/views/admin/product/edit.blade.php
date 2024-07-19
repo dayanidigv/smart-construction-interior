@@ -38,7 +38,7 @@
 
             <div class="col-md-6 mb-3">
               <div class="form-floating">
-                <input type="email" name="description" id="description" value="{{old('description',$pageData->product->description)}}" class="form-control @error('description') is-invalid @enderror" placeholder="name@example.com" />
+                <input type="text" name="description" id="description" value="{{old('description',$pageData->product->description)}}" class="form-control @error('description') is-invalid @enderror" placeholder="name@example.com" />
                 <label for="description"> Description</label>
                 @error('description')
                   <div class="invalid-feedback">

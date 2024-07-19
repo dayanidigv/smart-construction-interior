@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Categories;
 use App\Models\CategoryKey;
+use App\Models\CustomerCategory;
 use App\Models\Customers;
 use App\Models\Designs;
 use App\Models\LaborCategory;
 use App\Models\Products;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ApisController extends Controller
@@ -124,14 +126,14 @@ class ApisController extends Controller
 
         $decodedUserId = base64_decode($encodedUserID);
 
+        $user = User::find($decodedUserId);
+
         switch ($name) {
             
             // Search customers by various fields
             case 'customers':
-                $returnData = Customers::where('user_id', $decodedUserId)
-                    ->where(function ($query) use ($searchTerm) {
+                $returnData = Customers::where(function ($query) use ($searchTerm) {
                         $query->where('name', 'LIKE', '%' . $searchTerm . '%')
-                            ->orWhere('email', 'LIKE', '%' . $searchTerm . '%')
                             ->orWhere('phone', 'LIKE', '%' . $searchTerm . '%')
                             ->orWhere('address', 'LIKE', '%' . $searchTerm . '%');
                     })
@@ -147,6 +149,12 @@ class ApisController extends Controller
                         ->where('name', 'LIKE', '%' . $searchTerm . '%')
                         ->get();
                 }
+                break;
+
+            // Search customer categories by name
+            case 'customerCategories':
+                $returnData = CustomerCategory::where('name', 'LIKE', '%' . $searchTerm . '%')
+                    ->get();
                 break;
 
             // Search Labor categories by name

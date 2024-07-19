@@ -16,7 +16,7 @@ use stdClass;
 class CategoryController extends Controller
 {
     // Common method to get user data
-    private function getUserData(string $sectionName, string $title, object $pageData = new stdClass()): array
+    private function getUserData(string $menuTitle, $sectionName, string $title, object $pageData = new stdClass()): array
     {
         $user = User::find(Auth::id());
         $userName = $user ? $user->name : 'Guest';
@@ -29,6 +29,7 @@ class CategoryController extends Controller
        
         return [
             'title' => $title,
+            'menuTitle' => $menuTitle,
             'sectionName' => $sectionName,
             'userName' => $userName,
             'userId' => $userId,
@@ -57,7 +58,7 @@ class CategoryController extends Controller
         $pageData->category = $categorys;
         $pageData->role = $role;
 
-        $data = $this->getUserData('Settings', 'Category', $pageData); 
+        $data = $this->getUserData('Settings',null, 'Category', $pageData); 
         return view('common.category',$data);
     }
 

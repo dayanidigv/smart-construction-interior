@@ -141,7 +141,9 @@
                     @foreach($orderItems as $item)
                     <tr>
                         <td class="fw-semibold">
-                            <img src="data:image/png;base64,{{ $item['imageData'] }}" alt="" style="max-width: 100px;">
+                            @if ($item['imageData'])
+                                <img src="data:image/png;base64,{{ $item['imageData'] }}" alt="" style="max-width: 100px;">
+                            @endif
                         </td>
                         <td class="fw-semibold">
                         <b>{{ $item['category_name']  }}</b>
@@ -151,7 +153,7 @@
                             <p class="fs-3 pb-0 mb-0">{{ $item['dimension'] != null ? $item['dimension'] : 'N/A' }}</p>
                         </td>
                         <td class="text-center">
-                            <p class="fs-3 pb-0 mb-0"><span class="dejaVu">{{ $item['quantity'] }}</span>({{ $item['unit'] }})</p>
+                            <p class="fs-3 pb-0 mb-0"><span class="dejaVu">{{ $item['quantity'] }}</span>({{ $item['unit'] ? $item['unit'] : "SQ.FT" }})</p>
                         </td>
                     </tr>
                     @endforeach

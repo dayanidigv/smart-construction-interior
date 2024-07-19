@@ -14,39 +14,30 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('username')->unique();
             $table->string('role');
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->rememberToken();
-            $table->softDeletes(); 
+            $table->softDeletes();
             $table->timestamps();
-        });
-
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
-            $table->softDeletes(); 
         });
 
         Schema::create('managers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone_number')->nullable();
+            $table->string('phone_number')->unique();
             $table->enum('role', ['manager'])->default('manager');
-            $table->softDeletes(); 
+            $table->softDeletes();
             $table->timestamps();
         });
 
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id'); 
+            $table->unsignedBigInteger('user_id');
             $table->string('state');
             $table->string('city');
-            $table->softDeletes(); 
+            $table->softDeletes();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
@@ -60,11 +51,9 @@ return new class extends Migration
             $table->string('city');
             $table->string('state');
             $table->string('postal_code');
-            $table->softDeletes(); 
+            $table->softDeletes();
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-
         });
 
         Schema::create('schedule', function (Blueprint $table) {
@@ -73,16 +62,16 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('order_id')->nullable();
-            $table->timestamp('start');
+            $table->unsignedBigInteger('enquiry_id')->index()->nullable();
+            $table->timestamp('start')->nullable();
             $table->timestamp('end')->nullable();
             $table->string('level')->nullable();
             $table->enum('status', ['scheduled', 'canceled'])->default('scheduled');
             $table->enum('visibility', ['public', 'private', 'admin', 'manager'])->default('private');
             $table->boolean('is_editable')->default(true);
-            $table->unsignedBigInteger('updater_admin_or_manager_id')->nullable(); 
-            $table->softDeletes(); 
+            $table->unsignedBigInteger('updater_admin_or_manager_id')->nullable();
+            $table->softDeletes();
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
 
@@ -98,31 +87,28 @@ return new class extends Migration
             $table->string('link')->nullable();
             $table->string('icon')->nullable();
             $table->string('attachment')->nullable();
-            $table->softDeletes(); 
+            $table->softDeletes();
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-
         });
 
         Schema::create('reminders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('enquiry_id')->index()->nullable();
             $table->unsignedBigInteger('order_id')->nullable();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->timestamp('reminder_time');
-            $table->boolean('is_completed')->default(false);  
-            $table->integer('priority')->nullable();          
+            $table->timestamp('reminder_time')->nullable();
+            $table->boolean('is_completed')->default(false);
+            $table->integer('priority')->nullable();
             $table->string('category')->nullable();
             $table->string('repeat')->nullable();
             $table->text('notes')->nullable();
-            $table->softDeletes(); 
             $table->enum('visibility', ['public', 'private', 'admin', 'manager'])->default('private');
+            $table->softDeletes();
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-
         });
 
         Schema::create('sessions', function (Blueprint $table) {
@@ -132,27 +118,24 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
-            $table->softDeletes(); 
         });
 
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('permissions'); 
+            $table->text('permissions');
+            $table->softDeletes();
             $table->timestamps();
-            $table->softDeletes(); 
         });
 
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->index();
             $table->string('name');
-            $table->string('email')->unique()->nullable();
-            $table->string('phone')->nullable();
+            $table->string('phone')->unique();
             $table->text('address')->nullable();
-            $table->softDeletes(); 
+            $table->softDeletes();
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
@@ -162,6 +145,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('customers');
         Schema::dropIfExists('roles');
         Schema::dropIfExists('sessions');
         Schema::dropIfExists('reminders');
@@ -170,9 +154,6 @@ return new class extends Migration
         Schema::dropIfExists('branch_addresses');
         Schema::dropIfExists('locations');
         Schema::dropIfExists('managers');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('customers');
         Schema::dropIfExists('users');
     }
-    
 };

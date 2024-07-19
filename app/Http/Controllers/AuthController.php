@@ -26,7 +26,7 @@ class AuthController extends Controller
     public function loginPost(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'username' => 'required|string',
             'password' => 'required',
         ]);
     
@@ -35,7 +35,7 @@ class AuthController extends Controller
         }
 
         // Attempt authentication
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
@@ -52,12 +52,12 @@ class AuthController extends Controller
         }
 
         // Authentication failed
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('username', $request->username)->first();
         if ($user) {
             // Incorrect password
             if (!Hash::check($request->password, $user->password)) {
                 Log::create([
-                    'message' => 'Failed login attempt with email: ' . $request->email . ' due to incorrect password.',
+                    'message' => 'Failed login attempt with username: ' . $request->username . ' due to incorrect password.',
                     'level' => 'warning',
                     'type' => 'login',
                     'ip_address' => $request->ip(),
@@ -70,9 +70,9 @@ class AuthController extends Controller
                 ])->withInput();
             }
         } else {
-            // Email not found
+            // username not found
             Log::create([
-                'message' => 'Failed login attempt with non-existent email: ' . $request->email,
+                'message' => 'Failed login attempt with non-existent username: ' . $request->username,
                 'level' => 'warning',
                 'type' => 'login',
                 'ip_address' => $request->ip(),
@@ -81,12 +81,12 @@ class AuthController extends Controller
                 'extra_info' => json_encode(['user_agent' => $request->header('User-Agent')])
             ]);
             return back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
+                'username' => 'The provided credentials do not match our records.',
             ])->withInput();
         }
 
         Log::create([
-            'message' => 'Failed login attempt with email: ' . $request->email,
+            'message' => 'Failed login attempt with username: ' . $request->username,
             'level' => 'warning',
             'type' => 'login',
             'ip_address' => $request->ip(),
@@ -97,7 +97,7 @@ class AuthController extends Controller
     
         // Authentication failed due to incorrect credentials
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'username' => 'The provided credentials do not match our records.',
         ])->withInput();
     }       
 }

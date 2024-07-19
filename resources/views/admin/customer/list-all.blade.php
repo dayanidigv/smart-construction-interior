@@ -8,7 +8,7 @@
 
 <div class="card w-100 position-relative overflow-hidden">
     <div class="px-4 py-3 border-bottom">
-        <h5 class="card-title fw-semibold mb-0 lh-sm">{{$title}}</h5>
+        <h5 class="card-title fw-semibold mb-0 lh-sm">List Customer</h5>
     </div>
     <div class="card-body p-4">
         <div class="table-responsive rounded-2 py-5 mb-4">
@@ -41,19 +41,20 @@
                     @for ($i = 0; $i < count($pageData->customers); $i++)
                         <tr>
                         <td>
-                                <p class="mb-0 fw-normal fs-4">{{$i+1}}</p>
+                        <input class="id" type="hidden" name="id[]" value="{{$pageData->customers[$i]['id']}}">
+                                <p class="mb-0 fw-normal fs-4" style="color: {{ $pageData->customers[$i]['deleted_at'] ? 'red' : 'inherit' }}">{{$i+1}}</p>
                             </td>
                             <td>
-                                <p class="mb-0 fw-normal fs-4">{{ $pageData->customers[$i]['customer_name']}}</p>
+                                <p class="mb-0 fw-normal fs-4" style="color: {{ $pageData->customers[$i]['deleted_at'] ? 'red' : 'inherit' }}">{{ $pageData->customers[$i]['customer_name']}}</p>
                             </td>
                             <td>
-                                <p class="mb-0 fw-normal fs-4">{{ $pageData->customers[$i]['username']  }}</p>
+                                <p class="mb-0 fw-normal fs-4" style="color: {{ $pageData->customers[$i]['deleted_at'] ? 'red' : 'inherit' }}">{{ $pageData->customers[$i]['username']  }}</p>
                             </td>
                             <td>
-                                <p class="mb-0 fw-normal fs-4">{{ $pageData->customers[$i]['userrole']  }}</p>
+                                <p class="mb-0 fw-normal fs-4" style="color: {{ $pageData->customers[$i]['deleted_at'] ? 'red' : 'inherit' }}">{{ $pageData->customers[$i]['userrole']  }}</p>
                             </td>
                             <td>
-                                <p class="mb-0 fw-normal fs-4">
+                                <p class="mb-0 fw-normal fs-4" style="color: {{ $pageData->customers[$i]['deleted_at'] ? 'red' : 'inherit' }}">
                                     {{ $pageData->customers[$i]['deleted_at'] != null ?  'No' : 'Yes' }}</p>
                             </td>
                             <td class="">
@@ -133,6 +134,8 @@
             </table>
 
         </div>
+    </div>
+</div>
 
 
 
@@ -141,9 +144,12 @@
 
         @push('script')
         <script>
-        function confirmDelete() {
-            return confirm('Are you sure you want to delete this customer?');
-        }
+            function confirmDelete() {
+                return confirm('Are you sure you want to delete this customer?');
+            }
+            function confirmRestore()() {
+                return confirm('Are you sure you want to restore this customer?');
+            }
         </script>
 
         <script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>

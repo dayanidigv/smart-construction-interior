@@ -27,7 +27,7 @@
                             <h5 class="card-title fw-semibold mb-0 lh-sm me-3">Date *</h5>
                             <div class="col col-md-3">
                                 <div class="form-group">
-                                    <input type="date" name="date" class="form-control" value="{{ $pageData->date }}" required>
+                                    <input type="date" name="date" class="form-control" value="{{ $pageData->date }}" id="date" required>
                                 </div>
                             </div>
                         </div>
@@ -126,6 +126,14 @@
 <script src="/js/bootstrap3-typeahead.min.js"></script>
 
 <script>
+
+
+$(document).ready(()=>{
+    $('#date').flatpickr({
+        dateFormat: "Y-m-d",
+        allowInput: true,
+    });
+})
 
 var room = 1;
 

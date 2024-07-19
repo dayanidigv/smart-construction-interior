@@ -32,9 +32,9 @@ class InvoiceController extends Controller
             $processedOrderItems = $orderItems->map(function ($item) {
                 return [
                     'category_name' => $item->catagories->name,
-                    'design_name' => $item->design->name,
+                    'design_name' =>  $item->design ? $item->design->name :null ,
                     'quantity' => rtrim(rtrim(number_format($item->quantity, 2), '0'), '.'),
-                    'unit' => $item->design->unit->name,
+                    'unit' => $item->design ? $item->design->unit->name : null,
                     'rate_per' => Helper::format_inr(rtrim(rtrim(number_format($item->rate_per, 2), '0'), '.'), ),
                     'discount_amount' => Helper::format_inr(rtrim(rtrim(number_format($item->discount_amount, 2), '0'), '.'), 1),
                     'discount_percentage' => rtrim(rtrim(number_format($item->discount_percentage, 2), '0'), '.'),
@@ -106,14 +106,18 @@ class InvoiceController extends Controller
             $orderItems = $order->orderItems;
 
             $processedOrderItems = $orderItems->map(function ($item) {
-                $imagePath = public_path($item->design->image_url);
-                $imageData = file_exists($imagePath) ? base64_encode(file_get_contents($imagePath)) : null;
+                if($item->design){
+                    $imagePath = public_path($item->design->image_url);
+                    $imageData = file_exists($imagePath) ? base64_encode(file_get_contents($imagePath)) : null;
+                }else{
+                    $imageData = null;
+                }
                 return [
                     'category_name' => $item->catagories->name,
-                    'design_name' => $item->design->name,
+                    'design_name' => $item->design ? $item->design->name : null,
                     'dimension' => $item->dimension,
                     'quantity' => rtrim(rtrim(number_format($item->quantity, 2), '0'), '.'),
-                    'unit' => $item->design->unit->name,
+                    'unit' =>  $item->design ? $item->design->unit->name : null,
                     'imageData' => $imageData ,
                 ];
             });

@@ -52,7 +52,7 @@
                     <ol class="dd-list">
                         @for ($i = 0 ; $i < $pageData->category->count();$i++)
                             <li class="dd-item" data-id="{{$i+1}}">
-                                <div class="dd-content fs-4">{{$pageData->category[$i]->name}}
+                                <div class="dd-content fs-4" style="color: {{ $pageData->category[$i]->deleted_at ? 'red' : 'inherit' }}">{{$pageData->category[$i]->name}}
                                     @if ($pageData->category[$i]->deleted_at != null)
                                     <form
                                         action="{{route('category.restore', ['encodedId' => base64_encode($pageData->category[$i]->id)])}}"
@@ -119,7 +119,7 @@
                                     @for ($j = 0 ; $j < $pageData->category[$i]->subCategorieswithTrashed->count()
                                         ;$j++)
                                         <li class="dd-item" data-id="3">
-                                            <div class="dd-content fs-4">
+                                            <div class="dd-content fs-4" style="color: {{ $pageData->category[$i]->subCategorieswithTrashed[$j]->deleted_at ? 'red' : 'inherit' }}">
                                                 {{$pageData->category[$i]->subCategorieswithTrashed[$j]->name}}
 
                                                 @if ($pageData->category[$i]->subCategorieswithTrashed[$j]->deleted_at

@@ -32,7 +32,7 @@
 
             <div class="col-md-6 mb-3">
               <div class="form-floating">
-                <input type="email" name="description" id="description" value="{{$pageData->description}}" class="form-control " placeholder="name@example.com" disabled/>
+                <input type="text" name="description" id="description" value="{{$pageData->description}}" class="form-control " placeholder="name@example.com" disabled/>
                 <label for="description"> Description</label>
               </div>
             </div>

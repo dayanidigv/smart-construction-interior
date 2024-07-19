@@ -10,9 +10,10 @@ class Schedule extends Model
     use HasFactory;
 
     protected $table = 'schedule';
-
+    protected $dates = [ 'start',"end"];
     protected $fillable = [
         'user_id ',
+        'enquiry_id',
         'order_id ',
         'title',
         'description',

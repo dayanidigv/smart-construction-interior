@@ -15,7 +15,7 @@ use stdClass;
 
 class CustomerController extends Controller
 {
-    private function getUserData(string $sectionName, string $title, object $pageData = new stdClass()): array
+    private function getUserData(string $menuTitle, $sectionName, string $title, object $pageData = new stdClass()): array
     {
         $user = User::find(Auth::id());
         $userName = $user ? $user->name : 'Guest';
@@ -28,17 +28,15 @@ class CustomerController extends Controller
 
         if ($title === "Index") {
             $pageData->Schedules = $user->schedule()->get();
-        }else if ($title == "List Customer"){
-            $pageData->Customers =  $user->customers()->get();
-        }else if ($title == "List all Customers"){
+        }else if ($title == "List"){
+            $pageData->Customers =  $user->customers()->withTrashed()->get();
+        }else if ($title == "List all"){
             
             $customers = Customers::withTrashed()->orderByDesc('id')->get(); 
             $customersWithUserDetails = [];
             
             foreach ($customers as $customer) {
                 $user = User::find($customer->user_id);
-            
-    
                 if ($user) {
                     $customersWithUserDetails[] = [
                         "id" => $customer->id, 
@@ -57,6 +55,7 @@ class CustomerController extends Controller
 
         return [
             'title' => $title,
+            'menuTitle' => $menuTitle,
             'sectionName' => $sectionName,
             'userName' => $userName,
             'user' => $user,
@@ -69,7 +68,6 @@ class CustomerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'nullable|string|email|unique:customers,email|max:255',
             'phone' => 'required|numeric|digits:10|unique:customers,phone',
             'address' => 'required|string|max:250',
         ]);
@@ -90,7 +88,6 @@ class CustomerController extends Controller
             $customer = Customers::create([
                 "user_id" => $user_id,
                 'name' => $request->name,
-                'email' => $request->email,
                 'phone' => $request->phone,
                 'address' => $request->address,
             ]);
@@ -123,18 +120,13 @@ class CustomerController extends Controller
             return redirect()->back()->with('error', 'Failed to create customer. Please try again later.')->withInput();
         }
     }
+
     public function update(Request $request, string $encodedId)
     {
         $decodedId = base64_decode($encodedId); 
     
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => [
-                'nullable',
-                'string',
-                'email',
-                Rule::unique('customers')->ignore($decodedId),
-            ],
             'phone' => [
                 'required',
                 'numeric',
@@ -149,9 +141,8 @@ class CustomerController extends Controller
         }
     
         try {
-            $customer = Customers::findOrFail($decodedId);
+            $customer = Customers::withTrashed()->findOrFail($decodedId);
             $customer->name = $request->input('name');
-            $customer->email = $request->input('email');
             $customer->phone = $request->input('phone');
             $customer->address = $request->input('address');
             $customer->save();
@@ -174,6 +165,7 @@ class CustomerController extends Controller
             return redirect()->back()->with('error', 'Failed to update customer. Please try again later.')->withInput();
         }
     }
+
     public function destroy(string $encodedId) 
     {
         // Decode the encoded ID
@@ -216,14 +208,14 @@ class CustomerController extends Controller
 
     public function add()
     {
-        $data = $this->getUserData('Customer', 'Add Customer');
+        $data = $this->getUserData("Home",'Customer', 'New');
         return view('manager.customer.store', $data);
     }
 
     public function list()
     {
 
-        $data = $this->getUserData('Customer', 'List Customer');
+        $data = $this->getUserData("Home", 'Customer', 'List');
         return view('manager.customer.list', $data);
     }
 
@@ -231,8 +223,8 @@ class CustomerController extends Controller
     {
         $decodedId = base64_decode($encodedId); 
         try {
-            $customer = User::find(Auth::id())->customers()->findOrFail($decodedId);
-            $data = $this->getUserData('Customer', 'View Customer', $customer);
+            $customer = User::find(Auth::id())->customers()->withTrashed()->findOrFail($decodedId);
+            $data = $this->getUserData('Customer', 'View', $customer);
             return view('manager.customer.view', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Customer not found'); 
@@ -244,7 +236,7 @@ class CustomerController extends Controller
         $decodedId = base64_decode($encodedId); 
         try {
             $customer = User::find(Auth::id())->customers()->findOrFail($decodedId);
-            $data = $this->getUserData('Customer', 'Edit Customer', $customer);
+            $data = $this->getUserData('Customer', 'Edit', $customer);
             return view('manager.customer.edit', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Customer not found'); 
@@ -253,14 +245,14 @@ class CustomerController extends Controller
 
     public function admin_add()
     {
-        $data = $this->getUserData('Customer', 'Add Customer');
+        $data = $this->getUserData("Home",'Customer', 'New');
         return view('admin.customer.store', $data);
     }
 
     public function admin_list()
     {
 
-        $data = $this->getUserData('Customer', 'List Customer');
+        $data = $this->getUserData("Home",'Customer', 'List');
         return view('admin.customer.list', $data);
     }
 
@@ -269,7 +261,7 @@ class CustomerController extends Controller
         $decodedId = base64_decode($encodedId); 
         try {
             $customer = User::find(Auth::id())->customers()->findOrFail($decodedId);
-            $data = $this->getUserData('Customer', 'View Customer', $customer);
+            $data = $this->getUserData("Home",'Customer', 'View', $customer);
             return view('admin.customer.view', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Customer not found'); 
@@ -280,8 +272,8 @@ class CustomerController extends Controller
     {
         $decodedId = base64_decode($encodedId); 
         try {
-            $customer = Customers::findOrFail($decodedId);
-            $data = $this->getUserData('Customer', 'Edit Customer', $customer);
+            $customer = Customers::withTrashed()->findOrFail($decodedId);
+            $data = $this->getUserData("Home",'Customer', 'Edit', $customer);
             return view('admin.customer.edit', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Customer not found'); 
@@ -291,7 +283,7 @@ class CustomerController extends Controller
     public function admin_list_all()
     {
 
-        $data = $this->getUserData('Customer', 'List all Customers');
+        $data = $this->getUserData("Home",'Customer', 'List all');
         return view('admin.customer.list-all', $data);
     }
     
@@ -300,23 +292,21 @@ class CustomerController extends Controller
         $decodedId = base64_decode($encodedId); 
         try {
             $pageData = new stdClass();
-            $customer = Customers::findOrFail($decodedId);
+            $customer = Customers::withTrashed()->findOrFail($decodedId);
             $user = User::find($customer->user_id);
             $customersWithUsernames = [
                 "id"=> $customer->id, 
                 'name' => $customer->name, 
-                'phone' => $customer->phone, 
-                'email' => $customer->email,
+                'phone' => $customer->phone,
                 'address' => $customer->address,
                 'created_at' => $customer->created_at,
                 'creater_name' => $user->name,
-                'creater_email' => $user->email,
                 'creater_role' => $user->role,
             ];
 
             $pageData->customer = $customersWithUsernames;
 
-            $data = $this->getUserData('Customer', 'View all Customer', $pageData);
+            $data = $this->getUserData("Home",'Customer', 'View', $pageData);
             return view('admin.customer.view-all', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Customer not found'); 

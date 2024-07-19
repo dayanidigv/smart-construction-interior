@@ -44,13 +44,7 @@
         </div>
         <div class="row mb-3">
 
-        
-        <div class="col-md-12 mb-3">
-            <div class="form-floating">
-              <input type="text" value="{{$pageData->customer['email']}}" class="form-control" disabled/>
-              <label for="email">Customer Email address</label>
-            </div>
-          </div>
+      
 
           <div class="col-md-12">
             <div class="form-floating">
@@ -76,12 +70,6 @@
           </div>
         </div>
         <div class="row mb-3">
-          <div class="col-md-12 mb-3">
-            <div class="form-floating">
-              <input type="text" value="{{$pageData->customer['creater_email']}}" class="form-control" disabled/>
-              <label for="fname">Creater Email</label>
-            </div>
-          </div>
           <div class="col-md-12">
             <div class="form-floating">
               <input type="text" value="{{\Carbon\Carbon::parse($pageData->customer['created_at'])->format('l, j F Y')}}" class="form-control" disabled/>

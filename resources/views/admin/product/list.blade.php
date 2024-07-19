@@ -11,7 +11,7 @@
 <div class="card w-100 position-relative overflow-hidden">
 <div class="px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
 <a href="{{url()->previous()}}"><span class="th-arrow-left"></span></a>
-  <h5 class="card-title fw-semibold mb-0 lh-sm">{{$title}}</h5>
+  <h5 class="card-title fw-semibold mb-0 lh-sm">List Product</h5>
   <a href="{{route('admin.new.product')}}" class="btn btn-success font-medium rounded-pill px-4">Add new</a>
 </div>
     <div class="card-body p-4">
@@ -47,6 +47,7 @@
         @for ($i = 0; $i < count($pageData->Products); $i++)
         <tr>
           <td>
+          <input class="id" type="hidden" name="id[]" value="{{$pageData->Products[$i]->id}}">
             <p class="mb-0 fw-normal fs-4">{{$i + 1}}</p>
           </td>
           <td>

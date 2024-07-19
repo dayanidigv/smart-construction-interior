@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\SendLoginDetails;
 use App\Models\Customers;
 use App\Models\Designs;
 use App\Models\Labour;
@@ -19,7 +18,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use stdClass;
 
@@ -59,7 +57,7 @@ class AdminController extends Controller
     }
 
     // Common method to get user data
-    private function getUserData(string $sectionName, string $title, object $pageData = new stdClass()): array
+    private function getUserData(string $menuTitle,  $sectionName, string $title, object $pageData = new stdClass()): array
     {
         $user = User::find(Auth::id());
         $role = $user->role;
@@ -67,34 +65,44 @@ class AdminController extends Controller
         $userId = $user ? $user->id : 'Guest';
         $reminder = $user->reminders()
             ->where('is_completed', 0)
-            ->orderBy('priority', 'asc')
-            ->orderBy('reminder_time', 'asc')
-            ->get();
+            ->get()
+            ->sort(function ($a, $b) {
+                $aTime = strtotime($a->reminder_time);
+                $bTime = strtotime($b->reminder_time);
+
+                if ($aTime == $bTime) {
+                    return $a->priority <=> $b->priority;
+                }
+
+                return $aTime <=> $bTime;
+            });
+
+
 
         if($title == "Dashboard"){
             $pageData->Schedules = $user->schedule()->get();
-        }else if ($title == "List Reminder"){
+        }else if ( $sectionName == "Reminder" && $title == "List"){
             $pageData->Reminders = $user->reminders()->orderBy('created_at', 'desc')->get();
-        }else if ($title == "List User"){
+        }else if ($sectionName == "Users" && $title == "List"){
             $pageData->users = User::query()->where('role',"!=","developer")->withTrashed()->orderByDesc('id')->get();
         }else if ($title == "Quantity Units"){
             $pageData->QuantityUnits = QuantityUnits::withTrashed()->orderByDesc('id')->get();
-        }else if ($title == "New Product"){
+        }else if ($sectionName == "Products" && $title == "New"){
             $pageData->QuantityUnits = QuantityUnits::all();
-        }else if ($title == "New Order"){
+        }else if ($sectionName == "Order" && $title == "New"){
             $pageData->QuantityUnits = QuantityUnits::all();
             $pageData->managers = User::where('role','manager')->get();
-        }else if ($title == "List Product"){
+        }else if ($sectionName == "Products" && $title == "List"){
             $pageData->Products = $user->products()->get();
-        }else if ($title == "List Orders"){
+        }else if ($sectionName == "Order" && $title == "List"){
             $pageData->Orders = Orders::with('orderItems')->get();
         }else if ($title == "Invoice"){
             $pageData = Orders::orderByDesc('created_at')->with('orderItems')->get();
-        }else if ($title == "New Design"){
+        }else if ($sectionName == "Design" && $title == "New"){
             $pageData->QuantityUnits = QuantityUnits::all();
         }else if ($title == "Gallery"){
             $pageData = Designs::all();
-        }else if ($title == "List Designs"){
+        }else if ($sectionName == "Design" && $title == "List"){
             $pageData = Designs::withTrashed()->orderByDesc('id')->get();
         }else if ($title == "Report" ){
             $pageData->orders = Orders::all();
@@ -105,6 +113,7 @@ class AdminController extends Controller
        
         return [
             'title' => $title,
+            'menuTitle' => $menuTitle,
             'sectionName' => $sectionName,
             'userName' => $userName,
             'userId' => $userId,
@@ -117,19 +126,19 @@ class AdminController extends Controller
 
      public function index()
     {
-        $data = $this->getUserData('Home', 'Dashboard');
+        $data = $this->getUserData('Home',null, 'Dashboard');
         return view('admin.index', $data);
     }
 
     public function QuantityUnits()
     {
-        $data = $this->getUserData('General', 'Quantity Units');
+        $data = $this->getUserData('Settings', null ,'Quantity Units');
         return view('admin.quantity-units.unit', $data);
     }
 
     public function QuantityUnitsAdd()
     {
-        $data = $this->getUserData('General', 'Quantity Units');
+        $data = $this->getUserData('Settings', null , 'Quantity Units');
         return view('admin.quantity-units.add', $data);
     }
 
@@ -141,7 +150,7 @@ class AdminController extends Controller
             $pageData->QuantityUnits = QuantityUnits::all();
             $pageData->ChangedQuantityUnit = QuantityUnits::findOrFail($decodedId);
             try {
-                $data = $this->getUserData('General', 'Quantity Units', $pageData);
+                $data = $this->getUserData('Settings', null , 'Quantity Units', $pageData);
               } catch (Exception $e) {
                 return abort(500, 'An error occurred while processing your request.');
               }
@@ -153,13 +162,13 @@ class AdminController extends Controller
 
     public function newProduct()
     {
-        $data = $this->getUserData('Products', 'New Product');
+        $data = $this->getUserData("Orders",'Products', 'New');
         return view('admin.product.add', $data);
     }
 
     public function listProduct()
     {
-        $data = $this->getUserData('Products', 'List Product');
+        $data = $this->getUserData("Orders",'Products', 'List');
         return view('admin.product.list', $data);
     }
 
@@ -169,11 +178,11 @@ class AdminController extends Controller
         try {
             $user = User::find(Auth::id());
             $product = $user->products()->findOrFail($decodedId);
-            $data = $this->getUserData('Products', 'View Product', $product);
+            $data = $this->getUserData("Orders",'Products', 'View', $product);
             $user_id = Auth::id();
             if($user_id != $product->user_id){
                 Log::create([
-                    'message' => 'Unauthorized operation by ' . $user->email . ' while trying to view product.',
+                    'message' => 'Unauthorized operation by ' . $user->username . ' while trying to view product.',
                     'level' => 'warning',
                     'type' => 'security',
                     'ip_address' => $request->ip(),
@@ -199,7 +208,7 @@ class AdminController extends Controller
     
             if ($user->id != $product->user_id) {
                 Log::create([
-                    'message' => 'Unauthorized operation by ' . $user->email . ' while trying to edit product.',
+                    'message' => 'Unauthorized operation by ' . $user->username . ' while trying to edit product.',
                     'level' => 'warning',
                     'type' => 'security',
                     'ip_address' => $request->ip(),
@@ -213,7 +222,7 @@ class AdminController extends Controller
             $pageData = new stdClass();
             $pageData->product = $product;
             $pageData->QuantityUnits = QuantityUnits::all();
-            $data = $this->getUserData('Products', 'Edit Product', $pageData);
+            $data = $this->getUserData("Orders", 'Products', 'Edit', $pageData);
     
             return view('admin.product.edit', $data);
         } catch (ModelNotFoundException $e) {
@@ -224,13 +233,13 @@ class AdminController extends Controller
 
     public function newOrder()
     {
-        $data = $this->getUserData('Orders', 'New Order');
+        $data = $this->getUserData('Orders',"Order", 'New');
         return view('common.order.create', $data);
     }
 
     public function listOrder()
     {
-        $data = $this->getUserData('Orders', 'List Orders');
+        $data = $this->getUserData('Orders', "Order", 'List');
         return view('admin.orders.list', $data);
     }
 
@@ -266,7 +275,7 @@ class AdminController extends Controller
             $pageData->labours = $labourData;
             $pageData->follow_up = Reminders::where('order_id',$order->id)->orderBy('reminder_time')->get();
 
-            $data = $this->getUserData('Orders', 'View Order', $pageData);
+            $data = $this->getUserData('Orders', "Order", 'View', $pageData);
             return view('admin.orders.view', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Order not found'); 
@@ -282,7 +291,7 @@ class AdminController extends Controller
             $pageData->QuantityUnits = QuantityUnits::all();
             $pageData->order = Orders::findOrFail($decodedId);
             $pageData->managers = User::where('role','manager')->get();
-            $data = $this->getUserData('Orders', 'Edit Order', $pageData);
+            $data = $this->getUserData('Orders', "Order", 'Edit', $pageData);
             return view('common.order.update', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Order not found'); 
@@ -300,7 +309,7 @@ class AdminController extends Controller
             $date = $date ?? Carbon::today()->toDateString();
             $pageData->date = $date;
             $pageData->labours = Labour::where('order_id', $decodedOrderId)->where('date', $date)->get();
-            $data = $this->getUserData('Orders', 'Show Labours', $pageData);
+            $data = $this->getUserData('Orders', "Order", 'Show Labours', $pageData);
             return view('admin.orders.workers', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Order not found'); 
@@ -309,19 +318,19 @@ class AdminController extends Controller
 
     public function invoiceShow()
     {
-        $data = $this->getUserData('Invoice', 'Invoice');
+        $data = $this->getUserData('Invoice',null , 'Invoice');
         return view('admin.invoice.index', $data);
     }
 
     public function add_user()
     {
-        $data = $this->getUserData('Users', 'Add User');
+        $data = $this->getUserData('Settings', "Users", 'New');
         return view('admin.add-user', $data);
     }
 
     public function list_user()
     {
-        $data = $this->getUserData('Users', 'List User');
+        $data = $this->getUserData('Settings',"Users", 'List');
         return view('admin.user.list', $data);
     }
 
@@ -343,13 +352,12 @@ class AdminController extends Controller
     
     }
     
-    
     public function user_store(Request $request)
     {
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email' => 'required|string|email|unique:users,email',
+            'username' => 'required|string|unique:users,username',
             'role' => ['required', 'regex:/^(admin|manager)$/i']
         ]);
     
@@ -367,16 +375,14 @@ class AdminController extends Controller
             // Create the new user record
             $user = User::create([
                 'name' => $request->name,
-                'email' => $request->email,
+                'username' => $request->username,
                 'role' => $request->role,
                 'password' => Hash::make($password),
             ]);
     
-            // Send an email with login details to the new user
-            Mail::to($request->email)->send(new SendLoginDetails($request->name, $request->email, $password));
             DB::commit();
     
-            return redirect()->back()->with('message', 'User Create successfully.')->with('username',$request->email)->with('password',$password);
+            return redirect()->back()->with('message', 'User Create successfully.')->with('username',$request->username)->with('password',$password);
         } catch (Exception $e) {
             DB::rollBack();
             Log::create([
@@ -395,13 +401,13 @@ class AdminController extends Controller
 
     public function reminder()
     {
-        $data = $this->getUserData('Reminder', 'Set Reminder');
+        $data = $this->getUserData('Settings', "Reminder", 'Set');
         return view('admin.reminder.index', $data);
     }
 
     public function reminder_list()
     {
-        $data = $this->getUserData('Reminder', 'List Reminder');
+        $data = $this->getUserData('Settings', "Reminder",'List');
         return view('admin.reminder.list', $data);
     }
 
@@ -410,7 +416,7 @@ class AdminController extends Controller
         $decodedId = base64_decode($encodedId); 
         try {
             $reminder = User::find(Auth::id())->reminders()->findOrFail($decodedId);
-            $data = $this->getUserData('Reminder', 'View Reminder', $reminder);
+            $data = $this->getUserData('Settings', "Reminder", 'View', $reminder);
             $user_id = Auth::id();
             if($user_id != $reminder->user_id){
                 abort(403, 'You can only view reminders you created.');
@@ -428,14 +434,14 @@ class AdminController extends Controller
             $user = User::find(Auth::id());
             $reminder = $user->reminders()->findOrFail($decodedId);
             try {
-                $data = $this->getUserData('Reminder', 'Edit Reminder', $reminder);
+                $data = $this->getUserData('Settings', "Reminder", 'Edit', $reminder);
               } catch (Exception $e) {
                 return abort(500, 'An error occurred while processing your request.');
               }
             $user_id = Auth::id();
             if($user_id != $reminder->user_id){
                 Log::create([
-                    'message' => 'Unauthorized operation by ' . $user->email . ' while trying to edit reminders',
+                    'message' => 'Unauthorized operation by ' . $user->username . ' while trying to edit reminders',
                     'level' => 'warning',
                     'type' => 'security',
                     'ip_address' => $request->ip(),
@@ -453,19 +459,19 @@ class AdminController extends Controller
 
     public function Gallery()
     {
-        $data = $this->getUserData('General', 'Gallery');
+        $data = $this->getUserData('Settings', null,'Gallery');
         return view('admin.gallery', $data);
     }
 
     public function newDesign()
     {
-        $data = $this->getUserData('Designs', 'New Design');
+        $data = $this->getUserData('Orders','Design', 'New');
         return view('admin.design.add', $data);
     }
 
     public function listDesign()
     {
-        $data = $this->getUserData('Designs', 'List Designs');
+        $data = $this->getUserData('Orders','Design', 'List');
         return view('admin.design.list', $data);
     }
 
@@ -477,7 +483,7 @@ class AdminController extends Controller
             $pageData = new stdClass();
             $pageData->design = Designs::findOrFail($decodedId);
             $pageData->QuantityUnits = QuantityUnits::all();
-            $data = $this->getUserData('Designs', 'View Design', $pageData);
+            $data = $this->getUserData('Orders','Design', 'View', $pageData);
             return view('admin.design.view', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Order not found'); 
@@ -492,7 +498,7 @@ class AdminController extends Controller
             $pageData = new stdClass();
             $pageData->design = Designs::findOrFail($decodedId);
             $pageData->QuantityUnits = QuantityUnits::all();
-            $data = $this->getUserData('Designs', 'Edit Design', $pageData);
+            $data = $this->getUserData('Orders', 'Design','Edit', $pageData);
             return view('admin.design.edit', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Order not found'); 
@@ -501,7 +507,7 @@ class AdminController extends Controller
 
     public function Report()
     {
-        $data = $this->getUserData('General', 'Report');
+        $data = $this->getUserData('Orders',null, 'Report');
         return view('admin.report', $data);
     }
 

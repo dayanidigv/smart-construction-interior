@@ -130,32 +130,43 @@ class reminderController extends Controller
             return back()->with('error', 'Error deleting reminder.');
         }
     }
-
-    public function is_completed(Request $request){
-        $decodedId = base64_decode($request->id); 
-
+    
+    public function is_completed(Request $request)
+    {
+        $decodedId = base64_decode($request->id);
+    
         try {
             $reminder = Reminders::findOrFail($decodedId);
+    
             $user_id = Auth::id();
-            if($user_id != $reminder->user_id){
+    
+            if ($user_id != $reminder->user_id) {
                 abort(403, 'You can only update reminders you created.');
             }
+    
             $reminder->is_completed = 1;
-            $reminder->save(); 
+    
+            $originalReminderTime = $reminder->reminder_time;
+    
+            $reminder->reminder_time = $originalReminderTime;
+    
+            $reminder->save();
+    
             return response()->json(['success' => true]);
-          } catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json(['success' => false, 'message' => 'Reminder not found'], 404);
-          } catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::create([
                 'message' => 'Error updating reminder',
                 'level' => 'danger',
                 'type' => 'error',
                 'ip_address' => $request->ip(),
                 'context' => 'web',
-                'source' => 'delete_reminder',
+                'source' => 'update_reminder',
                 'extra_info' => json_encode(['user_agent' => $request->header('User-Agent')])
             ]);
-            return response()->json(['success' => false, 'message' => 'Error updating reminder.'], 404);
-          }
+            return response()->json(['success' => false, 'message' => 'Error updating reminder.'], 500);
+        }
     }
+    
 }

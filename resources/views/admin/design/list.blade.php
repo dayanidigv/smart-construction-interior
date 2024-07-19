@@ -11,7 +11,7 @@
 <div class="card w-100 position-relative overflow-hidden">
     <div class="px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
         <a href="{{url()->previous()}}"><span class="th-arrow-left"></span></a>
-        <h5 class="card-title fw-semibold mb-0 lh-sm">{{$title}}</h5>
+        <h5 class="card-title fw-semibold mb-0 lh-sm">List Design</h5>
         <a href="{{route('admin.new.design')}}" class="btn btn-success font-medium rounded-pill px-4">Add new</a>
     </div>
     <div class="card-body p-4">
@@ -50,27 +50,28 @@
                     @if ($pageData && $pageData->count() != 0)
                     @for ($i = 0; $i < $pageData->count(); $i++)
                         <tr>
-                            <td>
+                            <td style="color: {{ $pageData[$i]->deleted_at ? 'red' : 'inherit' }}">
+                                <input class="id" type="hidden" name="id[]" value="{{$pageData[$i]->id}}">
                                 <p class="mb-0 fw-normal fs-4">{{$i + 1}}</p>
                             </td>
                             <td>
                                 <p class="mb-0 fw-normal fs-4"><img src="{{ $pageData[$i]->image_url }}" width="50px">
                                 </p>
                             </td>
-                            <td>
+                            <td style="color: {{ $pageData[$i]->deleted_at ? 'red' : 'inherit' }}">
                                 <p class="mb-0 fw-normal fs-4">{{ $pageData[$i]->category->parentCategory->name }} </p>
                             </td>
-                            <td>
+                            <td style="color: {{ $pageData[$i]->deleted_at ? 'red' : 'inherit' }}">
                                 <p class="mb-0 fw-normal fs-4">{{ $pageData[$i]->category->name }} </p>
                             </td>
-                            <td>
+                            <td style="color: {{ $pageData[$i]->deleted_at ? 'red' : 'inherit' }}">
                                 <p class="mb-0 fw-normal fs-4">{{ $pageData[$i]->type }}</p>
                             </td>
-                            <td>
+                            <td style="color: {{ $pageData[$i]->deleted_at ? 'red' : 'inherit' }}">
                                 <p class="mb-0 fw-normal fs-4">
                                     {{ $pageData[$i]->unit->name }}({{ $pageData[$i]->unit->description }})</p>
                             </td>
-                            <td>
+                            <td style="color: {{ $pageData[$i]->deleted_at ? 'red' : 'inherit' }}">
                                 <p class="mb-0 fw-normal fs-4">{{ $pageData[$i]->deleted_at != null ? 'No' : 'Yes' }}
                                 </p>
                             </td>
@@ -79,16 +80,18 @@
                                     class="text-success"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                         stroke-linecap="round" stroke-linejoin="round"
-                                        class="icon icon-tabler icons-tabler-outline icon-tabler-eye" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View">
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-eye"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                         <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
                                         <path
                                             d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
                                     </svg></a>
                                 <a href="{{route('admin.edit.design',['encodedId' => base64_encode($pageData[$i]->id)])}}"
-                                    class="text-primary mx-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="text-primary mx-2" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    data-bs-title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
                                         class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                         <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -99,7 +102,8 @@
                                 @if ($pageData[$i]->deleted_at == null)
                                 <form
                                     action="{{route('design.destroy', ['encodedId' => base64_encode($pageData[$i]->id)])}} "
-                                    method="post" class="delete-form" style="display:inline;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Soft Delete">
+                                    method="post" class="delete-form" style="display:inline;" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" data-bs-title="Soft Delete">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="delete-btn" onclick="return confirmDelete()"
@@ -120,7 +124,8 @@
                                 @else
                                 <form
                                     action="{{route('design.restore', ['encodedId' => base64_encode($pageData[$i]->id)])}}"
-                                    method="post" class="delete-form" style="display:inline;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Restore">
+                                    method="post" class="delete-form" style="display:inline;" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" data-bs-title="Restore">
                                     @csrf
                                     <button type="submit" class="delete-btn" onclick="return confirmRestore()"
                                         style="background:none; border:none; padding:0; margin:0; color:green; cursor:pointer;">
@@ -151,27 +156,27 @@
                         @endif
                 </tbody>
             </table>
-
         </div>
+    </div>
+</div>
 
 
 
+@endsection
 
-        @endsection
+@push('script')
+<script>
+function confirmDelete() {
+    return confirm('Are you sure you want to delete this Design ?');
+}
 
-        @push('script')
-        <script>
-          function confirmDelete() {
-              return confirm('Are you sure you want to delete this Designs ?');
-          }
+function confirmRestore() {
+    return confirm('Are you sure you want to restore this Design ?');
+}
+</script>
 
-          function confirmRestore() {
-              return confirm('Are you sure you want to restore this Designs ?');
-          }
-        </script>
-
-        <script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-        <script src="/js/datatable/datatable-api.init.js"></script>
+<script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/js/datatable/datatable-api.init.js"></script>
 
 
-        @endpush
+@endpush

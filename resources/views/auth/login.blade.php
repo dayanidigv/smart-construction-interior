@@ -17,9 +17,9 @@
                   <form action="{{route('login.post')}}" method="post">
                   @csrf
                     <div class="mb-3">
-                      <label for="email" class="form-label">Username</label>
-                      <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" id="email" aria-describedby="emailHelp" value="{{old('email')}}" required>
-                        @error('email')
+                      <label for="username" class="form-label">Username</label>
+                      <input type="text" name="username" class="form-control @error('username') is-invalid @enderror" id="username" aria-describedby="usernameHelp" value="{{old('username')}}" required>
+                        @error('username')
                           <div class="invalid-feedback">
                             <p class="error">{{ $message }}</p>
                           </div>

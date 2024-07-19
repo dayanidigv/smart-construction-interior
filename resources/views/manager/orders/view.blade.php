@@ -138,7 +138,6 @@
                             <b>Creator By</b>
                             <p class="text-muted mb-0">Name: {{$pageData->order->creator->name}}</p>
                             <p class="text-muted mb-0">Role: {{$pageData->order->creator->role}}</p>
-                            <p class="text-muted mb-0">Email: {{$pageData->order->creator->email}}</p>
                         </div>
                         <div class="col-md-6 col-12 ">
                             <b class="d-flex justify-content-end">Customer Details</b>
@@ -193,15 +192,24 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="{{$orderItem->design->image_url}}" class="" alt="..."
-                                                    width="56" height="56">
+                                                @if ($orderItem->design)
+                                                    <img src="{{$orderItem->design->image_url}}" class="" alt="..."
+                                                        width="56" height="56">
+                                                @endif
                                                 <div class="ms-3">
-                                                    <h6 class="lead fw-semibold mb-0 fs-4">
+                                                @if ($orderItem->design)
+                                                <h6 class="lead fw-semibold mb-0 fs-4">
                                                         {{$orderItem->catagories->name}}
                                                         ({{$orderItem->design->type}})
                                                     </h6>
                                                     <p class="text-muted mb-0">
                                                         {{ucwords(strtolower($orderItem->design->name))}}</p>
+                                                @else
+                                                <h6 class="lead fw-semibold mb-0 fs-4">
+                                                        {{$orderItem->catagories->name}}
+                                                        ({{$orderItem->catagories->type}})
+                                                    </h6>
+                                                @endif
                                                 </div>
                                             </div>
                                         </td>
@@ -209,9 +217,14 @@
                                             <p class="text-muted mb-0 fs-4">{{ $orderItem->dimension != null ? $orderItem->dimension : 'N/A' }}</p>
                                         </td>
                                         <td>
-                                            <p class="text-muted mb-0 fs-4">{{
-                                                rtrim(rtrim(number_format($orderItem->quantity, 2), '0'), '.') }}
-                                                ({{$orderItem->design->unit()->first()->name}})</p>
+                                            @if ($orderItem->design)
+                                                <p class="text-muted mb-0 fs-4">{{
+                                                    rtrim(rtrim(number_format($orderItem->quantity, 2), '0'), '.') }}
+                                                    ({{$orderItem->design->unit()->first()->name}})</p>
+                                            @else
+                                                <p class="text-muted mb-0 fs-4">{{
+                                                    rtrim(rtrim(number_format($orderItem->quantity, 2), '0'), '.') }}</p>
+                                            @endif
                                         </td>
                                         <td>
                                             <p class="text-muted mb-0 fs-4">₹ {{
@@ -314,7 +327,7 @@
                             <div class="row mb-4">
                                 <div class="col-md-12 col-12">
                                     <p class="lead fw-semibold">Payment Status</p>
-                                    <p class="badge badge-status {{$pageData->order->invoice()->first()->payment_status}}">
+                                    <p class="badge badge-status {{$pageData->order->invoice()->first()->payment_status != "not confirmed" ? $pageData->order->invoice()->first()->payment_status : "partially_paid"}}">
                                         {{ ucFirst($pageData->order->invoice()->first()->payment_status) }}
                                     </p>
                                 </div>

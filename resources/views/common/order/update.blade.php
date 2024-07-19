@@ -48,8 +48,7 @@ hr{
 
                     <div class="col-md-6 mb-4">
                         <label for="customer">Customer Details *</label>
-                        <select class="customer-details form-control mb-4 d-block" id="customer" name="customer"
-                            id="customer" required></select>
+                        <select class="customer-details form-control mb-4 d-block" id="customer" name="customer" required></select>
                         <small class="form-control-feedback mt-2 d-block">
                             If customer is not found,
                             <button type="button" class="btn btn-link p-0 m-0" data-bs-toggle="offcanvas"
@@ -191,9 +190,6 @@ hr{
                                 <div class="row">
                                     <div class="col-12 col-md-6 col-lg-4 mb-3">
                                         <label for="category{{ $encodedId }}">Category *</label>
-                                        <!-- <input type="text" name="alt_category[]" id="category{{ $encodedId }}"
-                                            value="{{$orderItem->catagories()->first()->parentCategory()->first()->name}}"
-                                            class="form-control" placeholder="Enter category here" required /> -->
                                         <select class="form-control" id="category{{ $encodedId }}" name="alt_category[]" required></select>
                                         <small class="form-control-feedback">
                                             <button type="button" class="btn btn-link p-0 m-0 " data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewCategory" aria-controls="offcanvasNewCategory" >
@@ -204,10 +200,6 @@ hr{
 
                                     <div class="col-12 col-md-6 col-lg-4 mb-3">
                                         <label for="sub-category{{ $encodedId }}">Sub Category *</label>
-                                        <!-- <input type="text" name="alt_sub_category[]" id="sub-category{{ $encodedId }}"
-                                            value="{{$orderItem->catagories()->first()->name}}"
-                                            class="form-control typeahead" placeholder="Enter sub-category here"
-                                            required /> -->
                                         <select class="form-control" name="alt_sub_category[]" id="sub-category{{ $encodedId }}" required></select>
                                         <small class="form-control-feedback">
                                             <button type="button" class="btn btn-link p-0 m-0 " data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewSubCategory" aria-controls="offcanvasNewSubCategory" >
@@ -217,21 +209,28 @@ hr{
                                     </div>
 
                                     <div class="col-12 col-md-6 col-lg-4 mb-3">
-                                        <label for="design{{ $encodedId }}" class="d-block">Design *</label>
+                                        <label for="design{{ $encodedId }}" class="d-block">Design</label>
                                         <select class="Order-product form-control" id="design{{ $encodedId }}"
-                                            name="alt_design[]" required></select>
+                                            name="alt_design[]"></select>
                                     </div>
 
-                                    <div class="col-12 col-md-6 col-lg-3 mb-3">
-                                        <label for="dimension{{ $encodedId }}">Dimension </label>
-                                        <input type="text" id="dimension{{ $encodedId }}" name="alt_dimension[]"
-                                            value="{{$orderItem->dimension}}" class="form-control"
-                                            placeholder="Enter dimension value" />
+                                    <div class="col-12 col-md-4 col-lg-2 mb-3">
+                                        <label for="length{{ $encodedId }}">Length</label>
+                                        <input type="number"  id="length{{ $encodedId }}"
+                                            name="alt_length[]" value="{{$orderItem->length}}"
+                                            class="form-control" placeholder="Enter Length value" />
                                     </div>
 
-                                    <div class="col-12 col-md-4 col-lg-3 mb-3">
+                                    <div class="col-12 col-md-4 col-lg-2 mb-3">
+                                        <label for="breath{{ $encodedId }}">Breath</label>
+                                        <input type="number" id="breath{{ $encodedId }}"
+                                            name="alt_breath[]" value="{{$orderItem->breath}}"
+                                            class="form-control" placeholder="Enter Breath value" />
+                                    </div>
+
+                                    <div class="col-12 col-md-4 col-lg-2 mb-3">
                                         <label for="order_item_quantity{{ $encodedId }}">Quantity *</label>
-                                        <input type="number" step="0.01" id="order_item_quantity{{ $encodedId }}"
+                                        <input type="number" id="order_item_quantity{{ $encodedId }}"
                                             name="alt_order_item_quantity[]" value="{{$orderItem->quantity}}"
                                             class="form-control" placeholder="Enter item quantity value" required />
                                     </div>
@@ -261,13 +260,11 @@ hr{
                                 </div>
                             </div>
 
+                           
                             <script>
                             document.addEventListener("DOMContentLoaded", function() {
                                 refreshSearch('{{ $encodedId }}');
-                                var initialDataForDesign = {
-                                    id: <?= $orderItem->design_id ?>,
-                                    name: '{{$orderItem->design->name}}'
-                                };
+                                
                                 
                                 var initialDataForCategory = {
                                     id: <?=$orderItem->catagories()->first()->parentCategory()->first()->id ?>,
@@ -278,11 +275,19 @@ hr{
                                     id: <?=$orderItem->catagories()->first()->id ?>,
                                     name: '{{$orderItem->catagories()->first()->name}}'
                                 };
-                                initializeSelect2WithInitialValue("#design{{ $encodedId }}", initialDataForDesign);
+                                @if ($orderItem->design_id)
+                                    var initialDataForDesign = {
+                                        id: <?= $orderItem->design_id ?>,
+                                        name: '{{$orderItem->design->name}}'
+                                    };
+                                    initializeSelect2WithInitialValue("#design{{ $encodedId }}", initialDataForDesign);
+                                @endif
                                 initializeSelect2WithInitialValue("#category{{ $encodedId }}", initialDataForCategory);
                                 initializeSelect2WithInitialValue("#sub-category{{ $encodedId }}", initialDataForSubCategory);
                             });
                             </script>
+                            
+                            
 
                             <hr class="mt-4 mt-md-0">
                             @endforeach
@@ -640,14 +645,6 @@ hr{
 
                                         <div class="col-md-12 mb-3">
                                             <div class="form-floating">
-                                                <input type="email" name="email" id="email" value="{{old('email')}}"
-                                                    class="form-control " placeholder="name@example.com" />
-                                                <label for="email"> Email address</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-12 mb-3">
-                                            <div class="form-floating">
                                                 <input type="number" name="phone" id="phone" value="{{old('phone')}}"
                                                     class="form-control" placeholder="Enter customer Phone no."
                                                     required />
@@ -915,14 +912,18 @@ function order_item_container() {
                         </small>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 mb-3">
-                        <label for="design">Design *</label>
-                        <select class="Order-product form-control" id="design${room}" name="design[]" required></select>
+                        <label for="design">Design</label>
+                        <select class="Order-product form-control" id="design${room}" name="design[]" ></select>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 mb-3">
-                        <label for="dimension${room}">Dimension </label>
-                        <input type="text"  id="dimension${room}" name="dimension[]" value="" class="form-control" placeholder="Enter dimension value" />
+                    <div class="col-12 col-md-3 col-lg-2 mb-3">
+                        <label for="length">length</label>
+                        <input type="number" min='0' id="length${room}" name="length[]" class="form-control" value='0' placeholder="" />
                     </div>
-                    <div class="col-12 col-md-4 col-lg-3 mb-3">
+                    <div class="col-12 col-md-3 col-lg-2 mb-3">
+                        <label for="Breath">Breath</label>
+                        <input type="number" min='0' id="breath${room}" name="breath[]" class="form-control" value='0' placeholder="" />
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-2 mb-3">
                         <label for="order_item_quantity">Quantity *</label>
                         <input type="number" step="0.01" id="order_item_quantity${room}" name="order_item_quantity[]" class="form-control" placeholder="Enter item quantity value" required />
                     </div>
@@ -1039,42 +1040,65 @@ function refreshSearch(rid = 2) {
         templateSelection: formatDesignSelection
     });
 
+    // Function to calculate quantity and subtotal
+    function calculateQuantityAndSubtotal() {
+        var length = parseInt($(`#length${rid}`).val()) || 0;
+        var breath = parseInt($(`#breath${rid}`).val()) || 0;
+        var ratePer = parseInt($(`#rate_per${rid}`).val()) || 0;
+
+        var quantity = length * breath;
+        $(`#order_item_quantity${rid}`).val(quantity);
+
+        var subtotal = quantity * ratePer;
+        $(`#sub_total${rid}`).val(subtotal);
+    }
+
+    // Handle Length input
+    $(`#length${rid}`).on('input', (e) => {
+        let length = e.target.value;
+        if (length <= 0) {
+            e.target.value = '';
+            return;
+        }
+        calculateQuantityAndSubtotal();
+    });
+
+    // Handle Breath input
+    $(`#breath${rid}`).on('input', (e) => {
+        let breath = e.target.value;
+        if (breath <= 0) {
+            e.target.value = '';
+            return;
+        }
+        calculateQuantityAndSubtotal();
+    });
+
+    // Handle Rate Per input
     $(`#rate_per${rid}`).on('input', (e) => {
-        var rate = parseFloat(e.target.value);
-        if (rate < 0) {
+        var ratePer = parseFloat(e.target.value);
+        if (ratePer <= 0) {
             e.target.value = '';
             return;
         }
-        var quantity = $(`#order_item_quantity${rid}`).val();
-        var rate = parseFloat(e.target.value);
-        if (!isNaN(quantity)) {
-            var subtotal = quantity * rate;
-            $(`#sub_total${rid}`).val(subtotal.toFixed(2));
-        } else {
-            alert('Invalid input');
-        }
+        calculateQuantityAndSubtotal();
     });
 
+    // Handle Quantity input directly (optional, for validation)
     $(`#order_item_quantity${rid}`).on('input', (e) => {
-        var quantity = parseFloat(e.target.value);
-        if (quantity < 0) {
+        var quantity = parseInt(e.target.value);
+        if (quantity <= 0) {
             e.target.value = '';
             return;
         }
-        var rate_per = $(`#rate_per${rid}`).val();
-        var quantity = parseFloat(e.target.value);
-        if (!isNaN(rate_per)) {
-            var subtotal = quantity * rate_per;
-            $(`#sub_total${rid}`).val(subtotal.toFixed(2));
-        } else {
-            alert('Invalid input');
-        }
+        var ratePer = parseInt($(`#rate_per${rid}`).val()) || 0;
+        var subtotal = quantity * ratePer;
+        $(`#sub_total${rid}`).val(subtotal.toFixed(2));
     });
 
-    // Handle Sub Total 
+    // Handle Sub Total input directly (optional, for validation)
     $(`#sub_total${rid}`).on('input', (e) => {
-        var quantity = parseFloat(e.target.value);
-        if (quantity <= 0) {
+        var subtotal = parseInt(e.target.value);
+        if (subtotal <= 0) {
             e.target.value = '';
             return;
         }
@@ -1205,8 +1229,8 @@ function formatCustomer(customer) {
         "<div class='row result'>" +
         "<div class='col-12 customer-details'>" +
         "<h6 class='customer-name mb-1' >" + customer.name + "</h6>" +
-        "<p class='text-muted mb-1' style='font-size: 0.8rem;'><strong>Email:</strong> " + customer.email + "</p>" +
         "<p class='text-muted mb-0' style='font-size: 0.8rem;'><strong>Phone:</strong> " + customer.phone + "</p>" +
+        "<p class='text-muted mb-0' style='font-size: 0.8rem;'><strong>Address:</strong> " + customer.address + "</p>" +
         "</div>" +
         "</div>" +
         "</div>"
@@ -1504,7 +1528,6 @@ $(document).ready(function() {
             cache: true
         }
     });
-
 });
 
 </script>

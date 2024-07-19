@@ -136,7 +136,7 @@
                                                         <p class="fs-2 pb-1 mb-0 fw-normal">{{$item->design->name}}</p>
                                                     </td>
                                                     <td class="text-center">
-                                                        <p class="fs-3 pb-0 mb-0 ">{{rtrim(rtrim(number_format($item->quantity, 2), '0'), '.') }}({{$item->design->unit->name}})</p>
+                                                        <p class="fs-3 pb-0 mb-0 ">{{rtrim(rtrim(number_format($item->quantity, 2), '0'), '.') }}({{$item->design->unit->name ? $item->design->unit->name : 'SQ.FT'}})</p>
                                                     </td>
                                                     <td class="text-end">
                                                         <p class="fs-3 pb-0 mb-0 ">₹ {{Helper::format_inr(rtrim(rtrim(number_format($item->rate_per, 2), '0'),'.'),1) }}</p>

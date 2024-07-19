@@ -29,18 +29,6 @@
             </div>
 
             <div class="col-md-12 mb-3">
-              <div class="form-floating">
-                <input type="email" name="email" id="email" value="{{old('email')}}" class="form-control @error('email') is-invalid @enderror" placeholder="name@example.com" required/>
-                <label for="email"> Email address</label>
-                @error('email')
-                  <div class="invalid-feedback">
-                    <p class="error">{{ $message }}</p>
-                  </div>
-                @enderror
-              </div>
-            </div>
-
-            <div class="col-md-12 mb-3">
                 <div class="form-floating">
                     <input type="number" name="phone" id="phone" value="{{old('phone')}}" class="form-control @error('phone') is-invalid @enderror" placeholder="name@example.com" required/>
                     <label for="phone"> Phone no.</label>

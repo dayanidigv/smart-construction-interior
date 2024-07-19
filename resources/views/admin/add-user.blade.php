@@ -19,7 +19,7 @@
                             <div class="form-floating">
                                 <input type="text" name="name" id="name" value="{{old('name')}}"
                                     class="form-control @error('name') is-invalid @enderror"
-                                    placeholder="Enter user name here" required />
+                                    placeholder="Enter name here" required />
                                 <label for="fname"> Name</label>
                                 @error('name')
                                 <div class="invalid-feedback">
@@ -31,11 +31,11 @@
 
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
-                                <input type="email" name="email" id="email" value="{{old('email')}}"
-                                    class="form-control @error('email') is-invalid @enderror"
-                                    placeholder="name@example.com" required />
-                                <label for="email"> Email address</label>
-                                @error('email')
+                                <input type="text" name="username" id="username" value="{{old('username')}}"
+                                    class="form-control @error('username') is-invalid @enderror"  placeholder="Enter user name here" required />
+                                <label for="username"> Username</label>
+                                <small>Note: Unique username or phone number</small>
+                                @error('username')
                                 <div class="invalid-feedback">
                                     <p class="error">{{ $message }}</p>
                                 </div>

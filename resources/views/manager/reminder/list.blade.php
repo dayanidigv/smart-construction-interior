@@ -6,11 +6,9 @@
 <link rel="stylesheet" href="/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
 @endpush
 
-
-
 <div class="card w-100 position-relative overflow-hidden">
     <div class="px-4 py-3 border-bottom">
-        <h5 class="card-title fw-semibold mb-0 lh-sm">{{$title}}</h5>
+        <h5 class="card-title fw-semibold mb-0 lh-sm">List Reminder</h5>
     </div>
     <div class="card-body p-4">
         <div class="table-responsive rounded-2 py-5 mb-4">
@@ -43,6 +41,7 @@
                     @for ($i = 0; $i < count($pageData->reminders); $i++)
                         <tr>
                             <td>
+                            <input class="id" type="hidden" name="id[]" value="{{$pageData->reminders[$i]->id}}">
                                 <p class="mb-0 fw-normal fs-4">{{ $pageData->reminders[$i]->title }}</p>
                             </td>
                             <td>
@@ -128,7 +127,7 @@
         @push('script')
         <script>
             function confirmDelete() {
-                return confirm('Are you sure you want to delete this customer?');
+                return confirm('Are you sure you want to delete this reminder?');
             }
         </script>
 

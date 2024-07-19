@@ -20,7 +20,8 @@
 .product-name {
     font-weight: bold;
 }
-hr{
+
+hr {
     border: 1px solid #2A3570;
 }
 </style>
@@ -109,28 +110,28 @@ hr{
                     </div>
 
                     @if ($role == 'admin' )
-                        <!-- Manage Access -->
-                        <div class="col-md-4 col-lg-3 col-12 mb-4">
-                            <label for="manage_access">Order Manage Access *</label>
-                            <select class="form-select mr-sm-2 @error('manage_access') is-invalid @enderror"
-                                id="manage_access" name="manage_access" required>
-                                <option value="only-for-me" @if(old('manage_access')=="only-for-me" ) selected @endif>Only
-                                    For me</option>
-                                @if ($pageData->managers->count() != 0)
-                                @foreach ($pageData->managers as $manager)
-                                <option value="{{$manager->id}}" @if(old('manage_access')==$manager->id) selected
-                                    @endif>{{$manager->name}}</option>
-                                @endforeach
-                                @endif
-                            </select>
-                            @error('manage_access')
-                            <div class="invalid-feedback">
-                                <p class="error">{{ $message }}</p>
-                            </div>
-                            @enderror
+                    <!-- Manage Access -->
+                    <div class="col-md-4 col-lg-3 col-12 mb-4">
+                        <label for="manage_access">Order Manage Access *</label>
+                        <select class="form-select mr-sm-2 @error('manage_access') is-invalid @enderror"
+                            id="manage_access" name="manage_access" required>
+                            <option value="only-for-me" @if(old('manage_access')=="only-for-me" ) selected @endif>Only
+                                For me</option>
+                            @if ($pageData->managers->count() != 0)
+                            @foreach ($pageData->managers as $manager)
+                            <option value="{{$manager->id}}" @if(old('manage_access')==$manager->id) selected
+                                @endif>{{$manager->name}}</option>
+                            @endforeach
+                            @endif
+                        </select>
+                        @error('manage_access')
+                        <div class="invalid-feedback">
+                            <p class="error">{{ $message }}</p>
                         </div>
+                        @enderror
+                    </div>
                     @endif
-                    
+
 
                     <!-- Order Items -->
                     <div class="row my-1">
@@ -154,7 +155,92 @@ hr{
                     <!-- Dynamically add Order items -->
                     <div id="order-item-container">
                         <hr>
+
+                        <!-- @foreach(old('order_item_quantity', []) as $index => $quantity)
+                            <div class="row">
+                                <div class="col-12 col-md-11">
+                                    <div class="row">
+                                        <div class="col-12 col-md-6 col-lg-4 mb-3">
+                                            <label for="category">Category *</label>
+                                            <select class="form-control" id="category{{ base64_encode($index) }}" name="category[]" required></select>
+                                            <small class="form-control-feedback">
+                                                <button type="button" class="btn btn-link p-0 m-0" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewCategory" aria-controls="offcanvasNewCategory">
+                                                    <span class="" data-bs-toggle="tooltip" data-bs-placement="top" title="Click here to create a new category">Create New Category</span>
+                                                </button>
+                                            </small>
+                                            @error('category.' . $index)
+                                                <div class="text-tiny text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-4 mb-3">
+                                            <label for="sub-category">Sub Category *</label>
+                                            <select class="form-control" id="sub-category{{ base64_encode($index) }}" name="sub_category[]" required></select>
+                                            <small class="form-control-feedback">
+                                                <button type="button" class="btn btn-link p-0 m-0" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNewSubCategory" aria-controls="offcanvasNewSubCategory">
+                                                    <span class="" data-bs-toggle="tooltip" data-bs-placement="top" title="Click here to create a new Sub category">Create New Sub Category</span>
+                                                </button>
+                                            </small>
+                                            @error('sub_category.' . $index)
+                                                <div class="text-tiny text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-12 col-md-6 col-lg-4 mb-3">
+                                            <label for="design">Design</label>
+                                            <select class="Order-product form-control" id="design{{ base64_encode($index) }}" name="design[]"></select>
+                                            @error('design.' . $index)
+                                                <div class="text-tiny text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-12 col-md-3 col-lg-2 mb-3">
+                                            <label for="length">Length</label>
+                                            <input type="number" min="0" id="length{{ base64_encode($index) }}" name="length[]" class="form-control" value="length.{{$index}}" placeholder="" />
+                                            @error('length.' . $index)
+                                                <div class="text-tiny text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-12 col-md-3 col-lg-2 mb-3">
+                                            <label for="Breath">Breath</label>
+                                            <input type="number" min="0" id="breath{{ base64_encode($index) }}" name="breath[]" class="form-control" value="breath.{{$index}}" placeholder="" />
+                                            @error('breath.' . $index)
+                                                <div class="text-tiny text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-12 col-md-4 col-lg-3 mb-3">
+                                            <label for="order_item_quantity">Quantity *</label>
+                                            <input type="number" min="0" id="order_item_quantity{{ base64_encode($index) }}" name="order_item_quantity[]" class="form-control" placeholder="" value="{{ $quantity }}" required />
+                                            @error('order_item_quantity.' . $index)
+                                                <div class="text-tiny text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-12 col-md-4 col-lg-3 mb-3">
+                                            <label for="rate_per">Rate Per *</label>
+                                            <input type="number" min="0" step="0.01" id="rate_per{{ base64_encode($index) }}" name="rate_per[]" class="form-control" placeholder="" value="rate_per.{{$index}}" required />
+                                            @error('rate_per.' . $index)
+                                                <div class="text-tiny text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-12 col-md-4 col-lg-2 mb-3">
+                                            <label for="order_item">Total *</label>
+                                            <input type="number" min="0" step="0.01" id="sub_total{{ base64_encode($index) }}" name="sub_total[]" class="form-control" value="sub_total.{{$index}}" placeholder="Enter Total value" required />
+                                            @error('sub_total.' . $index)
+                                                <div class="text-tiny text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-1 d-flex align-items-center justify-content-center">
+                                    <button class="btn btn-danger remove-field rounded-pill py-2 px-2" type="button" data-room="{{ base64_encode($index) }}" onclick="remove_order_item_container({{ base64_encode($index) }})">
+                                        <i class="ti ti-minus"></i>
+                                    </button>
+                                </div>
+
+                                <hr class="mt-4 mt-md-0">
+                                <script>refreshSearch({{ base64_encode($index) }});</script>
+                            </div>
+                        @endforeach -->
+
                     </div>
+
 
                     <!-- Follow up -->
                     <div class="row my-1">
@@ -362,13 +448,6 @@ hr{
                                                 <input type="text" name="name" id="name" value="{{old('name')}}"
                                                     class="form-control " placeholder="Enter user name here" required />
                                                 <label for="fname"> Name *</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 mb-3">
-                                            <div class="form-floating">
-                                                <input type="email" name="email" id="email" value="{{old('email')}}"
-                                                    class="form-control " placeholder="name@example.com" />
-                                                <label for="email"> Email address</label>
                                             </div>
                                         </div>
                                         <div class="col-md-12 mb-3">
@@ -597,7 +676,7 @@ function addDatePickerForElement(select) {
     $(select).flatpickr({
         dateFormat: "Y-m-d",
         allowInput: true,
-        minDate:'today',
+        minDate: 'today',
     });
 }
 
@@ -638,22 +717,26 @@ function order_item_container() {
                         </small>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4 mb-3">
-                        <label for="design">Design *</label>
-                        <select class="Order-product form-control" id="design${room}" name="design[]" required></select>
+                        <label for="design">Design </label>
+                        <select class="Order-product form-control" id="design${room}" name="design[]"></select>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 mb-3">
-                        <label for="dimension${room}">Dimension </label>
-                        <input type="text"  id="dimension${room}" name="dimension[]" value="" class="form-control" placeholder="Enter dimension value" />
+                    <div class="col-12 col-md-3 col-lg-2 mb-3">
+                        <label for="length">length</label>
+                        <input type="number" min='0' id="length${room}" name="length[]" class="form-control" value='0' placeholder="" />
+                    </div>
+                    <div class="col-12 col-md-3 col-lg-2 mb-3">
+                        <label for="Breath">Breath</label>
+                        <input type="number" min='0' id="breath${room}" name="breath[]" class="form-control" value='0' placeholder="" />
                     </div>
                     <div class="col-12 col-md-4 col-lg-3 mb-3">
                         <label for="order_item_quantity">Quantity *</label>
-                        <input type="number" min='0' id="order_item_quantity${room}" name="order_item_quantity[]" class="form-control" placeholder="Enter item quantity value" required />
+                        <input type="number" min='0' id="order_item_quantity${room}" name="order_item_quantity[]" class="form-control" placeholder="" value='0' required />
                     </div>
                     <div class="col-12 col-md-4 col-lg-3 mb-3">
                         <label for="rate_per">Rate Per *</label>
-                        <input type="number" min='0' step="0.01" id="rate_per${room}" name="rate_per[]" class="form-control" placeholder="Enter rate per value" required />
+                        <input type="number" min='0' step="0.01" id="rate_per${room}" name="rate_per[]" class="form-control" placeholder="" value='0' required />
                     </div>
-                    <div class="col-12 col-md-4 col-lg-3 mb-3">
+                    <div class="col-12 col-md-4 col-lg-2 mb-3">
                         <label for="order_item">Total *</label>
                         <input type="number" min='0' step="0.01" id="sub_total${room}" name="sub_total[]" class="form-control" value="0" placeholder="Enter Total value" required />
                     </div>
@@ -670,7 +753,6 @@ function order_item_container() {
     objTo.appendChild(rowDiv);
     refreshSearch(room);
 }
-
 
 
 function remove_order_item_container(rid) {
@@ -791,49 +873,69 @@ function refreshSearch(rid = 2) {
         templateSelection: formatDesignSelection
     });
 
-    // Handle Rate Per function
+    // Function to calculate quantity and subtotal
+    function calculateQuantityAndSubtotal() {
+        var length = parseInt($(`#length${rid}`).val()) || 0;
+        var breath = parseInt($(`#breath${rid}`).val()) || 0;
+        var ratePer = parseInt($(`#rate_per${rid}`).val()) || 0;
+
+        var quantity = length * breath;
+        $(`#order_item_quantity${rid}`).val(quantity);
+
+        var subtotal = quantity * ratePer;
+        $(`#sub_total${rid}`).val(subtotal);
+    }
+
+    // Handle Length input
+    $(`#length${rid}`).on('input', (e) => {
+        let length = e.target.value;
+        if (length <= 0) {
+            e.target.value = '';
+            return;
+        }
+        calculateQuantityAndSubtotal();
+    });
+
+    // Handle Breath input
+    $(`#breath${rid}`).on('input', (e) => {
+        let breath = e.target.value;
+        if (breath <= 0) {
+            e.target.value = '';
+            return;
+        }
+        calculateQuantityAndSubtotal();
+    });
+
+    // Handle Rate Per input
     $(`#rate_per${rid}`).on('input', (e) => {
-        var rate = parseFloat(e.target.value);
-        if (rate <= 0) {
+        var ratePer = parseFloat(e.target.value);
+        if (ratePer <= 0) {
             e.target.value = '';
             return;
         }
-        var quantity = $(`#order_item_quantity${rid}`).val();
-        var rate = parseFloat(e.target.value);
-        if (!isNaN(quantity)) {
-            var subtotal = quantity * rate;
-            $(`#sub_total${rid}`).val(subtotal.toFixed(2));
-        } else {
-            alert('Invalid quantity input');
-        }
+        calculateQuantityAndSubtotal();
     });
 
-    // Handle Quantity 
+    // Handle Quantity input directly (optional, for validation)
     $(`#order_item_quantity${rid}`).on('input', (e) => {
-        var quantity = parseFloat(e.target.value);
+        var quantity = parseInt(e.target.value);
         if (quantity <= 0) {
             e.target.value = '';
             return;
         }
-        var rate_per = $(`#rate_per${rid}`).val();
-        var quantity = parseFloat(e.target.value);
-        if (!isNaN(rate_per)) {
-            var subtotal = quantity * rate_per;
-            $(`#sub_total${rid}`).val(subtotal.toFixed(2));
-        } else {
-            alert('Invalid input');
-        }
+        var ratePer = parseInt($(`#rate_per${rid}`).val()) || 0;
+        var subtotal = quantity * ratePer;
+        $(`#sub_total${rid}`).val(subtotal.toFixed(2));
     });
 
-    // Handle Sub Total 
+    // Handle Sub Total input directly (optional, for validation)
     $(`#sub_total${rid}`).on('input', (e) => {
-        var quantity = parseFloat(e.target.value);
-        if (quantity <= 0) {
+        var subtotal = parseInt(e.target.value);
+        if (subtotal <= 0) {
             e.target.value = '';
             return;
         }
     });
-
 
     $('.select2-container').css('width', '100%');
 }
@@ -956,8 +1058,8 @@ function formatCustomer(customer) {
         "<div class='row result'>" +
         "<div class='col-12 customer-details'>" +
         "<h6 class='customer-name mb-1' >" + customer.name + "</h6>" +
-        "<p class='text-muted mb-1' style='font-size: 0.8rem;'><strong>Email:</strong> " + customer.email + "</p>" +
         "<p class='text-muted mb-0' style='font-size: 0.8rem;'><strong>Phone:</strong> " + customer.phone + "</p>" +
+        "<p class='text-muted mb-0' style='font-size: 0.8rem;'><strong>Address:</strong> " + customer.address + "</p>" +
         "</div>" +
         "</div>" +
         "</div>"
@@ -1260,8 +1362,6 @@ $(document).ready(function() {
             cache: true
         }
     });
-
-
 });
 
 $(document).ready(() => {

@@ -10,7 +10,7 @@
 
 <div class="card w-100 position-relative overflow-hidden">
     <div class="px-4 py-3 border-bottom">
-        <h5 class="card-title fw-semibold mb-0 lh-sm">{{$title}}</h5>
+        <h5 class="card-title fw-semibold mb-0 lh-sm">List Customer</h5>
     </div>
     <div class="card-body p-4">
         <div class="table-responsive rounded-2 py-5 mb-4">
@@ -24,7 +24,7 @@
         <h6 class="fs-4 fw-semibold mb-0">Phone no.</h6>
       </th>
       <th>
-        <h6 class="fs-4 fw-semibold mb-0">Email</h6>
+        <h6 class="fs-4 fw-semibold mb-0">Address</h6>
       </th>
       <th>
         <h6 class="fs-4 fw-semibold mb-0">Action</h6>
@@ -36,13 +36,14 @@
         @for ($i = 0; $i < count($pageData->Customers); $i++)
         <tr>
           <td>
+          <input class="id" type="hidden" name="id[]" value="{{$pageData->customers[$i]->id}}">
             <p class="mb-0 fw-normal fs-4">{{ $pageData->Customers[$i]->name }}</p>
           </td>
           <td>
             <p class="mb-0 fw-normal fs-4">{{ $pageData->Customers[$i]->phone }}</p>
           </td>
           <td>
-            <p class="mb-0 fw-normal fs-4">{{ $pageData->Customers[$i]->email }}</p>
+            <p class="mb-0 fw-normal fs-4">{{ $pageData->Customers[$i]->address }}</p>
           </td>
           <td class="">
             <a href="{{route('admin.customer.view',['encodedId' => base64_encode($pageData->Customers[$i]->id)])}}" class="text-success"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg></a>

@@ -25,13 +25,6 @@
             </div>
 
             <div class="col-md-12 mb-3">
-              <div class="form-floating">
-              <input type="text" value="{{$pageData->email}}" class="form-control" disabled/>
-                <label for="email"> Email address</label>
-              </div>
-            </div>
-
-            <div class="col-md-12 mb-3">
                 <div class="form-floating">
                 <input type="text" value="{{$pageData->phone}}" class="form-control" disabled/>
                     <label for="phone"> Phone no.</label>

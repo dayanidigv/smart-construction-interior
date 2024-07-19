@@ -1,11 +1,6 @@
 @extends('layout.app')
 @section('content')
 
-@push('style')
-@if (!$displayReminder->isEmpty())
-<link rel="stylesheet" href="/libs/sweetalert2/dist/sweetalert2.min.css">
-@endif
-@endpush
 
 <div class="page-wrapper" id="main-wrapper" data-theme="blue_theme" data-layout="vertical" data-sidebartype="full"
     data-sidebar-position="fixed" data-header-position="fixed">
@@ -52,7 +47,7 @@
                                     <div class="round-16 d-flex align-items-center justify-content-center">
                                         <i class="ti ti-circle"></i>
                                     </div>
-                                    <span class="hide-menu">Add Customer</span>
+                                    <span class="hide-menu">New</span>
                                 </a>
                             </li>
                             <!-- <li class="sidebar-item">
@@ -68,7 +63,7 @@
                                     <div class="round-16 d-flex align-items-center justify-content-center">
                                         <i class="ti ti-circle"></i>
                                     </div>
-                                    <span class="hide-menu">List All Customers</span>
+                                    <span class="hide-menu">List All</span>
                                 </a>
                             </li>
                         </ul>
@@ -77,6 +72,35 @@
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                         <span class="hide-menu">Orders</span>
+                    </li>
+
+
+
+                    <li class="sidebar-item">
+                        <a class="sidebar-link has-arrow" href="#" aria-expanded="false">
+                            <span class="d-flex">
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-info-circle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg>
+                            </span>
+                            <span class="hide-menu">Enquiries</span>
+                        </a>
+                        <ul aria-expanded="false" class="collapse first-level">
+                            <li class="sidebar-item">
+                                <a href="{{route('enquiries.new',['role'=>'admin'])}}" class="sidebar-link ">
+                                    <div class="round-16 d-flex align-items-center justify-content-center">
+                                        <i class="ti ti-circle"></i>
+                                    </div>
+                                    <span class="hide-menu">New</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="{{route('enquiries.list',['role'=>'admin'])}}" class="sidebar-link">
+                                    <div class="round-16 d-flex align-items-center justify-content-center">
+                                        <i class="ti ti-circle"></i>
+                                    </div>
+                                    <span class="hide-menu">List</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
 
@@ -95,7 +119,7 @@
                                     <path d="M15 9m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
                                 </svg>
                             </span>
-                            <span class="hide-menu">Orders</span>
+                            <span class="hide-menu">Order</span>
                         </a>
                         <ul aria-expanded="false" class="collapse first-level">
                             <li class="sidebar-item">
@@ -103,7 +127,7 @@
                                     <div class="round-16 d-flex align-items-center justify-content-center">
                                         <i class="ti ti-circle"></i>
                                     </div>
-                                    <span class="hide-menu">Add new</span>
+                                    <span class="hide-menu">New</span>
                                 </a>
                             </li>
                             <li class="sidebar-item">
@@ -111,7 +135,7 @@
                                     <div class="round-16 d-flex align-items-center justify-content-center">
                                         <i class="ti ti-circle"></i>
                                     </div>
-                                    <span class="hide-menu">view all</span>
+                                    <span class="hide-menu">List</span>
                                 </a>
                             </li>
                         </ul>
@@ -119,8 +143,8 @@
 
                     <li class="sidebar-item">
                         <a class="sidebar-link has-arrow" href="#" aria-expanded="false">
-                            <span class="th-image"></span>
-                            <span class="hide-menu">Designs</span>
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-google-photos"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7.5 7c2.485 0 4.5 1.974 4.5 4.409v.591h-8.397a.61 .61 0 0 1 -.426 -.173a.585 .585 0 0 1 -.177 -.418c0 -2.435 2.015 -4.409 4.5 -4.409z" /><path d="M16.5 17c-2.485 0 -4.5 -1.974 -4.5 -4.409v-.591h8.397c.333 0 .603 .265 .603 .591c0 2.435 -2.015 4.409 -4.5 4.409z" /><path d="M7 16.5c0 -2.485 1.972 -4.5 4.405 -4.5h.595v8.392a.61 .61 0 0 1 -.173 .431a.584 .584 0 0 1 -.422 .177c-2.433 0 -4.405 -2.015 -4.405 -4.5z" /><path d="M17 7.5c0 2.485 -1.972 4.5 -4.405 4.5h-.595v-8.397a.61 .61 0 0 1 .175 -.428a.584 .584 0 0 1 .42 -.175c2.433 0 4.405 2.015 4.405 4.5z" /></svg>
+                            <span class="hide-menu">Design</span>
                         </a>
                         <ul aria-expanded="false" class="collapse first-level">
                             <li class="sidebar-item">
@@ -128,7 +152,7 @@
                                     <div class="round-16 d-flex align-items-center justify-content-center">
                                         <i class="ti ti-circle"></i>
                                     </div>
-                                    <span class="hide-menu">Add new</span>
+                                    <span class="hide-menu">New</span>
                                 </a>
                             </li>
                             <li class="sidebar-item">
@@ -136,7 +160,7 @@
                                     <div class="round-16 d-flex align-items-center justify-content-center">
                                         <i class="ti ti-circle"></i>
                                     </div>
-                                    <span class="hide-menu">view all</span>
+                                    <span class="hide-menu">List</span>
                                 </a>
                             </li>
                         </ul>
@@ -198,7 +222,7 @@
                                     <div class="round-16 d-flex align-items-center justify-content-center">
                                         <i class="ti ti-circle"></i>
                                     </div>
-                                    <span class="hide-menu">Set Remainder</span>
+                                    <span class="hide-menu">Set</span>
                                 </a>
                             </li>
                             <li class="sidebar-item">
@@ -206,7 +230,7 @@
                                     <div class="round-16 d-flex align-items-center justify-content-center">
                                         <i class="ti ti-circle"></i>
                                     </div>
-                                    <span class="hide-menu">List Remainder</span>
+                                    <span class="hide-menu">List</span>
                                 </a>
                             </li>
                         </ul>
@@ -233,7 +257,7 @@
                                     <div class="round-16 d-flex align-items-center justify-content-center">
                                         <i class="ti ti-circle"></i>
                                     </div>
-                                    <span class="hide-menu">Add User</span>
+                                    <span class="hide-menu">New</span>
                                 </a>
                             </li>
                             <li class="sidebar-item">
@@ -241,7 +265,7 @@
                                     <div class="round-16 d-flex align-items-center justify-content-center">
                                         <i class="ti ti-circle"></i>
                                     </div>
-                                    <span class="hide-menu">List Users</span>
+                                    <span class="hide-menu">List</span>
                                 </a>
                             </li>
                             <!-- <li class="sidebar-item">
@@ -309,29 +333,50 @@
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <div class="d-flex align-items-center justify-content-between">
                         <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
-                            <!-- <li class="nav-item dropdown">
-                                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2"
+                            <li class="nav-item dropdown">
+                                <a class="nav-link nav-icon-hover notify-badge" href="javascript:void(0)" id="drop2"
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ti ti-bell-ringing"></i>
-                                        @if (!$displayReminder->isEmpty())
-                                        <div class="notification bg-primary rounded-circle"></div>
+                                        @if (count($displayReminder) > 0)
+                                            <span class="badge rounded-pill bg-danger fs-2">{{count($displayReminder)}}</span> 
                                         @endif
-                                     <div class="notification bg-primary rounded-circle"></div> 
                                 </a>
                                 <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up"
                                     aria-labelledby="drop2">
                                     <div class="d-flex align-items-center justify-content-between py-3 px-7">
-                                        <h5 class="mb-0 fs-5 fw-semibold">Notifications</h5>
-                                       <span class="badge bg-primary rounded-4 px-3 py-1 lh-sm">5 new</span>
+                                        <h5 class="mb-0 fs-5 fw-semibold">Reminder</h5>
+                                        @if (count($displayReminder) != 0)
+                                            <span class="badge bg-primary rounded-4 px-3 py-1 lh-sm">{{count($displayReminder)}} new</span>
+                                        @endif
                                     </div>
                                     <div class="message-body" data-simplebar>
+                                    @if (count($displayReminder) > 0)
+                                        @for ($i = 0; $i < min(count($displayReminder), 7); $i++)
+                                            <a href="{{route('admin.reminder.view',['encodedId' => base64_encode($displayReminder[$i]->id)])}}" class="py-6 px-7 d-flex align-items-center dropdown-item">
+                                                <div class="w-75 d-inline-block v-middle">
+                                                    <h6 class="mb-1 fw-semibold">{{ $displayReminder[$i]->title }}</h6>
+                                                    <span class="d-block" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                        {{ $displayReminder[$i]->description }}
+                                                    </span>
+                                                </div>
+                                            </a>
+                                        @endfor
+                                    @else
+                                        <a href="javascript:void(0)" class="py-6 px-7 d-flex align-items-center dropdown-item">
+                                            <div class="w-75 d-inline-block v-middle">
+                                                <h6 class="mb-1 fw-semibold">No Reminders</h6>
+                                            </div>
+                                        </a>
 
+                                    @endif
                                     </div>
-                                    <div class="py-6 px-7 mb-1">
-                                        <button class="btn btn-outline-primary w-100"> See All Notifications </button>
-                                    </div>
+                                    @if (count($displayReminder) > 6)
+                                        <div class="py-6 px-7 mb-1">
+                                            <a href="{{route('admin.reminder.list')}}"><button class="btn btn-outline-primary w-100"> See All Reminders </button></a>
+                                        </div>
+                                    @endif
                                 </div>
-                            </li> -->
+                            </li>
 
                             <li class="nav-item dropdown">
                                 <a class="nav-link pe-0" href="javascript:void(0)" id="drop1" data-bs-toggle="dropdown"
@@ -355,9 +400,6 @@
                                             <div class="ms-3">
                                                 <h5 class="mb-1 fs-3">{{Auth::user()->name}}</h5>
                                                 <span class="mb-1 d-block text-dark">Admin</span>
-                                                <p class="mb-0 d-flex text-dark align-items-center gap-2">
-                                                    <i class="ti ti-mail fs-4"></i>{{Auth::user()->email}}
-                                                </p>
                                             </div>
                                         </div>
                                         <div class="d-grid py-4 px-7 pt-8">
@@ -381,7 +423,11 @@
                     <div class="col order-md-1 order-2">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item text-muted"><a href="/">Home</a></li>
+                                <li class="breadcrumb-item text-muted"><a href="/">{{ ucfirst($user->role)}}</a></li>
+                                <li class="breadcrumb-item text-muted">{{ $menuTitle}}</li>
+                                @if ($sectionName != null)
+                                    <li class="breadcrumb-item text-muted">{{$sectionName}}</li>
+                                @endif
                                 <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
                             </ol>
                         </nav>
@@ -410,18 +456,8 @@
         </div>
     </div>
     <div class="dark-transparent sidebartoggler"></div>
-    <div class="dark-transparent sidebartoggler"></div>
+    <!-- <div class="dark-transparent sidebartoggler"></div> -->
 </div>
 
 @endsection
 
-@push('script')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var alertList = document.querySelectorAll('.alert');
-    alertList.forEach(function(alert) {
-        new bootstrap.Alert(alert);
-    });
-});
-</script>
-@endpush

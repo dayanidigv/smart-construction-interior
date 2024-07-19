@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DesignsController;
 use App\Http\Controllers\DeveloperController;
+use App\Http\Controllers\EnquiriesController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LabourController;
 use App\Http\Controllers\ListPageExportController;
@@ -84,7 +85,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/getReportByFilter', [ReportController::class, 'getReportByFilter'])->name('getReportByFilter');
         });
 
-        
         Route::controller(CustomerController::class)->group(function(){
             Route::get('/customer/add', "admin_add")->name('admin.customer.add');
             Route::get('/customer/list', "admin_list")->name('admin.customer.list');
@@ -143,7 +143,22 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    // Routes for common Admin and Manager
+    // Enquiries
+    // Role (admin, manager)
+    Route::controller(EnquiriesController::class)->group(function(){
+        Route::prefix('{role}')->group(function(){
+            Route::get('/enquiries/new', "new")->name('enquiries.new');
+            Route::get('/enquiries/list', "list")->name('enquiries.list');
+            Route::post('/enquiries/store', "store")->name('enquiries.store');
+            Route::get('/enquiries/view/{encodedId}', 'viewEnqury')->name('enquiries.view');
+            Route::get('/enquiries/{encodedId}/edit', "edit")->name('enquiries.edit');
+            Route::post('/enquiries/{encodedId}/update', "update")->name('enquiries.update');
+            Route::delete('/enquiries/{encodedId}/destroy', "destroy")->name('enquiries.destroy');
+            Route::put('/enquiries/{encodedId}/restore', "restore")->name('enquiries.restore');
+        });
+    });
+
+    // Routes for Admin and Manager
     Route::controller(CustomerController::class)->group(function(){
         Route::post('/add-customer', "store")->name('customer.store');
         Route::post('/customer/{encodedId}/update', "update")->name('customer.update');
@@ -185,15 +200,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(ListPageExportController::class)->group(function () {
-        Route::prefix('ExportList')->group(function () {
-            Route::post('/OrdersList','ExportOrder')->name('export.order');
-            Route::post('/UserList','ExportUser')->name('export.user');
-            Route::post('/CustomerList','ExportCustomer')->name('export.customer');
-            Route::post('/DesignList','ExportDesign')->name('export.desgin');
-            Route::post('/ReinderList','ExportReminder')->name('export.rteminder');
-        });
+        Route::post('/ExportList','ExportList')->name('export.list');
     });
-
 
     Route::controller(CategoryController::class)->group(function(){
         Route::get('{role}/category', "view")->name('category.view');

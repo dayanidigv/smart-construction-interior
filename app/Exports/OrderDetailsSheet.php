@@ -69,7 +69,6 @@ class OrderDetailsSheet implements FromView, WithTitle,  ShouldAutoSize, WithSty
             'createdby_name' => $this->order->creator->name,
             'customer_name' => $this->order->customer->name,
             'customer_phone' => $this->order->customer->phone,
-            'customer_email' => $this->order->customer->email,
             'customer_address' => $this->order->customer->address,
             'orderItems' => $this->order->orderItems->map(function ($item) {
                 return [

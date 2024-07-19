@@ -71,6 +71,13 @@ class OrdersController extends Controller
             'payment_method' => 'nullable|array',
             'payment_method.*' => 'nullable|string',
             'manage_access' => 'nullable|string',
+            
+            
+            'length' => 'nullable|array',
+            'length.*' => 'nullable',
+            
+            'breath' => 'nullable|array',
+            'breath.*' => 'nullable',
         ]);
 
         try {
@@ -101,6 +108,12 @@ class OrdersController extends Controller
                 ]);
             }
 
+            
+            $priorityLevels = [
+                1 => 'Danger',
+                2 => 'Warning',
+                3 => 'Success'
+            ];
 
             // Handle follow-ups
             if (isset($request->follow_date)) {
@@ -114,7 +127,9 @@ class OrdersController extends Controller
                     $schedule->title = 'Follow-up Reminder';
                     $schedule->description = 'Follow-up needed for order with customer ' . $customer->name . ". Additional note: " . $note;
                     $schedule->start = Carbon::parse($followDate)->format('Y-m-d 00:00:00');
-                    $schedule->level = 'Warning';
+                    
+                    $schedule->level = $priorityLevels[$request->follow_priority[$index]] ?? 'Warning';
+                    
                     $schedule->save();
 
                     // Create reminder
@@ -130,8 +145,8 @@ class OrdersController extends Controller
             }
 
             // Handle order items
-            if (isset($request->design)) {
-                for ($i = 0; $i < count($request->design); $i++) {
+            if (isset($request->category)) {
+                for ($i = 0; $i < count($request->category); $i++) {
     
                     // Find the category
                     $category = Categories::findOrFail($request->category[$i]);
@@ -139,8 +154,11 @@ class OrdersController extends Controller
                     // Find the subcategory
                     $subCategory = Categories::findOrFail($request->sub_category[$i]);
             
-                    // Find the design
-                    $design = Designs::findOrFail($request->design[$i]);
+                    $design= null;
+                    if (isset($request->design[$i])){   
+                        // Find the design
+                        $design = Designs::findOrFail($request->design[$i]);
+                    }
 
                     $rate_per = $request->rate_per[$i] ?? 0;
 
@@ -150,13 +168,19 @@ class OrdersController extends Controller
                     $discount_amount = $sub_total * ($discount_percentage / 100);
                     $total = $sub_total - $discount_amount;
 
+                    $length = $request->length[$i] ?? 0;
+                    $breath = $request->breath[$i] ?? 0;
+                    $dimension = $length . 'x' . $breath;
+
                     // Create order item
                     DB::table('order_items')->insert([
                         'order_id' => $order->id,
                         'category_id' => $subCategory->id,
-                        'design_id' => $design->id,
-                        'quantity' => $request->order_item_quantity[$i],
-                        'dimension' => $request->dimension[$i],
+                        'design_id' =>  $design ? $design->id : null,
+                        'quantity' => $request->order_item_quantity[$i] ?? 0,
+                        'dimension' => $dimension,
+                        'length' => $length,
+                        'breath' => $breath,
                         'rate_per' => $rate_per,
                         'sub_total' => $sub_total,
                         'discount_percentage' => $discount_percentage,
@@ -278,11 +302,15 @@ class OrdersController extends Controller
             'alt_category' => 'nullable|array',
             'alt_category.*' => 'nullable|string|max:255',
             
-            'alt_dimension' => 'nullable|array',
-            'alt_dimension.*' => 'nullable|string|max:255',
-            
             'alt_sub_category' => 'nullable|array',
             'alt_sub_category.*' => 'nullable|string|max:255',
+            
+            
+            'alt_length' => 'nullable|array',
+            'alt_length.*' => 'nullable',
+            
+            'alt_breath' => 'nullable|array',
+            'alt_breath.*' => 'nullable',
             
             'is_order_item_delete' => 'nullable|array',
             'is_order_item_delete.*' => 'nullable|integer|exists:order_items,id',
@@ -347,8 +375,11 @@ class OrdersController extends Controller
             'sub_total' => 'nullable|array',
             'sub_total.*' => 'nullable|numeric|min:0',
             
-            'dimension' => 'nullable|array',
-            'dimension.*' => 'nullable|string|max:255',
+            'length' => 'nullable|array',
+            'length.*' => 'nullable',
+
+            'breath' => 'nullable|array',
+            'breath.*' => 'nullable',
             
             'order_item_quantity' => 'nullable|array',
             'order_item_quantity.*' => 'nullable|integer|min:1',
@@ -414,16 +445,21 @@ class OrdersController extends Controller
                                 $quantity = $request->alt_order_item_quantity[$index];
                                 $rate_per = $request->alt_rate_per[$index];
                                 $sub_total = $request->alt_sub_total[$index];
-                                $dimension = $request->alt_dimension[$index];
                                 $discount_percentage = $request->discount_percentage ?? 0;
                                 $discount_amount = $sub_total * ($discount_percentage / 100);
                                 $total = $sub_total - $discount_amount;
     
+                                $length = $request->alt_length[$index] ?? 0;
+                                $breath = $request->alt_breath[$index] ?? 0;
+                                $dimension = $length . 'x' . $breath;
+
                                 $orderItem->update([
                                     'quantity' => $quantity,
                                     'rate_per' => $rate_per,
                                     'sub_total' => $sub_total,
                                     'dimension' => $dimension,
+                                    'length' => $length,
+                                    'breath' => $breath,
                                     'discount_percentage' => $discount_percentage,
                                     'discount_amount' => $discount_amount,
                                     'total' => $total,
@@ -435,8 +471,8 @@ class OrdersController extends Controller
             }
 
             // Create new order items
-            if (isset($request->design)) {
-                for ($i = 0; $i < count($request->design); $i++) {
+            if (isset($request->category)) {
+                for ($i = 0; $i < count($request->category); $i++) {
 
                     // Find or create the category
                     $category = Categories::findOrFail($request->category[$i]);
@@ -444,21 +480,27 @@ class OrdersController extends Controller
                     // Find or create the subcategory
                     $subCategory = Categories::findOrFail($request->sub_category[$i]);
 
-                    // Find the design
-                    $design = Designs::findOrFail($request->design[$i]);
+                    $design= null;
+                    if (isset($request->design[$i])){   
+                        // Find the design
+                        $design = Designs::findOrFail($request->design[$i]);
+                    }
                     $rate_per = $request->rate_per[$i] ?? 0;
                     $sub_total = $request->sub_total[$i];
                     $discount_percentage = $request->discount_percentage ?? 0;
                     $discount_amount = $sub_total * ($discount_percentage / 100);
                     $total = $sub_total - $discount_amount;
+                    $dimension = $request->length[$i] . 'x' .$request->breath[$i];
 
                      // Create order item
                      DB::table('order_items')->insert([
                         'order_id' => $order->id,
                         'category_id' => $subCategory->id,
-                        'design_id' => $design->id,
+                        'design_id' =>  $design ? $design->id : null,
                         'quantity' => $request->order_item_quantity[$i],
-                        'dimension' => $request->dimension[$i],
+                        'dimension' => $dimension,
+                        'length' => $request->length[$i],
+                        'breath' => $request->breath[$i],
                         'rate_per' => $rate_per,
                         'sub_total' => $sub_total,
                         'discount_percentage' => $discount_percentage,
@@ -469,6 +511,13 @@ class OrdersController extends Controller
                     ]);
                 }
             }
+
+            
+            $priorityLevels = [
+                1 => 'Danger',
+                2 => 'Warning',
+                3 => 'Success'
+            ];
 
             // Update or delete follow-ups
             if (isset($request->alt_followup_id)) {
@@ -488,7 +537,7 @@ class OrdersController extends Controller
                             $additionalNote = $request->alt_note[$index] ?? '';
                             $newDescription = 'Follow-up needed for order with customer ' . $customer->name . ". Additional note: " . $additionalNote;
                             $newFollowDate = Carbon::parse($request->alt_follow_date[$index])->format('Y-m-d');
-            
+    
                             $reminder = Reminders::where('order_id', $order->id)->where('title', $schedule->title)->where('description', $schedule->description)->first();
 
                             if ($schedule->description !== $newDescription) {
@@ -501,11 +550,12 @@ class OrdersController extends Controller
                             if (Carbon::parse($schedule->start)->format('Y-m-d') !== $newFollowDate) {
                                 $schedule->update(['start' => "$newFollowDate 00:00:00"]);
                                 if ($reminder) {
-                                    $reminder->update(['start' => "$newFollowDate 09:00:00"]);
+                                    $reminder->update(['reminder_time' => "$newFollowDate 09:00:00"]);
                                 }
                             }
 
                             if($request->alt_follow_priority[$index]){
+                                $schedule->level = $priorityLevels[$request->alt_follow_priority[$index]] ?? 'Warning';
                                 if ($reminder) {
                                     $reminder->update(['priority' => $request->alt_follow_priority[$index]]);
                                 }
@@ -526,7 +576,7 @@ class OrdersController extends Controller
                     $schedule->title = 'Follow-up Reminder';
                     $schedule->description = 'Follow-up needed for order with customer ' . $customer->name . ". Additional note: " . $note;
                     $schedule->start = "$followDate 00:00:00";
-                    $schedule->level = 'Warning';
+                    $schedule->level = $priorityLevels[$request->follow_priority[$index]] ?? 'Warning';
                     $schedule->save();
     
                     $reminder = new Reminders();
@@ -613,7 +663,7 @@ class OrdersController extends Controller
                 'source' => 'order_update_form',
                 'extra_info' => json_encode(['user_agent' => $request->header('User-Agent'),'error_message' => $e])
             ]);
-            return back()->with('error', 'Failed to update order. Please try again later. ' );
+            return back()->with('error', 'Failed to update order. Please try again later. ' . $e);
         }
     }
     

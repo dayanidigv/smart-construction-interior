@@ -164,7 +164,7 @@
                             <p class="fs-2 pb-1 mb-0 fw-normal">{{ $item['design_name'] }}</p>
                         </td>
                         <td class="text-center">
-                            <p class="fs-3 pb-0 mb-0"><span class="dejaVu">{{ $item['quantity'] }}</span>({{ $item['unit'] }})</p>
+                            <p class="fs-3 pb-0 mb-0"><span class="dejaVu">{{ $item['quantity'] }}</span>({{ $item['unit'] ? $item['unit'] : "SQ.FT" }})</p>
                         </td>
                         <td class="text-end">
                             <p class="fs-3 pb-0 mb-0 dejaVu">{{ $item['rate_per'] }}/-</p>

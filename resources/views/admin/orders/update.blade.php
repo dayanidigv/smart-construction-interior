@@ -638,14 +638,6 @@ hr{
 
                                         <div class="col-md-12 mb-3">
                                             <div class="form-floating">
-                                                <input type="email" name="email" id="email" value="{{old('email')}}"
-                                                    class="form-control " placeholder="name@example.com" />
-                                                <label for="email"> Email address</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-12 mb-3">
-                                            <div class="form-floating">
                                                 <input type="number" name="phone" id="phone" value="{{old('phone')}}"
                                                     class="form-control" placeholder="Enter customer Phone no."
                                                     required />
@@ -1203,7 +1195,6 @@ function formatCustomer(customer) {
         "<div class='row result'>" +
         "<div class='col-12 customer-details'>" +
         "<h6 class='customer-name mb-1' >" + customer.name + "</h6>" +
-        "<p class='text-muted mb-1' style='font-size: 0.8rem;'><strong>Email:</strong> " + customer.email + "</p>" +
         "<p class='text-muted mb-0' style='font-size: 0.8rem;'><strong>Phone:</strong> " + customer.phone + "</p>" +
         "</div>" +
         "</div>" +

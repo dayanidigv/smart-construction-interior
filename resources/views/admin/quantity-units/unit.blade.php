@@ -11,7 +11,7 @@
 
 <div class="card w-100 position-relative overflow-hidden">
     <div class="px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
-        <h5 class="card-title fw-semibold mb-0 lh-sm">{{$title}}</h5>
+        <h5 class="card-title fw-semibold mb-0 lh-sm">List Unit</h5>
         <a href="{{route('admin.quantity-units.add')}}" class="btn btn-success font-medium rounded-pill px-4">Add
             new</a>
     </div>
@@ -44,16 +44,17 @@
                     @for ($i = 0; $i < count($pageData->QuantityUnits); $i++)
                         <tr>
                             <td>
-                                <p class="mb-0 fw-normal fs-4">{{ $i + 1 }}</p>
+                            <input class="id" type="hidden" name="id[]" value="{{$pageData->QuantityUnits[$i]->id}}">
+                                <p class="mb-0 fw-normal fs-4" style="color: {{ $pageData->QuantityUnits[$i]->deleted_at ? 'red' : 'inherit' }}">{{ $i + 1 }}</p>
                             </td>
                             <td>
-                                <p class="mb-0 fw-normal fs-4">{{ $pageData->QuantityUnits[$i]->name }}</p>
+                                <p class="mb-0 fw-normal fs-4" style="color: {{ $pageData->QuantityUnits[$i]->deleted_at ? 'red' : 'inherit' }}">{{ $pageData->QuantityUnits[$i]->name }}</p>
                             </td>
                             <td>
-                                <p class="mb-0 fw-normal fs-4">{{ $pageData->QuantityUnits[$i]->description }}</p>
+                                <p class="mb-0 fw-normal fs-4" style="color: {{ $pageData->QuantityUnits[$i]->deleted_at ? 'red' : 'inherit' }}">{{ $pageData->QuantityUnits[$i]->description }}</p>
                             </td>
                             <td>
-                                <p class="mb-0 fw-normal fs-4">
+                                <p class="mb-0 fw-normal fs-4" style="color: {{ $pageData->QuantityUnits[$i]->deleted_at ? 'red' : 'inherit' }}">
                                     {{ $pageData->QuantityUnits[$i]->deleted_at != null ? "No" : "Yes" }}</p>
                             </td>
                             <td class="">

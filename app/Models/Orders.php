@@ -22,6 +22,7 @@ class Orders extends Model
         'type',
         'user_id',
         'creator_id',
+        'enquiry_id',
         'customer_id',
         'status',
         'start_date',
@@ -63,8 +64,7 @@ class Orders extends Model
         return $this->belongsTo(Customers::class,"customer_id")->withTrashed();
     }
 
-    public function invoice()
-    {
+    public function invoice(){
         return $this->belongsTo(Invoices::class, 'id', 'order_id');
     }
 
