@@ -333,6 +333,7 @@ class EnquiriesController extends Controller
                 'user_id' => $userID,
                 'customer_id' => $customer->id,
                 'invoice_number' => $formattedInvoiceNumber,
+                'terms_and_conditions' => '1. In case of changes in design rate will be changed\n2. Extra works cause extra charges.',
             ]);
 
             return $order;
