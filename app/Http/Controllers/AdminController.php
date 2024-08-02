@@ -95,7 +95,7 @@ class AdminController extends Controller
         }else if ($sectionName == "Products" && $title == "List"){
             $pageData->Products = $user->products()->get();
         }else if ($sectionName == "Order" && $title == "List"){
-            $pageData->Orders = Orders::with('orderItems')->get();
+            $pageData->Orders = Orders::with('orderItems')->orderByDesc('id')->get();
         }else if ($title == "Invoice"){
             $pageData = Orders::orderByDesc('created_at')->with('orderItems')->get();
         }else if ($sectionName == "Design" && $title == "New"){

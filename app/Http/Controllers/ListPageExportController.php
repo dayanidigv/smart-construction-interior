@@ -8,6 +8,7 @@ use App\Exports\EnquiriesExport;
 use App\Exports\OrdersExport;
 use App\Exports\RemindersExport;
 use App\Exports\UnitsExport;
+use App\Exports\UsersExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -69,7 +70,7 @@ class ListPageExportController extends Controller
 
     protected function ExportUser($inputs)
     {
-        return response()->json(['message' => 'User export not yet implemented.']);
+        return Excel::download(new UsersExport($inputs->list_ids), 'users.xlsx');
     }
 
     protected function ExportOrder($inputs)

@@ -878,8 +878,12 @@ function refreshSearch(rid = 2) {
         var length = parseInt($(`#length${rid}`).val()) || 0;
         var breath = parseInt($(`#breath${rid}`).val()) || 0;
         var ratePer = parseInt($(`#rate_per${rid}`).val()) || 0;
+        var quantity = parseInt($(`#order_item_quantity${rid}`).val()) || 0;
+        
+        if (length * breath != 0){
+            var quantity =  length * breath;
+        }
 
-        var quantity = length * breath;
         $(`#order_item_quantity${rid}`).val(quantity);
 
         var subtotal = quantity * ratePer;

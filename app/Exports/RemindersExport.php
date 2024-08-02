@@ -18,7 +18,7 @@ class RemindersExport implements FromCollection, WithHeadings, WithMapping
 
     /**
     * @return \Illuminate\Support\Collection
-    */
+    */ 
     public function collection()
     {
         return Reminders::withTrashed()->whereIn('id', $this->list_ids)->get();
