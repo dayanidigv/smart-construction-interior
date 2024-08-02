@@ -482,7 +482,7 @@
             @yield('managerContent')
         </div>
     </div>
-    <div class="dark-transparent sidebartoggler"></div>
+    <!-- <div class="dark-transparent sidebartoggler"></div> -->
     <!-- <div class="dark-transparent sidebartoggler"></div> -->
 </div>
 
