@@ -183,6 +183,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(ScheduleController::class)->group(function () {
         Route::post('/schedule/store', "store")->name('schedule.store');
         Route::post('/schedule/{id}/update', "update")->name('schedule.update');
+        Route::delete('/schedule/{id}/destroy', "destroy")->name('schedule.destroy');
     });
 
     Route::controller(reminderController::class)->group(function () {

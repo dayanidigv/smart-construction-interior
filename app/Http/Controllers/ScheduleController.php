@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Log;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Auth;
@@ -37,7 +38,7 @@ class ScheduleController extends Controller
             $schedule->end = $request->end;
             $schedule->visibility = $request->visibility;
             $schedule->is_editable = $request->has('is_editable') ? 1 : 0;
-            $schedule->level = $request->has('schedule_level') ? $request->schedule_level : "Primary";
+            $schedule->level = $request->has('schedule_level') ? $request->schedule_level : "Warning";
             $schedule->save();
             // Return a response
             return back()->with('message', 'Schedule created successfully!');
@@ -109,5 +110,43 @@ class ScheduleController extends Controller
             return back()->with('error', 'Error Updating schedule: ');
         }
 
+    }
+
+    
+    public function destroy($id, Request $request)
+    {
+        try {
+            $Schedule = Schedule::findOrFail($id);
+            $user_id = Auth::id();
+            
+            if ($user_id != $Schedule->user_id) {
+                Log::create([
+                    'message' => 'Error delete Schedule',
+                    'level' => 'warning',
+                    'type' => 'security',
+                    'ip_address' => $request->ip(),
+                    'context' => 'web',
+                    'source' => 'delete_Schedule',
+                    'extra_info' => json_encode(['user_agent' => $request->header('User-Agent')])
+                ]);
+            abort(403, 'You can only delete Schedules you created.');
+            }
+            
+            $Schedule->delete();
+            return back()->with('message', 'Schedule deleted successfully!');
+        } catch (ModelNotFoundException $e) {
+            return back()->with('error', 'Schedule not found.');
+        } catch (\Exception $e) {
+            Log::create([
+                'message' => 'Error delete Schedule',
+                'level' => 'warning',
+                'type' => 'error',
+                'ip_address' => $request->ip(),
+                'context' => 'web',
+                'source' => 'delete_Schedule',
+                'extra_info' => json_encode(['user_agent' => $request->header('User-Agent'),'error'=>$e])
+            ]);
+            return back()->with('error', 'Error deleting Schedule.');
+        }
     }
 }

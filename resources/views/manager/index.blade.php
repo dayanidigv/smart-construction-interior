@@ -84,28 +84,28 @@ use Illuminate\Support\Facades\Auth;
                                     <div class="form-check form-check-primary form-check-inline">
                                         <input class="form-check-input" type="radio" name="schedule_level"
                                             value="Danger" id="modalDanger" />
-                                        <label class="form-check-label" for="modalDanger">Danger</label>
+                                        <label class="form-check-label" for="modalDanger">Red</label>
                                     </div>
                                 </div>
                                 <div class="n-chk">
                                     <div class="form-check form-check-warning form-check-inline">
                                         <input class="form-check-input" type="radio" name="schedule_level"
                                             value="Success" id="modalSuccess" />
-                                        <label class="form-check-label" for="modalSuccess">Success</label>
+                                        <label class="form-check-label" for="modalSuccess">Green</label>
                                     </div>
                                 </div>
-                                <div class="n-chk">
+                                <!-- <div class="n-chk">
                                     <div class="form-check form-check-success form-check-inline">
                                         <input class="form-check-input" type="radio" name="schedule_level"
                                             value="Primary" id="modalPrimary" />
                                         <label class="form-check-label" for="modalPrimary">Primary</label>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="n-chk">
                                     <div class="form-check form-check-danger form-check-inline">
                                         <input class="form-check-input" type="radio" name="schedule_level"
                                             value="Warning" id="modalWarning" />
-                                        <label class="form-check-label" for="modalWarning">Warning</label>
+                                        <label class="form-check-label" for="modalWarning">Yellow</label>
                                     </div>
                                 </div>
                             </div>
@@ -113,6 +113,7 @@ use Illuminate\Support\Facades\Auth;
 
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-danger btn-destroy-event" >Delete</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-success btn-update-event" data-fc-event-public-id="">Update
                             changes</button>

@@ -31,6 +31,7 @@ class ReportController extends Controller
 
         $query = Orders::query();
 
+
         try {
         if (!$isAll) {
             // Apply status filter
@@ -48,16 +49,16 @@ class ReportController extends Controller
                 $query->where('customer_id', $customerId);
             }
 
-            // Apply date filter
+           // Apply date filter
             if ($dateFrom) {
-                $dateFromFormatted = Carbon::createFromFormat('Y-m-d', $dateFrom)->format('Y-m-d');
+                $dateFromFormatted = Carbon::createFromFormat('d-m-Y', $dateFrom)->format('d-m-Y');
                 $query->whereDate('created_at', '>=', $dateFromFormatted);
             }
             if ($dateTo) {
-                $dateToFormatted = Carbon::createFromFormat('Y-m-d', $dateTo)->format('Y-m-d');
+                $dateToFormatted = Carbon::createFromFormat('d-m-Y', $dateTo)->format('d-m-Y');
                 $query->whereDate('created_at', '<=', $dateToFormatted);
             }
-            
+
             // Apply location filter
             if ($location) {
                 $query->where('location', 'like', '%' . $location . '%');
@@ -95,6 +96,7 @@ class ReportController extends Controller
                     'trace' => $e->getTraceAsString(),
                     'error'=>$e])
             ]);
+            
     
             // Redirect back with error message
             return back()->with('error', 'An error occurred while exporting the report. Please try again.')->withInput();
@@ -111,6 +113,8 @@ class ReportController extends Controller
             $dateFrom = $request->query('date_from');
             $dateTo = $request->query('date_to');
             $type = $request->query('type');
+
+           
 
     
             $query = Orders::query();
@@ -133,11 +137,11 @@ class ReportController extends Controller
     
                 // Apply date filter
                 if ($dateFrom) {
-                    $dateFromFormatted = Carbon::createFromFormat('Y-m-d', $dateFrom)->format('Y-m-d');
+                    $dateFromFormatted = Carbon::createFromFormat('d-m-Y', $dateFrom)->format('Y-m-d');
                     $query->whereDate('created_at', '>=', $dateFromFormatted);
                 }
                 if ($dateTo) {
-                    $dateToFormatted = Carbon::createFromFormat('Y-m-d', $dateTo)->format('Y-m-d');
+                    $dateToFormatted = Carbon::createFromFormat('d-m-Y', $dateTo)->format('Y-m-d');
                     $query->whereDate('created_at', '<=', $dateToFormatted);
                 }
     
@@ -199,6 +203,7 @@ class ReportController extends Controller
             $type = $request->query('type');
             $location = $request->query('location');
 
+            
     
             $query = Orders::query()->where('user_id', Auth::user()->id);
     
@@ -215,11 +220,11 @@ class ReportController extends Controller
     
                 // Apply date filter
                 if ($dateFrom) {
-                    $dateFromFormatted = Carbon::createFromFormat('Y-m-d', $dateFrom)->format('Y-m-d');
+                    $dateFromFormatted = Carbon::createFromFormat('d-m-Y', $dateFrom)->format('Y-m-d');
                     $query->whereDate('created_at', '>=', $dateFromFormatted);
                 }
                 if ($dateTo) {
-                    $dateToFormatted = Carbon::createFromFormat('Y-m-d', $dateTo)->format('Y-m-d');
+                    $dateToFormatted = Carbon::createFromFormat('d-m-Y', $dateTo)->format('Y-m-d');
                     $query->whereDate('created_at', '<=', $dateToFormatted);
                 }
             
@@ -279,6 +284,7 @@ class ReportController extends Controller
             $type = $request->query('type');
             $location = $request->query('location');
 
+        
     
             $query = Orders::query()->where('user_id',Auth::user()->id);
     
@@ -295,11 +301,11 @@ class ReportController extends Controller
     
                 // Apply date filter
                 if ($dateFrom) {
-                    $dateFromFormatted = Carbon::createFromFormat('Y-m-d', $dateFrom)->format('Y-m-d');
+                    $dateFromFormatted = Carbon::createFromFormat('d-m-Y', $dateFrom)->format('Y-m-d');
                     $query->whereDate('created_at', '>=', $dateFromFormatted);
                 }
                 if ($dateTo) {
-                    $dateToFormatted = Carbon::createFromFormat('Y-m-d', $dateTo)->format('Y-m-d');
+                    $dateToFormatted = Carbon::createFromFormat('d-m-Y', $dateTo)->format('Y-m-d');
                     $query->whereDate('created_at', '<=', $dateToFormatted);
                 }
                 

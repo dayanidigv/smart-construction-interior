@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var getModalEndDateEl = document.querySelector("#schedule-end-date");
     var getModalAddBtnEl = document.querySelector(".btn-add-event");
     var getModalUpdateBtnEl = document.querySelector(".btn-update-event");
+    var getModalDestroyBtnEl = document.querySelector(".btn-destroy-event");
     var getModalVisibilityEl = document.querySelector("#schedule-visibility");
     var getModalVisibilitySelectionEl = document.getElementById('visibilitySelection');
     var getModalVisibilityInputDivEl = document.getElementById('visibilityInput');
@@ -67,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
         getModalForEditableEl.setAttribute("checked", true);
         getModalAddBtnEl.style.display = "block";
         getModalUpdateBtnEl.style.display = "none";
+        getModalDestroyBtnEl.style.display = "none";
         myModal.show();
     };
 
@@ -88,6 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
         getModalForEditableEl.setAttribute("checked", true);
         getModalAddBtnEl.style.display = "block";
         getModalUpdateBtnEl.style.display = "none";
+        getModalDestroyBtnEl.style.display = "none";
         myModal.show();
         getModalStartDateEl.value = combineDate;
         getModalEndDateEl.value = combineEndDate;
@@ -104,6 +107,38 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
     }
+
+    getModalDestroyBtnEl.addEventListener('click', () => {
+        var scheduleID = getModalDestroyBtnEl.getAttribute('data-id');
+        var confirmDelete = confirm("Are you sure you want to delete this schedule?");
+    
+        if (confirmDelete) {
+            var form = document.createElement('form');
+            form.method = 'POST'; // Use POST method since HTML forms do not support DELETE directly
+            form.action = `/schedule/${scheduleID}/destroy`;
+    
+            // Add a hidden input field to simulate the DELETE method
+            var methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+            form.appendChild(methodInput);
+    
+            // Add the CSRF token as a hidden input field
+            var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            var csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = csrfToken;
+            form.appendChild(csrfInput);
+    
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+    
+    
+    
 
 
 
@@ -134,6 +169,8 @@ document.addEventListener("DOMContentLoaded", function () {
             getModalFormEl.setAttribute("action", `/schedule/${getModalEventId}/update`);
             getModalStartDateEl.value = eventObj.extendedProps.start_time;
             getModalEndDateEl.value = eventObj.extendedProps.end_time;
+            getModalDestroyBtnEl.setAttribute('data-id',eventObj.id)
+
             if (eventObj.extendedProps.foreditable) {
                 getModalForEditableEl.setAttribute("checked", eventObj.extendedProps.foreditable);
                 getModalUpdateBtnEl.style.display = "block";
@@ -141,9 +178,12 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 if (eventObj.extendedProps.is_mine) {
                     getModalUpdateBtnEl.style.display = "block";
+                    getModalDestroyBtnEl.style.display = "block";
                     setDisable(false);
                 } else {
                     getModalUpdateBtnEl.style.display = "none";
+                    getModalDestroyBtnEl.style.display = "none";
+                    getModalDestroyBtnEl.setAttribute('data-id','')
                     setDisable(true);
                 }
             }

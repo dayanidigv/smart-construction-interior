@@ -206,7 +206,7 @@ $('#location').on('input', function() {
 document.addEventListener('DOMContentLoaded', function() {
     // For Order Date picker
     let orderStartDatePicker = $("#date_from").flatpickr({
-        dateFormat: "Y-m-d",
+        dateFormat: "d-m-Y",
         allowInput: true,
         onChange: function(selectedDates, dateStr, instance) {
             if (selectedDates.length > 0) {
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     let OrderEndDatePicker = $("#date_to").flatpickr({
-        dateFormat: "Y-m-d",
+        dateFormat: "d-m-Y",
         allowInput: true
     });
 

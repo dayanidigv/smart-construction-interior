@@ -188,6 +188,7 @@ function fetchData() {
             loadingScreen.style.display = 'none';
         },
         error: function(xhr, status, error) {
+            console.log(xhr, status, error);
             $('#reportTable').empty();
             $('#reportTable').append(`<div class="alert alert-warning">${xhr.responseJSON.message}</div>`);
             loadingScreen.style.display = 'none';
@@ -218,23 +219,23 @@ $('#location').on('input', function() {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // For Order Date picker
-    let orderStartDatePicker = $("#date_from").flatpickr({
-        dateFormat: "Y-m-d",
+    let orderStartDatePicker = flatpickr("#date_from", {
+        dateFormat: "d-m-Y",
         allowInput: true,
         onChange: function(selectedDates, dateStr, instance) {
             if (selectedDates.length > 0) {
                 let minDate = selectedDates[0];
-                OrderEndDatePicker.set('minDate',
-                    minDate);
+                orderEndDatePicker.set('minDate', minDate);
             }
         }
     });
-    let OrderEndDatePicker = $("#date_to").flatpickr({
-        dateFormat: "Y-m-d",
+
+    let orderEndDatePicker = flatpickr("#date_to", {
+        dateFormat: "d-m-Y",
         allowInput: true
     });
-
 });
+
 </script>
 
 @endpush

@@ -254,7 +254,7 @@ class AdminController extends Controller
             $pageData->order = $order;
             $labourData=[];
 
-            $labours = Labour::where('order_id', $order->id)->orderBy('date')->get();
+            $labours = Labour::where('order_id', $order->id)->orderByDesc('date')->get();
             foreach ($labours as $labour) {
                 $date = Carbon::parse($labour->date)->format('Y-m-d');
                 if (!isset($labourData[$date])) {
