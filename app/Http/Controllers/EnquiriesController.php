@@ -62,6 +62,7 @@ class EnquiriesController extends Controller
         $data = $this->getUserData('Orders', "Enquiries", "New");
         return view('common.enquiries.new',$data);
     }
+
     public function store(Request $request, string $role)
     {
         $this->auth($role);
@@ -118,9 +119,25 @@ class EnquiriesController extends Controller
     
             // Add new follow-ups
             $this->handleNewFollowUps($request, $enquiry, $customer, $priorityLevels, $userID);
-        
-            DB::commit();
-    
+
+            
+
+            // Add new follow-ups
+            $this->handleNewFollowUps($request, $enquiry, $customer, $priorityLevels, $userID);
+
+            // Check and Convert to Order
+            $order = $this->handleConvertToOrder( $enquiry, $customer, $userID);
+           
+           DB::commit();
+
+           if ($order) {
+                $encodedId = base64_encode($order->id);
+                if (Auth::check() && Auth::user()->role === "admin") {
+                    return redirect()->route('admin.edit.order', ['encodedId' => $encodedId])->with('message', 'Enquiry to Order Convert successfully.');
+                } else {
+                    return redirect()->route('manager.edit.order', ['encodedId' => $encodedId])->with('message', 'Enquiry to Order Convert successfully.');
+                }
+            }
             return redirect()->route('enquiries.list', ['role' => $role])->with('message', 'Enquiry created successfully.');
         } catch (QueryException $e) {
             DB::rollBack();

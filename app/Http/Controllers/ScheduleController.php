@@ -17,14 +17,19 @@ class ScheduleController extends Controller
             'title' => 'required|string',
             'description' => 'required|string',
             'start' => 'required|date_format:Y-m-d\TH:i',
-            'end' => 'nullable|date_format:Y-m-d\TH:i',
+            'end' => 'nullable|date_format:Y-m-d\TH:i|after:start', 
             'visibility' => 'required|string',
+        ], [
+            'start.required' => 'The schedule start date is required.',
+            'start.date_format' => 'The schedule start date must be in the correct format (YYYY-MM-DDTHH:MM).',
+            'end.date_format' => 'The schedule end date must be in the correct format (YYYY-MM-DDTHH:MM).',
+            'end.after' => 'The schedule end date must be after the start date.',
         ]);
-
-
+        
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
+        
 
         $userId = Auth::id();
         
@@ -63,12 +68,17 @@ class ScheduleController extends Controller
             'title' => 'required|string',
             'description' => 'required|string',
             'start' => 'required|date_format:Y-m-d\TH:i',
-            'end' => 'nullable|date_format:Y-m-d\TH:i',
+            'end' => 'nullable|date_format:Y-m-d\TH:i|after:start', 
             'visibility' => 'required|string',
+        ], [
+            'start.required' => 'The schedule start date is required.',
+            'start.date_format' => 'The schedule start date must be in the correct format (YYYY-MM-DDTHH:MM).',
+            'end.date_format' => 'The schedule end date must be in the correct format (YYYY-MM-DDTHH:MM).',
+            'end.after' => 'The schedule end date must be after the start date.',
         ]);
-
+        
         if ($validator->fails()) {
-            return back()->with('error', 'Error creating schedule');
+            return back()->withErrors($validator)->withInput();
         }
 
         $Schedule = Schedule::find($id);

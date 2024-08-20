@@ -277,30 +277,6 @@ document.addEventListener("DOMContentLoaded", function () {
         myModal.hide();
     });
 
-    // Add Calender Event
-    getModalAddBtnEl.addEventListener("click", function () {
-        var getModalCheckedRadioBtnEl = document.querySelector(
-            'input[name="schedule_level"]:checked'
-        );
-
-        var getTitleValue = getModalTitleEl.value;
-        var setModalStartDateValue = getModalStartDateEl.value;
-        var setModalEndDateValue = getModalEndDateEl.value;
-        var getModalCheckedRadioBtnValue =
-            getModalCheckedRadioBtnEl !== null ? getModalCheckedRadioBtnEl.value : "";
-
-        calendar.addEvent({
-            id: 12,
-            title: getTitleValue,
-            start: setModalStartDateValue,
-            end: setModalEndDateValue,
-            allDay: true,
-            extendedProps: {
-                calendar: getModalCheckedRadioBtnValue
-            },
-        });
-
-    });
 
     const removeModelData = () => {
         getModalTitleEl.value = "";

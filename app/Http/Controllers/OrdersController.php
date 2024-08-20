@@ -76,8 +76,8 @@ class OrdersController extends Controller
             'length' => 'nullable|array',
             'length.*' => 'nullable',
             
-            'breath' => 'nullable|array',
-            'breath.*' => 'nullable',
+            'breadth' => 'nullable|array',
+            'breadth.*' => 'nullable',
         ]);
 
         try {
@@ -169,8 +169,8 @@ class OrdersController extends Controller
                     $total = $sub_total - $discount_amount;
 
                     $length = $request->length[$i] ?? 0;
-                    $breath = $request->breath[$i] ?? 0;
-                    $dimension = $length . 'x' . $breath;
+                    $breadth = $request->breadth[$i] ?? 0;
+                    $dimension = $length . 'x' . $breadth;
 
                     // Create order item
                     DB::table('order_items')->insert([
@@ -180,7 +180,7 @@ class OrdersController extends Controller
                         'quantity' => $request->order_item_quantity[$i] ?? 0,
                         'dimension' => $dimension,
                         'length' => $length,
-                        'breath' => $breath,
+                        'breadth' => $breadth,
                         'rate_per' => $rate_per,
                         'sub_total' => $sub_total,
                         'discount_percentage' => $discount_percentage,
@@ -309,8 +309,8 @@ class OrdersController extends Controller
             'alt_length' => 'nullable|array',
             'alt_length.*' => 'nullable',
             
-            'alt_breath' => 'nullable|array',
-            'alt_breath.*' => 'nullable',
+            'alt_breadth' => 'nullable|array',
+            'alt_breadth.*' => 'nullable',
             
             'is_order_item_delete' => 'nullable|array',
             'is_order_item_delete.*' => 'nullable|integer|exists:order_items,id',
@@ -378,8 +378,8 @@ class OrdersController extends Controller
             'length' => 'nullable|array',
             'length.*' => 'nullable',
 
-            'breath' => 'nullable|array',
-            'breath.*' => 'nullable',
+            'breadth' => 'nullable|array',
+            'breadth.*' => 'nullable',
             
             'order_item_quantity' => 'nullable|array',
             'order_item_quantity.*' => 'nullable|integer|min:1',
@@ -450,8 +450,8 @@ class OrdersController extends Controller
                                 $total = $sub_total - $discount_amount;
     
                                 $length = $request->alt_length[$index] ?? 0;
-                                $breath = $request->alt_breath[$index] ?? 0;
-                                $dimension = $length . 'x' . $breath;
+                                $breadth = $request->alt_breadth[$index] ?? 0;
+                                $dimension = $length . 'x' . $breadth;
 
                                 $orderItem->update([
                                     'quantity' => $quantity,
@@ -459,7 +459,7 @@ class OrdersController extends Controller
                                     'sub_total' => $sub_total,
                                     'dimension' => $dimension,
                                     'length' => $length,
-                                    'breath' => $breath,
+                                    'breadth' => $breadth,
                                     'discount_percentage' => $discount_percentage,
                                     'discount_amount' => $discount_amount,
                                     'total' => $total,
@@ -490,7 +490,7 @@ class OrdersController extends Controller
                     $discount_percentage = $request->discount_percentage ?? 0;
                     $discount_amount = $sub_total * ($discount_percentage / 100);
                     $total = $sub_total - $discount_amount;
-                    $dimension = $request->length[$i] . 'x' .$request->breath[$i];
+                    $dimension = $request->length[$i] . 'x' .$request->breadth[$i];
 
                      // Create order item
                      DB::table('order_items')->insert([
@@ -500,7 +500,7 @@ class OrdersController extends Controller
                         'quantity' => $request->order_item_quantity[$i],
                         'dimension' => $dimension,
                         'length' => $request->length[$i],
-                        'breath' => $request->breath[$i],
+                        'breadth' => $request->breadth[$i],
                         'rate_per' => $rate_per,
                         'sub_total' => $sub_total,
                         'discount_percentage' => $discount_percentage,

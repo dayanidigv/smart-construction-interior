@@ -68,19 +68,29 @@ class CustomerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'phone' => 'required|numeric|digits:10|unique:customers,phone',
+            'phone' => [
+                'required',
+                'numeric',
+                'digits:10',
+                'regex:/^[6-9]\d{9}$/',
+                'unique:customers,phone',
+            ],
             'address' => 'required|string|max:250',
+        ], [
+            'phone.required' => 'The phone number is required.',
+            'phone.numeric' => 'The phone number must contain only digits.',
+            'phone.digits' => 'The phone number must be exactly 10 digits.',
+            'phone.regex' => 'The phone number must start with 6, 7, 8, or 9 and be a valid Indian mobile number.',
+            'phone.unique' => 'The phone number has already been taken.',
         ]);
         
-
         if ($validator->fails()) {
             if ($request->input('returnType') === 'json') {
-                if ($validator->fails()) {
-                    return response()->json(['errors' => $validator->errors()], 422);
-                }
+                return response()->json(['errors' => $validator->errors()], 422);
             }
             return back()->withErrors($validator)->withInput();
         }
+        
 
         $user_id = Auth::id();
 
@@ -131,11 +141,18 @@ class CustomerController extends Controller
                 'required',
                 'numeric',
                 'digits:10',
+                'regex:/^[6-9]\d{9}$/',
                 Rule::unique('customers')->ignore($decodedId),
             ],
             'address' => 'required|string|max:250',
+        ], [
+            'phone.required' => 'The phone number is required.',
+            'phone.numeric' => 'The phone number must contain only digits.',
+            'phone.digits' => 'The phone number must be exactly 10 digits.',
+            'phone.regex' => 'The phone number must start with 6, 7, 8, or 9 and be a valid Indian mobile number.',
+            'phone.unique' => 'The phone number has already been taken.',
         ]);
-    
+        
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }

@@ -68,13 +68,6 @@ use Illuminate\Support\Facades\Auth;
                             <input id="schedule-visibility-input" class="form-control" disabled/>
                         </div>
 
-                        <div class="col-md-6 mt-4">
-                            <div class="form-check form-check-primary form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="is_editable" id="foreditable">
-
-                                <label class="form-check-label" for="foreditable">Editable</label>
-                            </div>
-                        </div>
 
 
                         <div class="col-md-12 mt-4">
@@ -110,6 +103,8 @@ use Illuminate\Support\Facades\Auth;
                                 </div>
                             </div>
                         </div>
+
+                        <input class="form-check-input" type="hidden" name="is_editable" id="foreditable">
 
                     </div>
                     <div class="modal-footer">

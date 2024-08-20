@@ -93,7 +93,7 @@
                         </a>
                         <ul aria-expanded="false" class="collapse first-level">
                             <li class="sidebar-item">
-                                <a href="{{route('enquiries.new',['role'=>'admin'])}}" class="sidebar-link ">
+                                <a href="{{route('enquiries.new', ['role' => 'admin'])}}" class="sidebar-link ">
                                     <div class="round-16 d-flex align-items-center justify-content-center">
                                         <i class="ti ti-circle"></i>
                                     </div>
@@ -101,7 +101,7 @@
                                 </a>
                             </li>
                             <li class="sidebar-item">
-                                <a href="{{route('enquiries.list',['role'=>'admin'])}}" class="sidebar-link">
+                                <a href="{{route('enquiries.list', ['role' => 'admin'])}}" class="sidebar-link">
                                     <div class="round-16 d-flex align-items-center justify-content-center">
                                         <i class="ti ti-circle"></i>
                                     </div>
@@ -210,7 +210,7 @@
 
 
                             <li class="sidebar-item">
-                                <a class="sidebar-link" href="{{route('category.view',['role'=>'admin'])}}"
+                                <a class="sidebar-link" href="{{route('category.view', ['role' => 'admin'])}}"
                                     aria-expanded="false">
                                     <span>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -374,7 +374,7 @@
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="ti ti-bell-ringing"></i>
                                     @if (count($displayReminder) > 0)
-                                    <span class="badge rounded-pill bg-danger fs-2">{{count($displayReminder)}}</span>
+                                        <span class="badge rounded-pill bg-danger fs-2">{{count($displayReminder)}}</span>
                                     @endif
                                 </a>
                                 <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up"
@@ -382,26 +382,26 @@
                                     <div class="d-flex align-items-center justify-content-between py-3 px-7">
                                         <h5 class="mb-0 fs-5 fw-semibold">Reminder</h5>
                                         @if (count($displayReminder) != 0)
-                                        <span
-                                            class="badge bg-primary rounded-4 px-3 py-1 lh-sm">{{count($displayReminder)}}
-                                            new</span>
+                                            <span
+                                                class="badge bg-primary rounded-4 px-3 py-1 lh-sm">{{count($displayReminder)}}
+                                                new</span>
                                         @endif
                                     </div>
                                     <div class="message-body" data-simplebar>
                                         @if (count($displayReminder) > 0)
-                                        @for ($i = 0; $i < min(count($displayReminder), 7); $i++) <a
-                                            href="{{route('admin.reminder.view',['encodedId' => base64_encode($displayReminder[$i]->id)])}}"
-                                            class="py-6 px-7 d-flex align-items-center dropdown-item">
-                                            <div class="w-75 d-inline-block v-middle">
-                                                <h6 class="mb-1 fw-semibold">{{ $displayReminder[$i]->title }}</h6>
-                                                <span class="d-block"
-                                                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                    {{ $displayReminder[$i]->description }}
-                                                </span>
-                                            </div>
-                                            </a>
+                                            @for ($i = 0; $i < min(count($displayReminder), 7); $i++) <a
+                                                    href="{{route('admin.reminder.view', ['encodedId' => base64_encode($displayReminder[$i]->id)])}}"
+                                                    class="py-6 px-7 d-flex align-items-center dropdown-item">
+                                                    <div class="w-75 d-inline-block v-middle">
+                                                        <h6 class="mb-1 fw-semibold">{{ $displayReminder[$i]->title }}</h6>
+                                                        <span class="d-block"
+                                                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                            {{ $displayReminder[$i]->description }}
+                                                        </span>
+                                                    </div>
+                                                </a>
                                             @endfor
-                                            @else
+                                        @else
                                             <a href="javascript:void(0)"
                                                 class="py-6 px-7 d-flex align-items-center dropdown-item">
                                                 <div class="w-75 d-inline-block v-middle">
@@ -409,13 +409,13 @@
                                                 </div>
                                             </a>
 
-                                            @endif
+                                        @endif
                                     </div>
                                     @if (count($displayReminder) > 6)
-                                    <div class="py-6 px-7 mb-1">
-                                        <a href="{{route('admin.reminder.list')}}"><button
-                                                class="btn btn-outline-primary w-100"> See All Reminders </button></a>
-                                    </div>
+                                        <div class="py-6 px-7 mb-1">
+                                            <a href="{{route('admin.reminder.list')}}"><button
+                                                    class="btn btn-outline-primary w-100"> See All Reminders </button></a>
+                                        </div>
                                     @endif
                                 </div>
                             </li>
@@ -468,7 +468,7 @@
                                 <li class="breadcrumb-item text-muted"><a href="/">{{ ucfirst($user->role)}}</a></li>
                                 <li class="breadcrumb-item text-muted">{{ $menuTitle}}</li>
                                 @if ($sectionName != null)
-                                <li class="breadcrumb-item text-muted">{{$sectionName}}</li>
+                                    <li class="breadcrumb-item text-muted">{{$sectionName}}</li>
                                 @endif
                                 <li class="breadcrumb-item active" aria-current="page">{{$title}}</li>
                             </ol>
@@ -477,23 +477,38 @@
                 </div>
             </div>
             @if (session('message'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <strong>{{ session('message') }}</strong>
-            </div>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>{{ session('message') }}</strong>
+                </div>
             @endif
+
             @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <strong>{{ session('success') }}</strong>
-            </div>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>{{ session('success') }}</strong>
+                </div>
             @endif
+
             @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <strong>{{ session('error') }}</strong>
-            </div>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>{{ session('error') }}</strong>
+                </div>
             @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>There were some problems with your input:</strong>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             @yield('adminContent')
         </div>
     </div>

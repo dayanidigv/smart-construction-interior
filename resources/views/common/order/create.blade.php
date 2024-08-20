@@ -199,9 +199,9 @@ hr {
                                             @enderror
                                         </div>
                                         <div class="col-12 col-md-3 col-lg-2 mb-3">
-                                            <label for="Breath">Breath</label>
-                                            <input type="number" min="0" id="breath{{ base64_encode($index) }}" name="breath[]" class="form-control" value="breath.{{$index}}" placeholder="" />
-                                            @error('breath.' . $index)
+                                            <label for="breadth">Breadth</label>
+                                            <input type="number" min="0" id="breadth{{ base64_encode($index) }}" name="breadth[]" class="form-control" value="breadth.{{$index}}" placeholder="" />
+                                            @error('breadth.' . $index)
                                                 <div class="text-tiny text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -725,8 +725,8 @@ function order_item_container() {
                         <input type="number" min='0' id="length${room}" name="length[]" class="form-control" value='0' placeholder="" />
                     </div>
                     <div class="col-12 col-md-3 col-lg-2 mb-3">
-                        <label for="Breath">Breath</label>
-                        <input type="number" min='0' id="breath${room}" name="breath[]" class="form-control" value='0' placeholder="" />
+                        <label for="breadth">Breadth</label>
+                        <input type="number" min='0' id="breadth${room}" name="breadth[]" class="form-control" value='0' placeholder="" />
                     </div>
                     <div class="col-12 col-md-4 col-lg-3 mb-3">
                         <label for="order_item_quantity">Quantity *</label>
@@ -876,12 +876,12 @@ function refreshSearch(rid = 2) {
     // Function to calculate quantity and subtotal
     function calculateQuantityAndSubtotal() {
         var length = parseInt($(`#length${rid}`).val()) || 0;
-        var breath = parseInt($(`#breath${rid}`).val()) || 0;
+        var breadth = parseInt($(`#breadth${rid}`).val()) || 0;
         var ratePer = parseInt($(`#rate_per${rid}`).val()) || 0;
         var quantity = parseInt($(`#order_item_quantity${rid}`).val()) || 0;
         
-        if (length * breath != 0){
-            var quantity =  length * breath;
+        if (length * breadth != 0){
+            var quantity =  length * breadth;
         }
 
         $(`#order_item_quantity${rid}`).val(quantity);
@@ -900,10 +900,10 @@ function refreshSearch(rid = 2) {
         calculateQuantityAndSubtotal();
     });
 
-    // Handle Breath input
-    $(`#breath${rid}`).on('input', (e) => {
-        let breath = e.target.value;
-        if (breath <= 0) {
+    // Handle breadth input
+    $(`#breadth${rid}`).on('input', (e) => {
+        let breadth = e.target.value;
+        if (breadth <= 0) {
             e.target.value = '';
             return;
         }
