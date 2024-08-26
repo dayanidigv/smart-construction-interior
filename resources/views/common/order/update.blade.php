@@ -250,6 +250,14 @@ hr{
                                             required />
                                     </div>
 
+                                    <div class="col-12  mb-3">
+                                        <label for="order_item_note{{ $encodedId }}">Note </label>
+                                        <textarea id="order_item_note{{ $encodedId }}"
+                                            name="alt_order_item_note[]" class="form-control"
+                                         placeholder="Enter your Note"
+                                             >{{$orderItem->note}}</textarea>
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="col-12 col-md-1 d-flex align-items-center justify-content-center">
@@ -934,6 +942,10 @@ function order_item_container() {
                     <div class="col-12 col-md-4 col-lg-3 mb-3">
                         <label for="order_item">Total *</label>
                         <input type="number" step="0.01" id="sub_total${room}" name="sub_total[]" class="form-control" value="0" placeholder="Enter Total value" required />
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label for="note">Note</label>
+                        <textarea id="note${room}" name="order_item_note[]" class="form-control" placeholder="Enter your note here"></textarea>
                     </div>
                 </div>
             </div>

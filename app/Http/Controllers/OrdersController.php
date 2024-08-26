@@ -48,7 +48,10 @@ class OrdersController extends Controller
             'category' => 'nullable|array',
             'category.*' => 'string|max:255',
             'sub_category' => 'nullable|array',
-            'sub_category.*' => 'string|max:255',
+            'sub_category.*' => 'string|max:255', 
+
+            'order_item_note' => 'nullable|array',
+            'order_item_note.*' => 'nullable|string',
 
             'design' => 'nullable|array',
             'design.*' => 'nullable|integer|exists:designs,id',
@@ -186,6 +189,7 @@ class OrdersController extends Controller
                         'discount_percentage' => $discount_percentage,
                         'discount_amount' => $discount_amount,
                         'total' => $total,
+                        'note' => $request->order_item_note[$i],
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
@@ -337,13 +341,19 @@ class OrdersController extends Controller
             'alt_payment_amount.*' => 'nullable|numeric|min:0',
             
             'alt_payment_method' => 'nullable|array',
-            'alt_payment_method.*' => 'nullable|string',
+            'alt_payment_method.*' => 'nullable|string', 
+
+            'alt_order_item_note' => 'nullable|array',
+            'alt_order_item_note.*' => 'nullable|string',
             
             'is_payment_history_delete' => 'nullable|array',
             'is_payment_history_delete.*' => 'nullable|integer|exists:payment_history,id',
             
             'note' => 'nullable|array',
             'note.*' => 'nullable|string|max:255',
+
+            'order_item_note' => 'nullable|array',
+            'order_item_note.*' => 'nullable|string',
             
             'follow_date' => 'nullable|array',
             'follow_date.*' => 'nullable|date',
@@ -460,6 +470,7 @@ class OrdersController extends Controller
                                     'dimension' => $dimension,
                                     'length' => $length,
                                     'breadth' => $breadth,
+                                    'note' => $request->alt_order_item_note[$index],
                                     'discount_percentage' => $discount_percentage,
                                     'discount_amount' => $discount_amount,
                                     'total' => $total,
@@ -506,6 +517,7 @@ class OrdersController extends Controller
                         'discount_percentage' => $discount_percentage,
                         'discount_amount' => $discount_amount,
                         'total' => $total,
+                        'note' => $request->order_item_note[$i],
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);

@@ -222,14 +222,21 @@
                                                         ({{$orderItem->design->type}})
                                                     </h6>
                                                     <p class="text-muted mb-0">
-                                                        {{ucwords(strtolower($orderItem->design->name))}}</p>
+                                                        {{ucwords(strtolower($orderItem->design->name))}}</p>                                                        
                                                     @else
                                                     <h6 class="lead fw-semibold mb-0 fs-4">
                                                         {{$orderItem->catagories->name}}
                                                         ({{$orderItem->catagories->type}})
                                                     </h6>
                                                     @endif
+                                                    <p class="text-muted mb-0">
+                                                        @if($orderItem->note)
+                                                            <b>Note: </b>{{ $orderItem->note }}
+                                                        @endif
+                                                    </p>
+
                                                 </div>
+
                                             </div>
                                         </td>
                                         <td>

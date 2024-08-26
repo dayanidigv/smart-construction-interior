@@ -228,6 +228,12 @@
                                                         ({{$orderItem->catagories->type}})
                                                     </h6>
                                                     @endif
+                                                    
+                                                    <p class="text-muted mb-0">
+                                                        @if($orderItem->note)
+                                                            <b>Note: </b>{{ $orderItem->note }}
+                                                        @endif
+                                                    </p>
                                                 </div>
                                             </div>
                                         </td>

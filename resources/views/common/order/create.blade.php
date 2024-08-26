@@ -740,6 +740,10 @@ function order_item_container() {
                         <label for="order_item">Total *</label>
                         <input type="number" min='0' step="0.01" id="sub_total${room}" name="sub_total[]" class="form-control" value="0" placeholder="Enter Total value" required />
                     </div>
+                    <div class="col-12 mb-3">
+                        <label for="note">Note</label>
+                        <textarea id="note${room}" name="order_item_note[]" class="form-control" placeholder="Enter your note here"></textarea>
+                    </div>
                 </div>
             </div>
             <div class="col-12 col-md-1 d-flex align-items-center justify-content-center">

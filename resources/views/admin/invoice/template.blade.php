@@ -162,6 +162,11 @@
                         <td class="fw-semibold">
                         <b>{{ $item['category_name']  }}</b>
                             <p class="fs-2 pb-1 mb-0 fw-normal">{{ $item['design_name'] }}</p>
+                            <p class="fs-2 pb-1 mb-0 fw-normal mb-0">
+                                @if($item['note'] )
+                                    <b>Note: </b>{{ $item['note']  }}
+                                @endif
+                            </p>
                         </td>
                         <td class="text-center">
                             <p class="fs-3 pb-0 mb-0"><span class="dejaVu">{{ $item['quantity'] }}</span>({{ $item['unit'] ? $item['unit'] : "SQ.FT" }})</p>

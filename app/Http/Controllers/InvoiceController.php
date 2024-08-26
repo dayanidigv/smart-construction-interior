@@ -33,6 +33,7 @@ class InvoiceController extends Controller
                 return [
                     'category_name' => $item->catagories->name,
                     'design_name' =>  $item->design ? $item->design->name :null ,
+                    'note' => $item->note ? $item->note :null ,
                     'quantity' => rtrim(rtrim(number_format($item->quantity, 2), '0'), '.'),
                     'unit' => $item->design ? $item->design->unit->name : null,
                     'rate_per' => Helper::format_inr(rtrim(rtrim(number_format($item->rate_per, 2), '0'), '.'), ),
@@ -115,6 +116,7 @@ class InvoiceController extends Controller
                 return [
                     'category_name' => $item->catagories->name,
                     'design_name' => $item->design ? $item->design->name : null,
+                    'note' => $item->note ? $item->note :null ,
                     'dimension' => $item->dimension,
                     'quantity' => rtrim(rtrim(number_format($item->quantity, 2), '0'), '.'),
                     'unit' =>  $item->design ? $item->design->unit->name : null,
