@@ -720,23 +720,27 @@ function order_item_container() {
                         <label for="design">Design </label>
                         <select class="Order-product form-control" id="design${room}" name="design[]"></select>
                     </div>
-                    <div class="col-12 col-md-3 col-lg-2 mb-3">
+                    <div class="col-12 col-md-4 col-lg-2  mb-3">
                         <label for="length">length</label>
                         <input type="number" min='0' id="length${room}" name="length[]" class="form-control" value='0' placeholder="" />
                     </div>
-                    <div class="col-12 col-md-3 col-lg-2 mb-3">
+                    <div class="col-12 col-md-4 col-lg-2  mb-3">
                         <label for="breadth">Breadth</label>
                         <input type="number" min='0' id="breadth${room}" name="breadth[]" class="form-control" value='0' placeholder="" />
                     </div>
-                    <div class="col-12 col-md-4 col-lg-3 mb-3">
+                    <div class="col-12 col-md-4 col-lg-2  mb-3">
+                        <label for="height">Height</label>
+                        <input type="number" min='0' id="height${room}" name="height[]" class="form-control" value='0' placeholder="" />
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-2  mb-3">
                         <label for="order_item_quantity">Quantity *</label>
                         <input type="number" min='0' id="order_item_quantity${room}" name="order_item_quantity[]" class="form-control" placeholder="" value='0' required />
                     </div>
-                    <div class="col-12 col-md-4 col-lg-3 mb-3">
+                    <div class="col-12 col-md-4 col-lg-2  mb-3">
                         <label for="rate_per">Rate Per *</label>
                         <input type="number" min='0' step="0.01" id="rate_per${room}" name="rate_per[]" class="form-control" placeholder="" value='0' required />
                     </div>
-                    <div class="col-12 col-md-4 col-lg-2 mb-3">
+                    <div class="col-12 col-md-4 col-lg-2  mb-3">
                         <label for="order_item">Total *</label>
                         <input type="number" min='0' step="0.01" id="sub_total${room}" name="sub_total[]" class="form-control" value="0" placeholder="Enter Total value" required />
                     </div>
@@ -881,15 +885,22 @@ function refreshSearch(rid = 2) {
     function calculateQuantityAndSubtotal() {
         var length = parseInt($(`#length${rid}`).val()) || 0;
         var breadth = parseInt($(`#breadth${rid}`).val()) || 0;
+        var height = parseInt($(`#height${rid}`).val()) || 0;
         var ratePer = parseInt($(`#rate_per${rid}`).val()) || 0;
         var quantity = parseInt($(`#order_item_quantity${rid}`).val()) || 0;
-        
-        if (length * breadth != 0){
-            var quantity =  length * breadth;
+
+        // Calculate quantity based on dimensions
+        if (length > 0 && breadth > 0) {
+            if (height > 0) {
+                quantity = length * breadth * height; // LxBxH
+            } else {
+                quantity = length * breadth; // LxB
+            }
         }
 
         $(`#order_item_quantity${rid}`).val(quantity);
 
+        // Calculate subtotal
         var subtotal = quantity * ratePer;
         $(`#sub_total${rid}`).val(subtotal);
     }
@@ -904,7 +915,7 @@ function refreshSearch(rid = 2) {
         calculateQuantityAndSubtotal();
     });
 
-    // Handle breadth input
+    // Handle Breadth input
     $(`#breadth${rid}`).on('input', (e) => {
         let breadth = e.target.value;
         if (breadth <= 0) {
@@ -913,6 +924,17 @@ function refreshSearch(rid = 2) {
         }
         calculateQuantityAndSubtotal();
     });
+
+    // Handle Height input
+    $(`#height${rid}`).on('input', (e) => {
+        let height = e.target.value;
+        if (height < 0) { 
+            e.target.value = '';
+            return;
+        }
+        calculateQuantityAndSubtotal();
+    });
+
 
     // Handle Rate Per input
     $(`#rate_per${rid}`).on('input', (e) => {

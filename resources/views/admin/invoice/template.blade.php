@@ -169,6 +169,7 @@
                             </p>
                         </td>
                         <td class="text-center">
+                        <p class="fs-1 pb-0 mb-0 dejaVu">({{ $item['dimension']}})</p>
                             <p class="fs-3 pb-0 mb-0"><span class="dejaVu">{{ $item['quantity'] }}</span>({{ $item['unit'] ? $item['unit'] : "SQ.FT" }})</p>
                         </td>
                         <td class="text-end">

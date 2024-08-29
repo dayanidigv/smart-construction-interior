@@ -81,6 +81,9 @@ class OrdersController extends Controller
             
             'breadth' => 'nullable|array',
             'breadth.*' => 'nullable',
+            
+            'height' => 'nullable|array',
+            'height.*' => 'nullable',
         ]);
 
         try {
@@ -173,7 +176,14 @@ class OrdersController extends Controller
 
                     $length = $request->length[$i] ?? 0;
                     $breadth = $request->breadth[$i] ?? 0;
+                    $height = $request->height[$i] ?? 0;
+
                     $dimension = $length . 'x' . $breadth;
+
+                
+                    if ($height != 0){
+                        $dimension .= 'x' . $height;
+                    }
 
                     // Create order item
                     DB::table('order_items')->insert([
@@ -184,6 +194,7 @@ class OrdersController extends Controller
                         'dimension' => $dimension,
                         'length' => $length,
                         'breadth' => $breadth,
+                        'height' => $height,
                         'rate_per' => $rate_per,
                         'sub_total' => $sub_total,
                         'discount_percentage' => $discount_percentage,
@@ -261,6 +272,7 @@ class OrdersController extends Controller
 
     public function update(Request $request, string $encodedId){
 
+        // dd($request->all());
          $request->validate([
             'name' => 'nullable|string',
             'description' => 'nullable|string',
@@ -315,6 +327,9 @@ class OrdersController extends Controller
             
             'alt_breadth' => 'nullable|array',
             'alt_breadth.*' => 'nullable',
+            
+            'alt_height' => 'nullable|array',
+            'alt_height.*' => 'nullable',
             
             'is_order_item_delete' => 'nullable|array',
             'is_order_item_delete.*' => 'nullable|integer|exists:order_items,id',
@@ -391,6 +406,9 @@ class OrdersController extends Controller
             'breadth' => 'nullable|array',
             'breadth.*' => 'nullable',
             
+            'height' => 'nullable|array',
+            'height.*' => 'nullable',
+            
             'order_item_quantity' => 'nullable|array',
             'order_item_quantity.*' => 'nullable|integer|min:1',
 
@@ -426,12 +444,11 @@ class OrdersController extends Controller
                 $order->name = $request->name ?? 'Order for ' . $customer->name;
                 $order->save();
             }
-            
             // Update or delete existing order items
             if (isset($request->alt_order_item_id)) {
                 foreach ($request->alt_order_item_id as $index => $alreadyOrderId) {
                     $orderItem = OrderItems::find($alreadyOrderId);
-    
+
                     if ($orderItem) {
                         // Handle deletion of order item
                         if (isset($request->is_order_item_delete) && in_array($alreadyOrderId, $request->is_order_item_delete)) {
@@ -445,12 +462,12 @@ class OrdersController extends Controller
                             $category = Categories::withTrashed()->findOrFail($newCategory);
                             $subCategory = Categories::withTrashed()->findOrFail($newSubCategory);
                             $orderItem->update(['category_id' => $subCategory->id]);
-    
+
                             // Update Design, quantity, and total
                             if (isset($request->alt_design[$index])) {
                                 $orderItem->update(['design_id' => $request->alt_design[$index]]);
                             }
-    
+
                             if (isset($request->alt_order_item_quantity[$index])) {
                                 $quantity = $request->alt_order_item_quantity[$index];
                                 $rate_per = $request->alt_rate_per[$index];
@@ -458,28 +475,36 @@ class OrdersController extends Controller
                                 $discount_percentage = $request->discount_percentage ?? 0;
                                 $discount_amount = $sub_total * ($discount_percentage / 100);
                                 $total = $sub_total - $discount_amount;
-    
+
                                 $length = $request->alt_length[$index] ?? 0;
                                 $breadth = $request->alt_breadth[$index] ?? 0;
-                                $dimension = $length . 'x' . $breadth;
+                                $alt_height = $request->alt_height[$index] ?? 0;
 
-                                $orderItem->update([
-                                    'quantity' => $quantity,
-                                    'rate_per' => $rate_per,
-                                    'sub_total' => $sub_total,
-                                    'dimension' => $dimension,
-                                    'length' => $length,
-                                    'breadth' => $breadth,
-                                    'note' => $request->alt_order_item_note[$index],
-                                    'discount_percentage' => $discount_percentage,
-                                    'discount_amount' => $discount_amount,
-                                    'total' => $total,
-                                ]);
+                                // Ensure height is properly updated in the dimension string
+                                $dimension = $length . 'x' . $breadth . ($alt_height != 0 ? 'x' . $alt_height : '');
+
+                                // Set each attribute individually
+                                $orderItem->quantity = $quantity;
+                                $orderItem->height = $alt_height;
+                                $orderItem->rate_per = $rate_per;
+                                $orderItem->sub_total = $sub_total;
+                                $orderItem->dimension = $dimension;
+                                $orderItem->length = $length;
+                                $orderItem->breadth = $breadth;
+                                $orderItem->note = $request->alt_order_item_note[$index];
+                                $orderItem->discount_percentage = $discount_percentage;
+                                $orderItem->discount_amount = $discount_amount;
+                                $orderItem->total = $total;
+
+                                // Save the updated order item
+                                $orderItem->save();
+
                             }
                         }
                     }
                 }
             }
+
 
             // Create new order items
             if (isset($request->category)) {
@@ -502,6 +527,12 @@ class OrdersController extends Controller
                     $discount_amount = $sub_total * ($discount_percentage / 100);
                     $total = $sub_total - $discount_amount;
                     $dimension = $request->length[$i] . 'x' .$request->breadth[$i];
+                    $height = $request->height[$i]  ?? 0;
+
+
+                    if ($height != 0){
+                        $dimension .= 'x' . $height;
+                    }
 
                      // Create order item
                      DB::table('order_items')->insert([
@@ -512,6 +543,7 @@ class OrdersController extends Controller
                         'dimension' => $dimension,
                         'length' => $request->length[$i],
                         'breadth' => $request->breadth[$i],
+                        'height' => $height,
                         'rate_per' => $rate_per,
                         'sub_total' => $sub_total,
                         'discount_percentage' => $discount_percentage,

@@ -185,6 +185,7 @@ hr{
 
                             @php
                             $encodedId = str_replace('=', '', base64_encode($orderItem->id));
+                            
                             @endphp
                             <div class="col-12 col-md-11 ">
                                 <div class="row">
@@ -229,20 +230,27 @@ hr{
                                     </div>
 
                                     <div class="col-12 col-md-4 col-lg-2 mb-3">
+                                        <label for="height{{ $encodedId }}">Height</label>
+                                        <input type="number" id="height{{ $encodedId }}"
+                                            name="alt_height[]" value="{{$orderItem->height}}"
+                                            class="form-control" placeholder="Enter height value" />
+                                    </div>
+
+                                    <div class="col-12 col-md-4 col-lg-2 mb-3">
                                         <label for="order_item_quantity{{ $encodedId }}">Quantity *</label>
                                         <input type="number" id="order_item_quantity{{ $encodedId }}"
                                             name="alt_order_item_quantity[]" value="{{$orderItem->quantity}}"
                                             class="form-control" placeholder="Enter item quantity value" required />
                                     </div>
 
-                                    <div class="col-12 col-md-4 col-lg-3 mb-3">
+                                    <div class="col-12 col-md-4 col-lg-2 mb-3">
                                         <label for="alt_rate_per{{ $encodedId }}">Rate Per *</label>
                                         <input type="number" step="0.01" id="rate_per{{ $encodedId }}"
                                             name="alt_rate_per[]" value="{{$orderItem->rate_per}}" class="form-control"
                                             placeholder="Enter rate per value" required />
                                     </div>
 
-                                    <div class="col-12 col-md-4 col-lg-3 mb-3">
+                                    <div class="col-12 col-md-4 col-lg-2 mb-3">
                                         <label for="sub_total{{ $encodedId }}">Total *</label>
                                         <input type="number" step="0.01" id="sub_total{{ $encodedId }}"
                                             name="alt_sub_total[]" class="form-control"
@@ -931,6 +939,10 @@ function order_item_container() {
                         <label for="breadth">Breadth</label>
                         <input type="number" min='0' id="breadth${room}" name="breadth[]" class="form-control" value='0' placeholder="" />
                     </div>
+                    <div class="col-12 col-md-3 col-lg-2 mb-3">
+                        <label for="height">Height</label>
+                        <input type="number" min='0' id="height${room}" name="height[]" class="form-control" value='0' placeholder="" />
+                    </div>
                     <div class="col-12 col-md-4 col-lg-2 mb-3">
                         <label for="order_item_quantity">Quantity *</label>
                         <input type="number" step="0.01" id="order_item_quantity${room}" name="order_item_quantity[]" class="form-control" placeholder="Enter item quantity value" required />
@@ -1052,20 +1064,26 @@ function refreshSearch(rid = 2) {
         templateSelection: formatDesignSelection
     });
 
-    // Function to calculate quantity and subtotal
-    function calculateQuantityAndSubtotal() {
+     // Function to calculate quantity and subtotal
+     function calculateQuantityAndSubtotal() {
         var length = parseInt($(`#length${rid}`).val()) || 0;
         var breadth = parseInt($(`#breadth${rid}`).val()) || 0;
+        var height = parseInt($(`#height${rid}`).val()) || 0;
         var ratePer = parseInt($(`#rate_per${rid}`).val()) || 0;
-
         var quantity = parseInt($(`#order_item_quantity${rid}`).val()) || 0;
-        
-        if (length * breadth != 0){
-            var quantity =  length * breadth;
+
+        // Calculate quantity based on dimensions
+        if (length > 0 && breadth > 0) {
+            if (height > 0) {
+                quantity = length * breadth * height; // LxBxH
+            } else {
+                quantity = length * breadth; // LxB
+            }
         }
 
         $(`#order_item_quantity${rid}`).val(quantity);
 
+        // Calculate subtotal
         var subtotal = quantity * ratePer;
         $(`#sub_total${rid}`).val(subtotal);
     }
@@ -1080,10 +1098,20 @@ function refreshSearch(rid = 2) {
         calculateQuantityAndSubtotal();
     });
 
-    // Handle breadth input
+    // Handle Breadth input
     $(`#breadth${rid}`).on('input', (e) => {
         let breadth = e.target.value;
         if (breadth <= 0) {
+            e.target.value = '';
+            return;
+        }
+        calculateQuantityAndSubtotal();
+    });
+
+    // Handle Height input
+    $(`#height${rid}`).on('input', (e) => {
+        let height = e.target.value;
+        if (height < 0) { 
             e.target.value = '';
             return;
         }
