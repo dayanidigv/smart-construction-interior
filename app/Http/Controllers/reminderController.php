@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Log;
 use App\Models\Reminders;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,8 +34,17 @@ class reminderController extends Controller
             $reminders->reminder_time = $request->reminder_time;
             $reminders->priority = $request->priority;
             $reminders->save();
-            return back()->with('message', 'Reminder set successfully!');
-        } catch (\Exception $e) {
+            // return back()->with('message', 'Reminder set successfully!');
+
+            $user = User::find($user_id);
+
+            if($user->role == 'admin'){
+                return redirect()->route('admin.reminder.list')->with('message', 'Reminder set successfully!');
+            }else{
+                return redirect()->route('manager.reminder.list')->with('message', 'Reminder set successfully!');
+            }
+
+            } catch (\Exception $e) {
             Log::create([
                 'message' => 'Error setting reminder',
                 'level' => 'warning',

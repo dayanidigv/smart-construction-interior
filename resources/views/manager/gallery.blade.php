@@ -81,8 +81,8 @@
             <div class="overflow-hidden  w-100 shadow-1-strong rounded mb-4 gallery-image " data-type="{{ $itemType }}" data-category="{{ $itemCategory }}" data-subcategory="{{ $itemSubCategory }}">
                 <div class="el-card-item">
                     <div class=" el-card-avatar el-overlay-1 w-100 overflow-hidden position-relative  text-center">
-                        <a class="image-popup-vertical-fit"  href="{{ $pageData[$i]->image_url }}">
-                            <img data-src="{{ $pageData[$i]->image_url }}" class="w-100 lazyload" alt="{{ $pageData[$i]->name }}" loading="lazy" />
+                        <a class="image-popup-vertical-fit"  href="{{ url($pageData[$i]->image_url) }}">
+                            <img data-src="{{ url($pageData[$i]->image_url) }}" class="w-100 lazyload" alt="{{ $pageData[$i]->name }}" loading="lazy" />
                             <div class="el-overlay w-100 overflow-hidden">
                                 <ul class="list-style-none el-info text-white  d-inline-block p-0 ">
                                 <li class="el-item d-inline-block my-0 mx-1">{{ $pageData[$i]->name }}</li>
@@ -105,8 +105,8 @@
             <div class="overflow-hidden  w-100 shadow-1-strong rounded mb-4 gallery-image " data-type="{{ $itemType }}" data-category="{{ $itemCategory }}" data-subcategory="{{ $itemSubCategory }}">
                 <div class="el-card-item">
                     <div class=" el-card-avatar el-overlay-1 w-100 overflow-hidden position-relative  text-center">
-                        <a class="image-popup-vertical-fit"  href="{{ $pageData[$i]->image_url }}">
-                            <img data-src="{{ $pageData[$i]->image_url }}" class="w-100 lazyload" alt="{{ $pageData[$i]->name }}" loading="lazy" />
+                        <a class="image-popup-vertical-fit"  href="{{ url($pageData[$i]->image_url) }}">
+                            <img data-src="{{ url($pageData[$i]->image_url) }}" class="w-100 lazyload" alt="{{ $pageData[$i]->name }}" loading="lazy" />
                             <div class="el-overlay w-100 overflow-hidden">
                                 <ul class="list-style-none el-info text-white  d-inline-block p-0 ">
                                 <li class="el-item d-inline-block my-0 mx-1">{{ $pageData[$i]->name }}</li>
@@ -129,8 +129,8 @@
             <div class="overflow-hidden  w-100 shadow-1-strong rounded mb-4 gallery-image " data-type="{{ $itemType }}" data-category="{{ $itemCategory }}" data-subcategory="{{ $itemSubCategory }}">
                 <div class="el-card-item">
                     <div class=" el-card-avatar el-overlay-1 w-100 overflow-hidden position-relative  text-center">
-                        <a class="image-popup-vertical-fit"  href="{{ $pageData[$i]->image_url }}">
-                            <img data-src="{{ $pageData[$i]->image_url }}" class="w-100 lazyload" alt="{{ $pageData[$i]->name }}" loading="lazy" />
+                        <a class="image-popup-vertical-fit"  href="{{ url($pageData[$i]->image_url) }}">
+                            <img data-src="{{ url($pageData[$i]->image_url) }}" class="w-100 lazyload" alt="{{ $pageData[$i]->name }}" loading="lazy" />
                             <div class="el-overlay w-100 overflow-hidden">
                                 <ul class="list-style-none el-info text-white  d-inline-block p-0 ">
                                 <li class="el-item d-inline-block my-0 mx-1">{{ $pageData[$i]->name }}</li>
@@ -153,8 +153,8 @@
             <div class="overflow-hidden  w-100 shadow-1-strong rounded mb-4 gallery-image " data-type="{{ $itemType }}" data-category="{{ $itemCategory }}" data-subcategory="{{ $itemSubCategory }}">
                 <div class="el-card-item">
                     <div class=" el-card-avatar el-overlay-1 w-100 overflow-hidden position-relative  text-center">
-                        <a class="image-popup-vertical-fit"  href="{{ $pageData[$i]->image_url }}">
-                            <img data-src="{{ $pageData[$i]->image_url }}" class="w-100 lazyload" alt="{{ $pageData[$i]->name }}" />
+                        <a class="image-popup-vertical-fit"  href="{{ url($pageData[$i]->image_url) }}">
+                            <img data-src="{{ url($pageData[$i]->image_url) }}" class="w-100 lazyload" alt="{{ $pageData[$i]->name }}" />
                             <div class="el-overlay w-100 overflow-hidden">
                                 <ul class="list-style-none el-info text-white d-inline-block p-0 ">
                                 <li class="el-item d-inline-block my-0 mx-1">{{ $pageData[$i]->name }}</li>
@@ -174,8 +174,8 @@
 @endsection
 
 @push('script')
-<script src="/libs/magnific-popup/dist/jquery.magnific-popup.min.js"></script>
-<script src="/js/plugins/meg.init.js"></script>
+<script src="{{url('/libs/magnific-popup/dist/jquery.magnific-popup.min.js')}}"></script>
+<script src="{{url('/js/plugins/meg.init.js')}}"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

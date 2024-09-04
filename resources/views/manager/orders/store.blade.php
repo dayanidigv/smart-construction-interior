@@ -562,7 +562,7 @@ function follow_container() {
     $(".customer-details").select2({
         ajax: {
             url: function (params) {
-                return '/api/search/{{base64_encode($userId)}}/customers/' + params.term;
+                return `{{ url('/api/search/' . base64_encode($userId) . '/customers/') }}${encodeURIComponent(params.term)}`;
             },
             dataType: 'json',
             delay: 250,
@@ -598,7 +598,7 @@ function follow_container() {
 
     function fetchOldCustomerData(userId, customerId) {
         $.ajax({
-            url: `/api/get/${userId}/customer-by-id/${customerId}`,
+            url: `{{ url('/api/get') }}/${encodeURIComponent(userId)}/customer-by-id/${encodeURIComponent(customerId)}`,
             dataType: 'json',
             success: handleCustomerDataSuccess,
             error: handleAjaxError

@@ -6,6 +6,7 @@ use App\Models\Categories;
 use App\Models\CategoryKey;
 use App\Models\Designs;
 use App\Models\Log;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,7 +78,16 @@ class DesignsController extends Controller
             ]);
     
             DB::commit();
-            return redirect()->back()->with('message', 'Design uploaded successfully.');
+            
+            // return redirect()->back()->with('message', 'Design uploaded successfully.');
+            $user = User::find($user_id);
+
+            if($user->role == 'admin'){
+                return redirect()->route('admin.list.design')->with('message', 'Design uploaded successfully.');
+            }else{
+                return redirect()->route('manager.list.design')->with('message', 'Design uploaded successfully.');
+            }
+
         } catch (Exception $e) {
             DB::rollBack();
             Log::create([

@@ -125,8 +125,8 @@
         }
     </script>
 
-    <script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="/js/datatable/datatable-api.init.js"></script>
+    <script src="{{url('/libs/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+    <script src="{{url('/js/datatable/datatable-api.init.js')}}"></script>
 
 </body>
 </html>

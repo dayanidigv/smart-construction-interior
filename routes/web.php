@@ -262,5 +262,3 @@ Route::middleware('guest')->group(function () {
         Route::post('/login',  'loginPost')->name('login.post');
     });
 });
-
-

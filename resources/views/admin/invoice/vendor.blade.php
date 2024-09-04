@@ -121,11 +121,6 @@
                 </thead>
             </table>
         </div>
-
-        <div class="bill-to">
-            <p class="fs-3 pb-0 mb-0 fw-semibold"><b>CREATED BY</b></p>
-            <p class="px-4">{{ $createdby_name }},</p>
-        </div>
        
         <div class="items-table">
             <table>

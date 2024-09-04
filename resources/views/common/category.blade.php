@@ -487,7 +487,7 @@
 @endsection
 
 @push('script')
-<script src="{{asset('/libs/nestable/jquery.nestable.js')}}"></script>
+<script src="{{url('/libs/nestable/jquery.nestable.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
 <script>

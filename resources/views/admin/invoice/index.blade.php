@@ -209,7 +209,7 @@
                                 </div>
                                 <div class="col-12 mt-5 d-flex justify-content-end">
                                     <div class="text-end">
-                                        <img src="/images/sign/invoice-sign-1.png" alt="" class="" style="width:150px;">
+                                        <img src="{{url('/images/sign/invoice-sign-1.png')}}" alt="" class="" style="width:150px;">
                                         <p class="fw-bold mt-3 mb-0 text-dark">AUTHORISED SIGNATORY FOR</p>
                                         <p>Smart Construction And Interiors</p>
                                     </div>
@@ -297,7 +297,7 @@
 
 @push('script')
 
-<script src="/js/apps/jquery.PrintArea.js"></script>
+<script src="{{url('/js/apps/jquery.PrintArea.js')}}"></script>
 
 <script>
     $(function () {

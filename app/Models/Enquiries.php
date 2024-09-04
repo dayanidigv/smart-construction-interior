@@ -8,9 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Enquiries extends Model
 {
-    use HasFactory, SoftDeletes;
-    protected $dates = ['deleted_at'];
-    
+    use HasFactory;
+ 
     protected $table = 'enquiries';
 
     protected $fillable = [

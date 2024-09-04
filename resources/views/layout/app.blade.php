@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/style.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/notify.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/icons/themify-icons/themify-icons.css') }}">
-    <link rel="stylesheet" href="/libs/sweetalert2/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="{{ asset('/libs/sweetalert2/dist/sweetalert2.min.css') }}">
     <!-- Include jQuery and jQuery UI (for date picker) -->
     <!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
     <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">   -->
@@ -70,7 +70,7 @@
     @if (Auth::check())
     @if (!$displayReminder->isEmpty())
 
-    <script src="{{asset('/libs/sweetalert2/dist/sweetalert2.min.js')}}"></script>
+    <script src="{{url('/libs/sweetalert2/dist/sweetalert2.min.js')}}"></script>
 
 @php
 if (!empty($displayReminder)) {
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function completeReminder(id) {
-    fetch('/reminder/is_completed', {
+    fetch("{{ url('/reminder/is_completed') }}", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

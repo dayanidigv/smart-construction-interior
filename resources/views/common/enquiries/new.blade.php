@@ -230,7 +230,7 @@ hr {
 @push('script')
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
-<script src="/js/bootstrap3-typeahead.min.js"></script>
+<script src="{{url('/js/bootstrap3-typeahead.min.js')}}"></script>
 
 <!-- Add new Customer -->
 <script>
@@ -249,7 +249,7 @@ $(document).ready(function() {
     $(".customer-details").select2({
         ajax: {
             url: function(params) {
-                return '/api/search/{{base64_encode($userId)}}/customers/' + params.term;
+                return `{{ url('/api/search/' . base64_encode($userId) . '/customers/') }}${encodeURIComponent(params.term)}`;
             },
             dataType: 'json',
             delay: 250,
@@ -286,7 +286,7 @@ $(document).ready(function() {
     // Get Old Customer Details 
     function fetchOldCustomerData(userId, customerId) {
         $.ajax({
-            url: `/api/get/${userId}/customer-by-id/${customerId}`,
+            url: `{{ url('/api/get') }}/${encodeURIComponent(userId)}/customer-by-id/${encodeURIComponent(customerId)}`,
             dataType: 'json',
             success: handleCustomerDataSuccess,
             error: handleAjaxError

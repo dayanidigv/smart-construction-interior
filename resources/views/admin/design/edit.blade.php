@@ -160,7 +160,7 @@
 
 @push('script')
 
-<script src="/js/bootstrap3-typeahead.min.js"></script>
+<script src="{{url('/js/bootstrap3-typeahead.min.js')}}"></script>
 
 <script>
     $(document).ready(function () {
@@ -171,7 +171,7 @@
         minLength: 1,
         source: function (query, process) {
           $.ajax({
-            url: `/api/search/{{ base64_encode($userId) }}/categories/${query}`,
+            url: `{{ url('/api/search/' . base64_encode($userId) . '/categories/${query}') }}`,
             method: 'GET',
             success: function (data) {
               process(data);
@@ -189,7 +189,7 @@
         minLength: 1,
         source: function (query, process) {
           $.ajax({
-            url: `/api/search/{{ base64_encode($userId) }}/subcategories/${query}?`,
+            url: `{{ url('/api/search/' . base64_encode($userId)) }}/subcategories/${query}?category=${$(`#category`).val()}`,
             method: 'GET',
             success: function (data) {
               process(data);
@@ -204,7 +204,7 @@
       $('#category-key').typeahead({
         source: function(query, process) {
             $.ajax({
-                url: `/api/search/{{ base64_encode($userId) }}/categorykey/${encodeURIComponent(query)}`,
+                url: `{{ url('/api/search/' . base64_encode($userId)) }}/categorykey/${encodeURIComponent(query)}`,
                 method: 'GET',
                 success: function(data) {
                     var items = $.map(data, function(item) {

@@ -37,7 +37,7 @@
                         </div>
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
-                                <input type="text" name="phone" id="phone" value="{{old('phone',$pageData->phone)}}"
+                                <input type="number" name="phone" id="phone" value="{{old('phone',$pageData->phone)}}"
                                     class="form-control @error('phone') is-invalid @enderror" required />
                                 <label for="phone"> Phone no.</label>
                                 @error('phone')

@@ -83,7 +83,7 @@
 @endsection
 
 @push('script')
-<script src="/libs/sweetalert2/dist/sweetalert2.min.js"></script>
+<script src="{{url('/libs/sweetalert2/dist/sweetalert2.min.js')}}"></script>
 <script>
 @if(session('username'))
 document.addEventListener('DOMContentLoaded', (event) => {

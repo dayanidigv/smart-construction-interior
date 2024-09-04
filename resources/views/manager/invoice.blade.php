@@ -239,7 +239,7 @@
 @endsection
 
 @push('script')
-<script src="/js/apps/jquery.PrintArea.js"></script>
+<script src="{{url('/js/apps/jquery.PrintArea.js')}}"></script>
 
 <script>
     $("#custom-invoice > #printableArea:first").show();

@@ -13,6 +13,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function getDynamicDay() {
+        const getDayValue = newDate.getDate(); 
+        if (getDayValue < 10) {
+            return `0${getDayValue}`; 
+        } else {
+            return `${getDayValue}`; 
+        }
+    }
+
     function formatDateTime(date) {
         const pad = num => num.toString().padStart(2, '0');
         return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
@@ -49,9 +58,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     var calendarHeaderToolbar = {
-        left: "prev,next addEventButton",
+        left: "prev,next",
         center: "title",
-        right: "dayGridMonth,timeGridWeek,timeGridDay",
+        right: "dayGridMonth addEventButton",
     };
 
 
@@ -223,7 +232,7 @@ document.addEventListener("DOMContentLoaded", function () {
         selectable: true,
         height: window.innerWidth <= 1199 ? 900 : 1052,
         initialView: window.innerWidth <= 1199 ? "listWeek" : "dayGridMonth",
-        initialDate: `${newDate.getFullYear()}-${getDynamicMonth()}-07`,
+        initialDate: `${newDate.getFullYear()}-${getDynamicMonth()}-${getDynamicDay()}`,
         headerToolbar: calendarHeaderToolbar,
         events: schedulesData,
         select: calendarSelect,

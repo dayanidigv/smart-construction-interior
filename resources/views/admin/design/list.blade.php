@@ -55,7 +55,7 @@
                                 <p class="mb-0 fw-normal fs-4">{{$i + 1}}</p>
                             </td>
                             <td>
-                                <p class="mb-0 fw-normal fs-4"><img src="{{ $pageData[$i]->image_url }}" width="50px">
+                                <p class="mb-0 fw-normal fs-4"><img src="{{ url($pageData[$i]->image_url) }}" width="50px">
                                 </p>
                             </td>
                             <td style="color: {{ $pageData[$i]->deleted_at ? 'red' : 'inherit' }}">
@@ -175,8 +175,8 @@ function confirmRestore() {
 }
 </script>
 
-<script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/js/datatable/datatable-api.init.js"></script>
+<script src="{{url('/libs/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+<script src="{{url('/js/datatable/datatable-api.init.js')}}"></script>
 
 
 @endpush

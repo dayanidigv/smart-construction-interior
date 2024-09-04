@@ -37,6 +37,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    
                     @if ($pageData->reminders && count($pageData->reminders) != 0)
                     @for ($i = 0; $i < count($pageData->reminders); $i++)
                         <tr>
@@ -48,7 +49,7 @@
                                 <p class="mb-0 fw-normal fs-4">{{ \Carbon\Carbon::parse($pageData->reminders[$i]->reminder_time)->format('h:i A \o\n jS F Y') }}</p>
                             </td>
                             <td>
-                                <p class="mb-0 fw-normal fs-4">{{ $pageData->Reminders[$i]->priority ==1 ?  "Red" :  ($pageData->Reminders[$i]->priority ==2 ? "Yellow" : "green") }}</p>
+                                <p class="mb-0 fw-normal fs-4">{{ $pageData->reminders[$i]->priority ==1 ?  "Red" :  ($pageData->reminders[$i]->priority ==2 ? "Yellow" : "green") }}</p>
                             </td>
                             <td>
                                 <p class="mb-0 fw-normal fs-4">{{ \Carbon\Carbon::parse($pageData->reminders[$i]->created_at)->diffForHumans() }}</p>
@@ -131,6 +132,6 @@
             }
         </script>
 
-        <script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
-        <script src="/js/datatable/datatable-api.init.js"></script>
+        <script src="{{url('/libs/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+        <script src="{{url('/js/datatable/datatable-api.init.js')}}"></script>
         @endpush

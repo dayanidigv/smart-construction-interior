@@ -798,8 +798,7 @@ function refreshSearch(rid = 2) {
         ajax: {
             url: function(params) {
                 let searchTerm = params.term || '-';
-                return '/api/search/{{ base64_encode($userId) }}/categories/' + encodeURIComponent(
-                    searchTerm);
+                return `{{ url('/api/search/' . base64_encode($userId) . '/categories') }}/` + encodeURIComponent(searchTerm);
             },
             dataType: 'json',
             delay: 250,
@@ -825,9 +824,10 @@ function refreshSearch(rid = 2) {
         ajax: {
             url: function(params) {
                 let searchTerm = params.term || '-';
-                return '/api/search/{{ base64_encode($userId) }}/subcategories/' + searchTerm +
-                    '?categoryID=' +
-                    $(`#category${rid}`).val();
+                return `{{ url('/api/search/' . base64_encode($userId) . '/subcategories') }}/` + 
+           encodeURIComponent(searchTerm) + 
+           '?categoryID=' + 
+           encodeURIComponent($(`#category${rid}`).val());
             },
             dataType: 'json',
             delay: 250,
@@ -860,9 +860,12 @@ function refreshSearch(rid = 2) {
     $(`#design${rid}`).select2({
         ajax: {
             url: function(params) {
-                return '/api/search/{{ base64_encode($userId) }}/designs/all?categoryID=' + $(
-                        `#category${rid}`).val() + '&subcategoryID=' + $(`#sub-category${rid}`).val() +
-                    '&searchKey=' + params.term;
+                return `{{ url('/api/search/' . base64_encode($userId) . '/designs/all') }}?categoryID=` + 
+           encodeURIComponent($(`#category${rid}`).val()) + 
+           '&subcategoryID=' + 
+           encodeURIComponent($(`#sub-category${rid}`).val()) + 
+           '&searchKey=' + 
+           encodeURIComponent(params.term);
             },
             dataType: 'json',
             delay: 250,
@@ -1012,7 +1015,7 @@ function formatDesignSelection(design) {
 $(".customer-details").select2({
     ajax: {
         url: function(params) {
-            return '/api/search/{{base64_encode($userId)}}/customers/' + params.term;
+            return `{{ url('/api/search/' . base64_encode($userId) . '/customers/') }}${encodeURIComponent(params.term)}`;
         },
         dataType: 'json',
         delay: 250,
@@ -1048,7 +1051,7 @@ $(".customer-details").select2({
 // Get Old Customer Details 
 function fetchOldCustomerData(userId, customerId) {
     $.ajax({
-        url: `/api/get/${userId}/customer-by-id/${customerId}`,
+        url: `{{ url('/api/get') }}/${encodeURIComponent(userId)}/customer-by-id/${encodeURIComponent(customerId)}`,
         dataType: 'json',
         success: handleCustomerDataSuccess,
         error: handleAjaxError
@@ -1374,8 +1377,7 @@ $(document).ready(function() {
         ajax: {
             url: function(params) {
                 let searchTerm = params.term || '-';
-                return '/api/search/{{ base64_encode($userId) }}/categories/' + encodeURIComponent(
-                    searchTerm);
+                return `{{ url('/api/search/' . base64_encode($userId) . '/categories') }}/` + encodeURIComponent(searchTerm);
             },
             dataType: 'json',
             delay: 250,

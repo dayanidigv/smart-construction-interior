@@ -123,7 +123,7 @@
 @endsection
 
 @push('script')
-<script src="/js/bootstrap3-typeahead.min.js"></script>
+<script src="{{url('/js/bootstrap3-typeahead.min.js')}}"></script>
 
 <script>
 

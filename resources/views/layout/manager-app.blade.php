@@ -293,7 +293,7 @@
             <div class="fixed-profile p-3 mx-4 mb-2 bg-light-info rounded sidebar-ad mt-3">
                 <div class="hstack gap-3">
                     <div class="john-img">
-                        <img src="/images/profile/user-1.jpg" class="rounded-circle" width="40" height="40" alt="" />
+                        <img src="{{url('/images/profile/user-1.jpg')}}" class="rounded-circle" width="40" height="40" alt="" />
                     </div>
                     <div class="john-title">
                         <h6 class="mb-0 fs-4 fw-semibold">{{Auth::user()->name}}</h6>
@@ -403,7 +403,7 @@
                                     aria-expanded="false">
                                     <div class="d-flex align-items-center">
                                         <div class="user-profile-img">
-                                            <img src="/images/profile/user-1.jpg" class="rounded-circle" width="35"
+                                            <img src="{{url('/images/profile/user-1.jpg')}}" class="rounded-circle" width="35"
                                                 height="35" alt="" />
                                         </div>
                                     </div>
@@ -415,7 +415,7 @@
                                             <h5 class="mb-0 fs-5 fw-semibold">User Profile</h5>
                                         </div>
                                         <div class="d-flex align-items-center py-9 mx-7 border-bottom">
-                                            <img src="/images/profile/user-1.jpg" class="rounded-circle" width="80"
+                                            <img src="{{url('/images/profile/user-1.jpg')}}" class="rounded-circle" width="80"
                                                 height="80" alt="" />
                                             <div class="ms-3">
                                                 <h5 class="mb-1 fs-3">{{Auth::user()->name}}</h5>
@@ -441,7 +441,7 @@
         <!--  Header End -->
         <div class="container-fluid">
 
-            <div class="card bg-white-info shadow-none position-relative overflow-hidden">
+            <!-- <div class="card bg-white-info shadow-none position-relative overflow-hidden">
                 <div class="card-body pb-4 ">
                     <div class="row ">
                         <div class="col order-md-1 order-2">
@@ -459,7 +459,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             @if (session('message'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">

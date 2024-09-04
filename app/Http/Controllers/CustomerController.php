@@ -28,9 +28,9 @@ class CustomerController extends Controller
 
         if ($title === "Index") {
             $pageData->Schedules = $user->schedule()->get();
-        }else if ($title == "List"){
+        }else if ($title === "List"){
             $pageData->Customers =  $user->customers()->withTrashed()->get();
-        }else if ($title == "List all"){
+        }else if ($title === "List all"){
             
             $customers = Customers::withTrashed()->orderByDesc('id')->get(); 
             $customersWithUserDetails = [];
@@ -49,8 +49,6 @@ class CustomerController extends Controller
             }
             
             $pageData->customers = $customersWithUserDetails ?: [];
-            
-            
         }
 
         return [
@@ -95,6 +93,9 @@ class CustomerController extends Controller
         $user_id = Auth::id();
 
         try {
+
+            $user = User::find($user_id);
+
             $customer = Customers::create([
                 "user_id" => $user_id,
                 'name' => $request->name,
@@ -110,7 +111,13 @@ class CustomerController extends Controller
                 ], 200);
             }
 
-            return redirect()->back()->with('message', 'Customer created successfully.');
+            // return redirect()->back()->with('message', 'Customer created successfully.');
+            if($user->role == 'admin'){
+                return redirect()->route('admin.customer.list-all')->with('message', 'Customer created successfully.');
+            }else{
+                return redirect()->route('manager.customer.list')->with('message', 'Customer created successfully.');
+            }
+
         } catch (Exception $e) {
             if ($request->input('returnType') === 'json') {
                 return response()->json([
@@ -241,7 +248,7 @@ class CustomerController extends Controller
         $decodedId = base64_decode($encodedId); 
         try {
             $customer = User::find(Auth::id())->customers()->withTrashed()->findOrFail($decodedId);
-            $data = $this->getUserData('Customer', 'View', $customer);
+            $data = $this->getUserData("Home",'Customer', 'View', $customer);
             return view('manager.customer.view', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Customer not found'); 
@@ -253,7 +260,7 @@ class CustomerController extends Controller
         $decodedId = base64_decode($encodedId); 
         try {
             $customer = User::find(Auth::id())->customers()->findOrFail($decodedId);
-            $data = $this->getUserData('Customer', 'Edit', $customer);
+            $data = $this->getUserData("Home", 'Customer', 'Edit', $customer);
             return view('manager.customer.edit', $data);
         } catch (ModelNotFoundException $e) {
             return abort(404, 'Customer not found'); 

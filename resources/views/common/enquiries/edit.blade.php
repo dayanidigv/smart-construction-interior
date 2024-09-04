@@ -168,11 +168,11 @@ hr {
                                     <div class="col-12 col-md-3 col-lg-3 mb-4 ">
                                         <label class="control-label">Follow Date *</label>
                                         <input type="date" name="alt_follow_date[]" id="follow-date{{$encodedId}}"
-                                            value="{{ \Carbon\Carbon::parse($pageData->followup[$i]->reminder_time)->format('Y-m-d') }}"
+                                            value="{{ \Carbon\Carbon::parse($pageData->followup[$i]->start)->format('Y-m-d') }}"
                                             class="form-control" required />
                                         @php
                                         $followUpDate =
-                                        \Carbon\Carbon::parse($pageData->followup[$i]->reminder_time);
+                                        \Carbon\Carbon::parse($pageData->followup[$i]->start);
                                         @endphp
                                         @if ($followUpDate->isPast() && !$followUpDate->isToday())
                                         <small class="form-text text-danger">
@@ -190,9 +190,9 @@ hr {
                                         <label class="control-label">Follow Priority *</label>
                                         <select class="form-control @error('priority') is-invalid @enderror" name="alt_follow_priority[]" id="follow-priority{{$encodedId}}" required>
                                             <option value="" selected disabled>-- Select Priority --</option>
-                                            <option value="3" @if ($pageData->followup[$i]->priority == "3") selected @endif>Green</option>
-                                            <option value="2" @if ($pageData->followup[$i]->priority == "2") selected @endif>Yellow</option>
-                                            <option value="1" @if ($pageData->followup[$i]->priority == "1") selected @endif>Red</option>
+                                            <option value="3" @if ($pageData->followup[$i]->level == "Success") selected @endif>Green</option>
+                                            <option value="2" @if ($pageData->followup[$i]->level == "Warning") selected @endif>Yellow</option>
+                                            <option value="1" @if ($pageData->followup[$i]->level == "Danger") selected @endif>Red</option>
                                         </select>
                                     </div>
 
@@ -306,7 +306,7 @@ hr {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
-<script src="/js/bootstrap3-typeahead.min.js"></script>
+<script src="{{url('/js/bootstrap3-typeahead.min.js')}}"></script>
 
 <!-- Add new Customer -->
 <script>
@@ -317,7 +317,7 @@ $(document).ready(function() {
 
     $(`#customer_category`).typeahead({
         source: function (query, process) {
-            return $.get('/api/search/{{ base64_encode($userId) }}/customerCategories/' + query, function (data) {
+            return $.get(`{{ url('/api/search/' . base64_encode($userId) . '/customerCategories/') }}` + encodeURIComponent(query), function (data) {
                 return process(data);
             });
         }
@@ -327,7 +327,7 @@ $(document).ready(function() {
     $(".customer-details").select2({
         ajax: {
             url: function(params) {
-                return '/api/search/{{base64_encode($userId)}}/customers/' + params.term;
+                return `{{ url('/api/search/' . base64_encode($userId) . '/customers/') }}${encodeURIComponent(params.term)}`;
             },
             dataType: 'json',
             delay: 250,
@@ -519,7 +519,7 @@ $(document).ready(function() {
 
 if (<?= old('customer', $pageData->enquiry->customer_id) ?>) {
     $.ajax({
-        url: `/api/get/{{ base64_encode($userId) }}/customer-by-id/{{base64_encode(old('customer',$pageData->enquiry->customer_id))  }}`,
+        url: `{{ url('/api/get/' . base64_encode($userId) . '/customer-by-id/' . base64_encode(old('customer', $pageData->enquiry->customer_id))) }}`,
         dataType: 'json',
         success: function(data) {
             if (data && data.id) {

@@ -12,6 +12,7 @@ use App\Models\Reminders;
 use App\Models\Schedule;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,7 @@ class EnquiriesController extends Controller
     protected function auth($role)
     {
         if (!in_array($role, ['admin', 'manager'])) {
-            abort(404); 
+            abort(404);
         }
         if (!Auth::check() || Auth::user()->role != $role) {
             abort(403, 'Unauthorized action.');
@@ -46,7 +47,7 @@ class EnquiriesController extends Controller
             ->get() : collect();
         return [
             'title' => $title,
-            'role' =>  $user->role,
+            'role' => $user->role,
             'menuTitle' => $menuTitle,
             'sectionName' => $sectionName,
             'userName' => $userName,
@@ -57,16 +58,18 @@ class EnquiriesController extends Controller
         ];
     }
 
-    public function new(string $role){
+    public function new(string $role)
+    {
         $this->auth($role);
         $data = $this->getUserData('Orders', "Enquiries", "New");
-        return view('common.enquiries.new',$data);
+        return view('common.enquiries.new', $data);
     }
 
     public function store(Request $request, string $role)
     {
         $this->auth($role);
-    
+
+        
         try {
             $validator = Validator::make($request->all(), [
                 'customer_category' => 'required|string',
@@ -82,23 +85,23 @@ class EnquiriesController extends Controller
                 'priority' => 'nullable|array',
                 'priority.*' => 'nullable|numeric',
             ]);
-    
+
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             }
-    
+
             DB::beginTransaction();
-    
+
             $userID = Auth::id();
-    
+
             // Find the customer
             $customer = Customers::find($request->customer);
             if (!$customer) {
                 throw new \Exception("Customer not found.");
             }
-    
+
             $category = CustomerCategory::firstOrCreate(['name' => $request->customer_category]);
-    
+
             // Create a new enquiry instance
             $enquiry = Enquiries::create([
                 'customer_category_id' => $category->id,
@@ -110,27 +113,22 @@ class EnquiriesController extends Controller
                 'creator_id' => $userID,
                 'customer_id' => $request->customer
             ]);
-    
+
             $priorityLevels = [
                 "1" => 'Danger',
                 "2" => 'Warning',
                 "3" => 'Success'
             ];
-    
-            // Add new follow-ups
-            $this->handleNewFollowUps($request, $enquiry, $customer, $priorityLevels, $userID);
-
-            
 
             // Add new follow-ups
             $this->handleNewFollowUps($request, $enquiry, $customer, $priorityLevels, $userID);
 
             // Check and Convert to Order
-            $order = $this->handleConvertToOrder( $enquiry, $customer, $userID);
-           
-           DB::commit();
+            $order = $this->handleConvertToOrder($enquiry, $customer, $userID);
 
-           if ($order) {
+            DB::commit();
+
+            if ($order) {
                 $encodedId = base64_encode($order->id);
                 if (Auth::check() && Auth::user()->role === "admin") {
                     return redirect()->route('admin.edit.order', ['encodedId' => $encodedId])->with('message', 'Enquiry to Order Convert successfully.');
@@ -147,7 +145,7 @@ class EnquiriesController extends Controller
             return $this->handleException($request, 'Failed to create Enquiry.', $e);
         }
     }
-    
+
     public function update(string $role, string $encodedId, Request $request)
     {
         $this->auth($role);
@@ -222,11 +220,11 @@ class EnquiriesController extends Controller
             $this->handleNewFollowUps($request, $enquiry, $customer, $priorityLevels, $userID);
 
             // Check and Convert to Order
-            $order = $this->handleConvertToOrder( $enquiry, $customer, $userID);
-           
-           DB::commit();
+            $order = $this->handleConvertToOrder($enquiry, $customer, $userID);
 
-           if ($order) {
+            DB::commit();
+
+            if ($order) {
                 $encodedId = base64_encode($order->id);
                 if (Auth::check() && Auth::user()->role === "admin") {
                     return redirect()->route('admin.edit.order', ['encodedId' => $encodedId])->with('message', 'Enquiry to Order Convert successfully.');
@@ -247,14 +245,14 @@ class EnquiriesController extends Controller
 
     public function viewEnqury(string $role, string $encodedId, Request $request)
     {
-        
+
         $this->auth($role);
-        
+
         try {
-            $pageData =  new stdClass();
+            $pageData = new stdClass();
             $decodedId = base64_decode($encodedId);
             $pageData->enquiry = Enquiries::findOrFail($decodedId);
-            $pageData->followup = Reminders::where('enquiry_id',$decodedId)->get();
+            $pageData->followup = Reminders::where('enquiry_id', $decodedId)->get();
             $data = $this->getUserData('Orders', "Enquiries", "View", $pageData);
             return view('common.enquiries.view', $data);
         } catch (QueryException $e) {
@@ -268,10 +266,10 @@ class EnquiriesController extends Controller
     {
         $this->auth($role);
         try {
-            $pageData =  new stdClass();
+            $pageData = new stdClass();
             $decodedId = base64_decode($encodedId);
             $pageData->enquiry = Enquiries::findOrFail($decodedId);
-            $pageData->followup = Reminders::where('enquiry_id',$decodedId)->get();
+            $pageData->followup = Schedule::where('enquiry_id', $decodedId)->get();
             $data = $this->getUserData('Orders', "Enquiries", "Edit", $pageData);
             return view('common.enquiries.edit', $data);
         } catch (QueryException $e) {
@@ -281,14 +279,15 @@ class EnquiriesController extends Controller
         }
     }
 
-    public function list(string $role, Request $request){
-        
+    public function list(string $role, Request $request)
+    {
+
         $this->auth($role);
-        
+
         try {
-            if($role == 'admin'){
+            if ($role == 'admin') {
                 $enquiries = Enquiries::orderBy('id', 'desc')->where('status', "!=", "confirmed")->get();
-            }else{
+            } else {
                 $enquiries = Enquiries::where('user_id', Auth::user()->id)->where('status', "!=", "confirmed")->get();
             }
             $data = $this->getUserData('Orders', "Enquiries", "List", $enquiries);
@@ -303,30 +302,72 @@ class EnquiriesController extends Controller
 
     public function destroy(string $role, string $encodedId, Request $request)
     {
+        DB::beginTransaction(); 
+    
+        
         try {
-            $decodedId = decrypt($encodedId);
-            $enquiry = Enquiries::findOrFail($decodedId);
-            $enquiry->delete();
+            
+            
+            if (empty($encodedId)) {
+                throw new \Exception('Encoded ID is missing.');
+            }
+    
+            $decodedId = base64_decode($encodedId);
+            
+           
 
+            $enquiry = Enquiries::findOrFail($decodedId); 
+            
+            $this->deleteFollowUps($decodedId);
+    
+            $enquiry->delete();
+    
+            DB::commit(); 
+    
             if ($request->input('returnType') === 'json') {
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Enquiry deleted successfully.',
                 ]);
             }
-
+    
             return redirect()->back()->with('success', 'Enquiry deleted successfully.');
+    
+        } catch (DecryptException $e) {
+            DB::rollBack(); // Rollback the transaction if decryption fails
+            return $this->handleException($request, 'Failed to delete Enquiry. The provided ID is invalid or corrupted.', $e);
+    
         } catch (QueryException $e) {
-            return $this->handleException($request, 'Failed to delete Enquiry.', $e);
+            DB::rollBack(); // Rollback the transaction if a QueryException occurs
+            return $this->handleException($request, 'Failed to delete Enquiry due to a database error.', $e);
+    
         } catch (\Exception $e) {
-            return $this->handleException($request, 'Failed to delete Enquiry.', $e);
+            DB::rollBack(); // Rollback the transaction if any other Exception occurs
+            return $this->handleException($request, 'Failed to delete Enquiry due to an unexpected error.', $e);
         }
     }
+    
+    private function deleteFollowUps($id)
+    {
+        // Retrieve and delete all schedules related to the enquiry
+        $schedules = Schedule::where("enquiry_id", $id)->get();
+        foreach ($schedules as $schedule) {
+            $schedule->delete();
+        }
+    
+        // Retrieve and delete all reminders related to the enquiry
+        $reminders = Reminders::where("enquiry_id", $id)->get();
+        foreach ($reminders as $reminder) {
+            $reminder->delete();
+        }
+    }
+    
+
 
     // Handle Convert To Order Function
-    private function handleConvertToOrder( $enquiry, $customer, $userID)
+    private function handleConvertToOrder($enquiry, $customer, $userID)
     {
-        if ( $enquiry->status === 'confirmed') {
+        if ($enquiry->status === 'confirmed') {
             // Create new order
             $order = Orders::create([
                 'user_id' => $userID,
@@ -386,33 +427,33 @@ class EnquiriesController extends Controller
     {
         $additionalNote = $request->alt_note[$index] ?? '';
         $newDescription = 'Follow-up needed for enquiry with customer ' . $customer->name . ". Additional note: " . $additionalNote;
-    
+
         $priorityLevel = $priorityLevels[$request->alt_follow_priority[$index]] ?? 'Warning';
-    
+
         // Update schedule description and level
         $schedule->update([
             'description' => $newDescription,
             'level' => $priorityLevel,
         ]);
-    
+
         if (isset($request->alt_follow_date[$index])) {
             $newFollowDate = Carbon::parse($request->alt_follow_date[$index])->format('Y-m-d 00:00:00');
             $schedule->update(['start' => $newFollowDate]);
         }
-    
+
         if ($reminder) {
             $reminder->update([
                 'description' => $newDescription,
                 'priority' => $request->alt_follow_priority[$index],
             ]);
-    
+
             if (isset($request->alt_follow_date[$index])) {
                 $newReminderTime = Carbon::parse($request->alt_follow_date[$index])->format('Y-m-d 09:00:00');
                 $reminder->update(['reminder_time' => $newReminderTime]);
             }
         }
     }
-    
+
     private function handleNewFollowUps(Request $request, $enquiry, $customer, $priorityLevels, $userID)
     {
         if (isset($request->follow_date) && is_array($request->follow_date)) {

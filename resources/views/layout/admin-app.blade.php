@@ -8,7 +8,7 @@
         <div>
             <div class="brand-logo d-flex align-items-center justify-content-between">
                 <a href="/" class="text-nowrap logo-img">
-                    <img src="{{ asset('images\logo\logo-2.png') }}" class="light-logo" width="50" alt="" />
+                    <img src="{{ url('images\logo\logo-2.png') }}" class="light-logo" width="50" alt="" />
                     <!-- <h1>Buildy</h1> -->
                 </a>
                 <div class="close-btn d-lg-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
@@ -321,7 +321,7 @@
             <div class="fixed-profile p-3 mx-4 mb-2 bg-light-info rounded sidebar-ad mt-3">
                 <div class="hstack gap-3">
                     <div class="john-img">
-                        <img src="/images/profile/user-1.jpg" class="rounded-circle" width="40" height="40" alt="" />
+                        <img src="{{url('/images/profile/user-1.jpg')}}" class="rounded-circle" width="40" height="40" alt="" />
                     </div>
                     <div class="john-title">
                         <h6 class="mb-0 fs-4 fw-semibold">{{Auth::user()->name}}</h6>
@@ -354,7 +354,7 @@
                 </ul>
 
                 <div class="d-block d-lg-none">
-                    <img src="{{ asset('images\logo\logo-2.png') }}" class="light-logo" width="50" alt="" />
+                    <img src="{{ url('images\logo\logo-2.png') }}" class="light-logo" width="50" alt="" />
                     <!-- <h1>Buildy</h1> -->
                 </div>
 
@@ -425,7 +425,7 @@
                                     aria-expanded="false">
                                     <div class="d-flex align-items-center">
                                         <div class="user-profile-img">
-                                            <img src="/images/profile/user-1.jpg" class="rounded-circle" width="35"
+                                            <img src="{{url('/images/profile/user-1.jpg')}}" class="rounded-circle" width="35"
                                                 height="35" alt="" />
                                         </div>
                                     </div>
@@ -437,7 +437,7 @@
                                             <h5 class="mb-0 fs-5 fw-semibold">User Profile</h5>
                                         </div>
                                         <div class="d-flex align-items-center py-9 mx-7 border-bottom">
-                                            <img src="/images/profile/user-1.jpg" class="rounded-circle" width="80"
+                                            <img src="{{url('/images/profile/user-1.jpg')}}" class="rounded-circle" width="80"
                                                 height="80" alt="" />
                                             <div class="ms-3">
                                                 <h5 class="mb-1 fs-3">{{Auth::user()->name}}</h5>
@@ -460,7 +460,7 @@
         </header>
         <div class="container-fluid">
 
-            <div class="card bg-white-info shadow-none position-relative overflow-hidden">
+            <!-- <div class="card bg-white-info shadow-none position-relative overflow-hidden">
                 <div class="row ">
                     <div class="col order-md-1 order-2">
                         <nav aria-label="breadcrumb">
@@ -475,7 +475,8 @@
                         </nav>
                     </div>
                 </div>
-            </div>
+            </div> -->
+
             @if (session('message'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

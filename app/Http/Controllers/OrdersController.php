@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Designs;
 use App\Models\RateHistory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use App\Models\Categories;
@@ -253,7 +254,14 @@ class OrdersController extends Controller
             // Commit the transaction
             DB::commit();
 
-            return redirect()->back()->with('message', 'Order created successfully.');
+            // return redirect()->back()->with('message', 'Order created successfully.');
+            $user = User::find($user_id);
+            
+            if($user->role == 'admin'){
+                return redirect()->route('admin.list.order')->with('message', 'Order created successfully.');
+            }else{
+                return redirect()->route('manager.list.order')->with('message', 'Order created successfully.');
+            }
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Order creation failed:', ['error' => $e->getMessage()]);

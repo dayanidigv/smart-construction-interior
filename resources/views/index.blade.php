@@ -122,7 +122,7 @@
 @endsection
 
 @push('script')
-<script src="/libs/fullcalendar/index.global.min.js"></script>
+<script src="{{url('/libs/fullcalendar/index.global.min.js')}}"></script>
 <script>
 
 var schedulesData = {!! json_encode($pageData -> Schedules -> map(function ($schedule) {

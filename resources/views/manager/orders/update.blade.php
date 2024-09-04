@@ -525,7 +525,7 @@
 @push('script')
 
 
-<script src="/js/select2.min.js"></script>
+<script src="{{url('/js/select2.min.js')}}"></script>
 
 <script>
 
@@ -743,7 +743,7 @@ function follow_container() {
     $(".customer-details").select2({
         ajax: {
             url: function (params) {
-                return '/api/search/{{base64_encode($userId)}}/customers/' + params.term;
+                return `{{ url('/api/search/' . base64_encode($userId) . '/customers/') }}${encodeURIComponent(params.term)}`;
             },
             dataType: 'json',
             delay: 250,
@@ -777,7 +777,7 @@ function follow_container() {
 
         if (<?= old('customer', $pageData->order->customer_id) ?>) {
             $.ajax({
-                url: `/api/get/{{ base64_encode($userId) }}/customer-by-id/{{base64_encode(old('customer',$pageData->order->customer_id))  }}`,
+                url: `{{ url('/api/get/' . base64_encode($userId) . '/customer-by-id/' . base64_encode(old('customer', $pageData->order->customer_id))) }}`,
                 dataType: 'json',
                 success: function(data) {
                     if (data && data.id) {
@@ -882,7 +882,7 @@ function follow_container() {
 
 </script>
 
-<script src="/js/bootstrap3-typeahead.min.js"></script>
+<script src="{{url('/js/bootstrap3-typeahead.min.js')}}"></script>
 <script>
 
 
