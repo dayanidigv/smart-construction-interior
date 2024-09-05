@@ -47,8 +47,6 @@ class DesignsController extends Controller
                 'type' => $request->type,
             ]);
 
-          
-    
             $imagePath = null;
 
             // Handle image upload
@@ -64,7 +62,7 @@ class DesignsController extends Controller
                 // Get the current URL of the request
                 $currentUrl = url('');
 
-                if (str_ends_with($currentUrl, '/smart')) {
+                if (str_contains($currentUrl, '/smart')) {
 
                     $imagePath = "/src/storage/app/public/" . $path;
                 } else {
@@ -162,7 +160,16 @@ class DesignsController extends Controller
                 $extension = $request->file('image')->getClientOriginalExtension();
                 $imageName = $timestamp . '_' . $sanitizedFileName . '.' . $extension;
                 $path = $request->file('image')->storeAs('Designs', $imageName, 'public');
-                $imagePath = "/storage/" . $path;
+                // Get the current URL of the request
+                $currentUrl = url('');
+
+                if (str_contains($currentUrl, '/smart')) {
+
+                    $imagePath = "/src/storage/app/public/" . $path;
+                } else {
+
+                    $imagePath = "/storage/" . $path;
+                }
             } else {
                 $imagePath = $design->image_url;
             }
