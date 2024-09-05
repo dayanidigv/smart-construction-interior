@@ -3,7 +3,7 @@
 @section('adminContent')
 
 @push('style')
-<link rel="stylesheet" href="/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="{{url('/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css')}}">
 
 @endpush
 

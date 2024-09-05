@@ -20,7 +20,7 @@
           <div class="row">
 
           <div class="col-md-12 mb-3 d-flex justify-content-center align-items-center">
-                <img src="{{$pageData->design->image_url}}" class=' img-field w-25 mb-2' alt="">
+                <img src="{{url('$pageData->design->image_url')}}" class=' img-field w-25 mb-2' alt="">
             </div>
 
           <div class="col-md-6 mb-3">

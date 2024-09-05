@@ -58,8 +58,19 @@ class DesignsController extends Controller
                 $sanitizedFileName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $originalFileName);
                 $extension = $request->file('image')->getClientOriginalExtension();
                 $imageName = $timestamp . '_' . $sanitizedFileName . '.' . $extension;
+
                 $path = $request->file('image')->storeAs('Designs', $imageName, 'public');
-                $imagePath = "/storage/" . $path;
+
+                // Get the current URL of the request
+                $currentUrl = url('');
+
+                if (str_ends_with($currentUrl, '/smart')) {
+
+                    $imagePath = "/src/storage/app/public/" . $path;
+                } else {
+
+                    $imagePath = "/storage/" . $path;
+                }
             } 
 
             // Find or create the category key
